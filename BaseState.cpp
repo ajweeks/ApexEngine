@@ -3,8 +3,8 @@
 #include "StateManager.h"
 #include "enumerations.h"
 
-BaseState::BaseState(StateManager* manager, StateType stateType)
-	: m_StateManager(manager), m_StateType(stateType)
+BaseState::BaseState(StateManager* manager, StateType stateType, Game* game)
+	: m_StateManager(manager), m_StateType(stateType), m_Game(game)
 {
 }
 

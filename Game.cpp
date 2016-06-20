@@ -3,51 +3,45 @@
 #include "GameState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
+#include "KeyListener.h"
 #include "ApexMouse.h"
 #include "ApexDebug.h"
+#include "ApexAudio.h"
+#include "Entity.h"
+#include "StateManager.h"
+#include "logo.h"
+
 #include <iostream>
-#include <Windows.h>
 #include <sstream>
 #include <iomanip>
 
 const int Game::INITAL_WINDOW_WIDTH = 2160;
 const int Game::INITAL_WINDOW_HEIGHT = 1215;
-const bool Game::USE_V_SYNC = true;
-const sf::String Game::WINDOW_TITLE = "Apex Engine";
+const bool Game::USE_V_SYNC = false;
+const std::string Game::WINDOW_TITLE = "Apex Engine";
 
 sf::Font Game::font12;
 
-Game::Game() :
-	m_StateManager(new GameState(&m_StateManager, this))
+Game::Game()
 {
 	m_Window.create(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE);
 	m_Window.setVerticalSyncEnabled(USE_V_SYNC);
+	m_Window.setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
+	
+	m_StateManager = new StateManager(new GameState(m_StateManager, this));
 
-	if (!font12.loadFromFile("resources/OpenSans/OpenSans-Regular.ttf"))
+	if (!font12.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
 		std::cout << "Couldn't load font OpenSans-Regular.ttf!" << std::endl;
 	}
 
-	IntializeDebug();
+	ApexAudio::LoadSounds();
 }
 
 Game::~Game()
 {
-	delete m_Debug;
+	delete m_StateManager;
 }
-
-void Game::IntializeDebug()
-{
-	m_Debug = new ApexDebug();
-	CollapsibleElement* parentElement = m_Debug->CreateCollapsibleElementStack("Parent1", sf::Vector2f(700, 400));
-	CollapsibleElement* child1 = m_Debug->AddCollapsibleElementChild(parentElement, "child1");
-	CollapsibleElement* child1_1 = m_Debug->AddCollapsibleElementChild(child1, "child1_1");
-	m_Debug->AddCollapsibleElementChild(child1_1, "child1_1_1");
-	m_Debug->AddCollapsibleElementChild(parentElement, "child2");
-	CollapsibleElement* child3 = m_Debug->AddCollapsibleElementChild(parentElement, "child3");
-	m_Debug->AddCollapsibleElementChild(child3, "child3_1");
-}
-
 void Game::Run()
 {
 	sf::Clock clock;
@@ -65,8 +59,11 @@ void Game::Run()
 			m_Frames = 0;
 		}
 
-		ApexKeyboard::Tick();
-		ApexMouse::Tick();
+		if (m_Window.hasFocus())
+		{
+			ApexKeyboard::Tick();
+			ApexMouse::Tick();
+		}
 
 		sf::Event event;
 		while (m_Window.pollEvent(event))
@@ -74,34 +71,58 @@ void Game::Run()
 			switch(event.type)
 			{
 			case sf::Event::Closed:
+			{
 				running = false;
 				break;
-			case sf::Event::Resized:
-				// Uncomment to prevent window scale from scaling content
-				//sf::FloatRect visibleArea(0, 0, float(event.size.width), float(event.size.height));
-				//m_View.reset(visibleArea);
+			}
+			case sf::Event::LostFocus:
+			{
+				ApexAudio::SetAllPaused(true);
 				break;
+			}
+			case sf::Event::GainedFocus:
+			{
+				ApexAudio::SetAllPaused(false);
+				break;
+			}
 			case sf::Event::KeyPressed:
-				switch (event.key.code)
+			{
+				if (m_Window.hasFocus())
 				{
-				case sf::Keyboard::F10:
-				{
-					// Prevent multiple calls from a press and hold
-					if (ApexKeyboard::IsKeyPressed(sf::Keyboard::F9))
+					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
-						TakeScreenshot();
+						if (m_KeyListeners[i] != nullptr)
+						{
+							m_KeyListeners[i]->OnKeyPress(event.key);
+						}
+					}
+
+					switch (event.key.code)
+					{
+					case sf::Keyboard::F10:
+					{
+						// Prevent multiple calls from a press and hold
+						if (ApexKeyboard::IsKeyPressed(event.key.code))
+						{
+							TakeScreenshot();
+						}
+					} break;
 					}
 				}
-				case sf::Keyboard::F5:
+			} break;
+			case sf::Event::KeyReleased:
+			{
+				if (m_Window.hasFocus())
 				{
-					// Prevent multiple calls from a press and hold
-					if (ApexKeyboard::IsKeyPressed(sf::Keyboard::F5))
+					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
-						m_ShowDebug = !m_ShowDebug;
+						if (m_KeyListeners[i] != nullptr)
+						{
+							m_KeyListeners[i]->OnKeyRelease(event.key);
+						}
 					}
 				}
-				}
-				break;
+			} break;
 			}
 		}
 
@@ -113,39 +134,43 @@ void Game::Run()
 
 void Game::Tick(sf::Time elapsed)
 {
-	m_StateManager.Tick(elapsed);
-	if (m_ShowDebug) m_Debug->Tick(elapsed, this);
+	m_StateManager->Tick(elapsed);
 }
 
 void Game::Draw()
 {
 	m_Window.clear();
 	
-	m_StateManager.Draw(m_Window);
-	if (m_ShowDebug) m_Debug->Draw(m_Window);
+	m_StateManager->Draw(m_Window);
+
+	m_Window.setView(m_Window.getDefaultView());
 	
 	m_Window.display();
 }
 
-sf::Vector2f Game::MapPixelToCoords(sf::Vector2i pixels) const
-{
-	return m_Window.mapPixelToCoords(pixels);
-}
-
-sf::Vector2f Game::GetMouseCoordsWorldSpace() const
+sf::Vector2f Game::GetMouseCoordsWorldSpace(sf::View view) const
 {
 	sf::Vector2i mouse = sf::Mouse::getPosition(m_Window);
-	return m_Window.mapPixelToCoords(mouse);
+	return m_Window.mapPixelToCoords(mouse, view);
 }
 
-sf::Vector2i Game::GetMouseCoordsScreenSpace() const
+sf::Vector2i Game::GetMouseCoordsScreenSpace(sf::View currentView) const
 {
-	return  sf::Mouse::getPosition(m_Window);
+	sf::Vector2i mouseCoords = sf::Mouse::getPosition(m_Window);
+	if (m_Window.getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
+	{
+		// Adjust for when the window has been resized the content stretched or squeezed
+		const float xScale = currentView.getSize().x / m_Window.getSize().x;
+		const float yScale = currentView.getSize().y / m_Window.getSize().y;
+		mouseCoords.x = static_cast<int>(mouseCoords.x * xScale);
+		mouseCoords.y = static_cast<int>(mouseCoords.y * yScale);
+	}
+	return mouseCoords;
 }
 
-void Game::SetCursor(sf::StandardCursor::TYPE cursorType)
+void Game::SetCursor(sf::ApexCursor::TYPE cursorType)
 {
-	sf::StandardCursor Cursor(cursorType);
+	sf::ApexCursor Cursor(cursorType);
 	Cursor.set(m_Window.getSystemHandle());
 }
 
@@ -171,4 +196,42 @@ void Game::TakeScreenshot()
 	screen.saveToFile(filename);
 
 	std::cout << "Saved screenshot as \"" + filename << "\" successfully!" << std::endl;
+}
+
+StateManager* Game::GetStateManager()
+{
+	return m_StateManager;
+}
+
+sf::Vector2u Game::GetWindowSize() const
+{
+	return m_Window.getSize();
+}
+
+std::string Game::Vector2fToString(sf::Vector2f vec)
+{
+	std::stringstream stream;
+	stream  << std::setprecision(2) << std::fixed << vec.x << "," << vec.y;
+	return stream.str();
+}
+
+void Game::AddKeyListener(KeyListener* keyListener)
+{
+	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
+	{
+		if (m_KeyListeners[i] == nullptr) 
+		{
+			m_KeyListeners[i] = keyListener;
+			return;
+		}
+	}
+	m_KeyListeners.push_back(keyListener);
+}
+
+void Game::RemoveKeyListener(KeyListener * keyListener)
+{
+	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
+	{
+		if (m_KeyListeners[i] == keyListener) m_KeyListeners[i] = nullptr;
+	}
 }

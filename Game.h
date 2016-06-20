@@ -2,9 +2,10 @@
 
 #include <SFML\Graphics.hpp>
 #include "StateManager.h"
-#include "StandardCursor.hpp"
+#include "ApexCursor.h"
 
 class ApexDebug;
+class KeyListener;
 
 class Game
 {
@@ -16,35 +17,40 @@ public:
 	Game& operator=(const Game&) = delete;
 
 	void Run();
-	sf::Vector2f MapPixelToCoords(sf::Vector2i) const;
-	sf::Vector2f GetMouseCoordsWorldSpace() const;
-	sf::Vector2i GetMouseCoordsScreenSpace() const;
+	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
+	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView) const;
 
-	void SetCursor(sf::StandardCursor::TYPE cursorType);
+	void SetCursor(sf::ApexCursor::TYPE cursorType);
 
 	static sf::Font font12;
 	void TakeScreenshot();
+
+	StateManager* GetStateManager();
+	sf::Vector2u GetWindowSize() const;
+
+	static std::string Vector2fToString(sf::Vector2f vec);
+
+	void AddKeyListener(KeyListener* keyListener);
+	void RemoveKeyListener(KeyListener* keyListener);
 
 private:
 	static const int INITAL_WINDOW_WIDTH;
 	static const int INITAL_WINDOW_HEIGHT;
 	static const bool USE_V_SYNC;
 
-	static const sf::String WINDOW_TITLE;
+	static const std::string WINDOW_TITLE;
 
-	void IntializeDebug();
 	void Tick(sf::Time elapsed);
 	void Draw();
 
-	StateManager m_StateManager;
 	sf::RenderWindow m_Window;
 	sf::Time m_TotalElapsed;
 	sf::Time m_ElapsedThisFrame;
 	int m_Frames;
 	int m_FPS;
 
+	StateManager* m_StateManager = nullptr;
 	sf::Font m_Font;
 
-	ApexDebug* m_Debug;
-	bool m_ShowDebug = true;
+	std::vector<KeyListener*> m_KeyListeners;
 };

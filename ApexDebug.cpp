@@ -1,68 +1,80 @@
 
 #include "ApexDebug.h"
 #include "Game.h"
+#include "Player.h"
+#include "enumerations.h"
+#include "GameState.h"
+#include "Level.h"
 
 ApexDebug::ApexDebug()
 {
+	m_PlayerElementStack = CreateCollapsibleElementStack("Player", sf::Vector2f(35, 35));
+	m_PlayerPosElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "pos");
+	m_PlayerVelElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "vel");
+	UpdateBackgroundRect(m_PlayerElementStack);
+
 }
 
 ApexDebug::~ApexDebug()
 {
-	for (size_t i = 0; i < m_CollapsibleElementStacks.size(); ++i)
-	{
-		delete m_CollapsibleElementStacks[i].m_CollapsibleElement;
-	}
+	delete m_PlayerElementStack->m_CollapsibleElement;
+	delete m_PlayerElementStack;
 }
 
 void ApexDebug::Tick(sf::Time elapsed, Game* game)
 {
-	game->SetCursor(sf::StandardCursor::NORMAL);
-	for (size_t i = 0; i < m_CollapsibleElementStacks.size(); ++i)
+	if (m_PlayerElementStack->m_CollapsibleElement->m_Collapsed == false)
 	{
-		m_CollapsibleElementStacks[i].m_CollapsibleElement->Tick(elapsed, game, this);
+		BaseState* currentState = game->GetStateManager()->CurrentState();
+		if (currentState->GetType() == StateType::GAME)
+		{
+			Level* level = ((GameState*)currentState)->GetLevel();
+			Player* player = level->GetPlayer();
+			std::string newPlayerPos = Game::Vector2fToString(player->GetPosition());
+			std::string newPlayerVel = Game::Vector2fToString(player->GetVelocity());
+			m_PlayerPosElement->UpdateString(newPlayerPos);
+			m_PlayerVelElement->UpdateString(newPlayerVel);
+		}
+		UpdateBackgroundRect(m_PlayerElementStack);
 	}
+
+	game->SetCursor(sf::ApexCursor::NORMAL);
+	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, game, this)) UpdateBackgroundRect(m_PlayerElementStack);
 }
 
-void ApexDebug::UpdateBackgroundRects()
+void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
 {
-	for (size_t i = 0; i < m_CollapsibleElementStacks.size(); ++i)
-	{
-		CollapsibleElement* parentElement = m_CollapsibleElementStacks[i].m_CollapsibleElement;
-		const sf::Vector2f pos = parentElement->GetPosition() + sf::Vector2f(-25, -25);
-		const float stackHeight = parentElement->GetStackHeight() + 35;
-		const float stackWidth = parentElement->GetStackWidth() + 20;
-		m_CollapsibleElementStacks[i].m_BackgroundRect = sf::RectangleShape(sf::Vector2f(stackWidth, stackHeight));
-		m_CollapsibleElementStacks[i].m_BackgroundRect.setPosition(pos);
-		m_CollapsibleElementStacks[i].m_BackgroundRect.setFillColor(sf::Color(50, 55, 60, 135));
-	}
+	CollapsibleElement* parentElement = stack->m_CollapsibleElement;
+	const sf::Vector2f pos = parentElement->GetPosition() + sf::Vector2f(-25, -12);
+	const float stackHeight = parentElement->GetStackHeight() + 12;
+	const float stackWidth = parentElement->GetStackWidth() + 20;
+	stack->m_BackgroundRect = sf::RectangleShape(sf::Vector2f(stackWidth, stackHeight));
+	stack->m_BackgroundRect.setPosition(pos);
+	stack->m_BackgroundRect.setFillColor(sf::Color(50, 55, 60, 135));
 }
 
 void ApexDebug::Draw(sf::RenderTarget& target) const
 {
-	for (size_t i = 0; i < m_CollapsibleElementStacks.size(); ++i)
-	{
-		target.draw(m_CollapsibleElementStacks[i].m_BackgroundRect);
+	target.draw(m_PlayerElementStack->m_BackgroundRect);
+	m_PlayerElementStack->m_CollapsibleElement->Draw(target);
 
-		m_CollapsibleElementStacks[i].m_CollapsibleElement->Draw(target);
-	}
 }
 
-CollapsibleElement* ApexDebug::CreateCollapsibleElementStack(const std::string& parentText, const sf::Vector2f& parentPosition)
+ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position)
 {
-	CollapsibleElement* newElement = new CollapsibleElement(parentText, nullptr);
-	newElement->Move(parentPosition);
-	CollapsibleElementStack newStack;
-	newStack.m_CollapsibleElement = newElement;
-	m_CollapsibleElementStacks.push_back(newStack);
+	CollapsibleElementStack* newStack = new CollapsibleElementStack();
+	CollapsibleElement* newElement  = new CollapsibleElement(nullptr, string);
+	newElement->Move(position);
+	newStack->m_CollapsibleElement = newElement;
 
-	UpdateBackgroundRects();
-	return newElement;
+	UpdateBackgroundRect(newStack);
+	return newStack;
 }
 
-CollapsibleElement* ApexDebug::AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& text)
+CollapsibleElement* ApexDebug::AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& string)
 {
-	CollapsibleElement* newElement = parentElement->AddChildElement(new CollapsibleElement(text, parentElement));
+	CollapsibleElement* newElement = parentElement->AddChildElement(new CollapsibleElement(parentElement, string));
 
-	UpdateBackgroundRects();
+	//UpdateBackgroundRect(newElement);
 	return newElement;
 }

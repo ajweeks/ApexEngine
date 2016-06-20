@@ -1,15 +1,23 @@
 
 #include "CollapsibleElement.h"
 #include "ApexMouse.h"
-#include "StandardCursor.hpp"
+#include "ApexCursor.h"
 #include "ApexDebug.h"
 
-const float CollapsibleElement::INDENTATION = 50.0f;
+const float CollapsibleElement::INDENTATION = 35.0f;
 const float CollapsibleElement::LINE_HEIGHT = 50.0f;
 const int CollapsibleElement::FONT_SIZE = 32;
 
-CollapsibleElement::CollapsibleElement(std::string string, CollapsibleElement* parent, bool collapsed) :
-	m_Text(string, Game::font12, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
+CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string prefixString, 
+	float(*GetValue)(), float initialValue, bool collapsed)
+	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), Game::font12, FONT_SIZE), GetValue(GetValue),
+	m_Value(initialValue), m_Collapsed(collapsed)
+{
+	m_Text.move(18, 0);
+}
+
+CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string string, bool collapsed) :
+	m_PrefixString(string), m_Text(string, Game::font12, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
 }
@@ -22,32 +30,38 @@ CollapsibleElement::~CollapsibleElement()
 	}
 }
 
-void CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug)
+bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug)
 {
-	sf::Vector2i mousePos = game->GetMouseCoordsScreenSpace();
+	bool rectNeedsResizing = false;
+	sf::Vector2i mousePos = game->GetMouseCoordsScreenSpace(sf::View(sf::FloatRect(0, 0, 2160, 1215)));
 	sf::FloatRect globalBounds = GetBounds(m_Text);
 
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
 	if (m_Hover)
 	{
-		game->SetCursor(sf::StandardCursor::HAND);
+		game->SetCursor(sf::ApexCursor::HAND);
 
 		if (!m_Children.empty() && ApexMouse::IsButtonPressed(sf::Mouse::Left))
 		{
 			SetCollapsed(!m_Collapsed);
-			debug->UpdateBackgroundRects();
+			rectNeedsResizing = true;
 		}
 	}
 
-	for (size_t i = 0; i < m_Children.size(); ++i)
+	if (m_Collapsed == false)
 	{
-		m_Children[i]->Tick(elapsed, game, debug);
+		for (size_t i = 0; i < m_Children.size(); ++i)
+		{
+			m_Children[i]->Tick(elapsed, game, debug);
+		}
 	}
+
+	return rectNeedsResizing;
 }
 
 void CollapsibleElement::Draw(sf::RenderTarget& target)
 {
-	if (!m_Children.empty())
+	if (m_Children.empty() == false)
 	{
 		DrawTriangle(target, m_Position + sf::Vector2f(0, 20), m_Collapsed);
 	}
@@ -139,6 +153,12 @@ float CollapsibleElement::GetStackHeight()
 	}
 
 	return stackHeight;
+}
+
+void CollapsibleElement::UpdateString(std::string newString, bool usePrefix)
+{
+	if (usePrefix) m_Text.setString(m_PrefixString + ": " + newString);
+	else m_Text.setString(newString);
 }
 
 void CollapsibleElement::SetCollapsed(bool collapsed)

@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -123,7 +123,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -157,27 +157,52 @@
     <ClCompile Include="ApexDebug.cpp" />
     <ClCompile Include="ApexKeyboard.cpp" />
     <ClCompile Include="ApexMouse.cpp" />
+    <ClCompile Include="ApexAudio.cpp" />
     <ClCompile Include="BaseState.cpp" />
     <ClCompile Include="CollapsibleElement.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Fixture.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="KeyListener.cpp" />
+    <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
-    <ClCompile Include="StandardCursor.cpp" />
+    <ClCompile Include="ApexCursor.cpp" />
+    <ClCompile Include="PhysicsActor.cpp" />
+    <ClCompile Include="PhysicsBody.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApexDebug.h" />
     <ClInclude Include="ApexKeyboard.h" />
     <ClInclude Include="ApexMouse.h" />
+    <ClInclude Include="ApexAudio.h" />
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="CollapsibleElement.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="enumerations.h" />
+    <ClInclude Include="Fixture.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="KeyListener.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="Level.h" />
+    <ClInclude Include="logo.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="ParticleEmitter.h" />
-    <ClInclude Include="StandardCursor.hpp" />
+    <ClInclude Include="ApexCursor.h" />
+    <ClInclude Include="PhysicsActor.h" />
+    <ClInclude Include="PhysicsBody.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="TileSet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\level\00\tiles.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,13 @@
 #pragma once
 
 #include "BaseState.h"
-#include "ParticleEmitter.h"
 #include "Game.h"
+
+class Level;
+
+
+// TODO: Add OnKeyPress/OnMouseButton functions to all states?
+
 
 class GameState : public BaseState
 {
@@ -15,16 +20,16 @@ public:
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target) const;
-	void TogglePaused();
+	void TogglePaused(bool pauseSounds);
+	Level* GetLevel();
+
+	void Reset();
 
 private:
 	sf::ConvexShape CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius);
 
+	Level* m_Level = nullptr;
 	bool m_Paused = false;
-	sf::View m_View; // (aka view matrix)
-	Game* m_Game = nullptr;
-	ParticleEmitter* m_ParticleEmmiter = nullptr;
-	sf::ConvexShape star;
 
 };
 

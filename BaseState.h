@@ -2,13 +2,14 @@
 
 #include <SFML\Graphics.hpp>
 
+class Game;
 class StateManager;
 enum class StateType;
 
 class BaseState
 {
 public:
-	BaseState(StateManager* manager, StateType stateType);
+	BaseState(StateManager* manager, StateType stateType, Game* game);
 	virtual ~BaseState();
 
 	BaseState(const BaseState&) = delete;
@@ -22,5 +23,6 @@ public:
 protected:
 	StateManager* m_StateManager = nullptr;
 	StateType m_StateType;
+	Game* m_Game = nullptr;
 
 };

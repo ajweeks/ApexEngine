@@ -2,53 +2,66 @@
 #include "GameState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
+#include "ApexAudio.h"
+#include "Level.h"
+
+#include <iostream>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <iostream>
 
 GameState::GameState(StateManager* manager, Game* game)
-	: BaseState(manager, StateType::GAME), 
-	m_Game(game)
+	: BaseState(manager, StateType::GAME, game)
 {
-	m_View.reset(sf::FloatRect(0, 0, 1920, 1080));
+	m_Level = new Level(game);
 
-	m_ParticleEmmiter = new ParticleEmitter(20000);
-
-	star = CreateStar(sf::Vector2f(300.0f, 450.0f), 3, 150.0f, 300.0f);
-	star.setFillColor(sf::Color(100, 130, 210));
+	Reset();
 }
 
 GameState::~GameState()
 {
-	delete m_ParticleEmmiter;
+	delete m_Level;
+}
+
+void GameState::Reset()
+{
+	m_Level->Reset();
 }
 
 void GameState::Tick(sf::Time elapsed)
 {
 	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::Space))
-	{
-		TogglePaused();
-	}
+		TogglePaused(true);
+	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::R))
+		Reset();
+
+	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::S))
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::COIN);
+	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::F))
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::WALK_WOOD);
+	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::M))
+		ApexAudio::PlayMusicTrack(ApexAudio::Music::BG_SONG);
+	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::L))
+		ApexAudio::PlayMusicTrack(ApexAudio::Music::OVERWORLD_BGM);
+
 	if (m_Paused) return;
 
-	m_ParticleEmmiter->Move(m_Game->GetMouseCoordsWorldSpace());
-
-	m_ParticleEmmiter->Tick(elapsed);
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
-		star.rotate(1);
-	else if (ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left))
-		star.rotate(-1);
+	m_Level->Tick(elapsed);
 }
 
 void GameState::Draw(sf::RenderTarget& target) const
 {
-	target.draw(*m_ParticleEmmiter);
-	target.draw(star);
+	m_Level->Draw(target, sf::RenderStates::Default);
 }
 
-void GameState::TogglePaused()
+void GameState::TogglePaused(bool pauseSounds)
 {
 	m_Paused = !m_Paused;
+	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
+}
+
+Level* GameState::GetLevel()
+{
+	return m_Level;
 }
 
 sf::ConvexShape GameState::CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius)

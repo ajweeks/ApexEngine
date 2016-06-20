@@ -12,12 +12,11 @@ public:
 	ApexDebug();
 	virtual ~ApexDebug();
 
-	void Tick(sf::Time elapsed, Game* game);
-	void UpdateBackgroundRects();
-	void Draw(sf::RenderTarget& target) const;
+	ApexDebug(const ApexDebug&) = delete;
+	ApexDebug& operator=(const ApexDebug&) = delete;
 
-	CollapsibleElement* AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& text);
-	CollapsibleElement* CreateCollapsibleElementStack(const std::string& parentText, const sf::Vector2f& parentPosition);
+	void Tick(sf::Time elapsed, Game* game);
+	void Draw(sf::RenderTarget& target) const;
 
 private:
 	struct CollapsibleElementStack
@@ -26,5 +25,12 @@ private:
 		sf::RectangleShape m_BackgroundRect;
 	};
 
-	std::vector<CollapsibleElementStack> m_CollapsibleElementStacks;
+	CollapsibleElement* AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& string);
+	CollapsibleElementStack* CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position);
+	void UpdateBackgroundRect(CollapsibleElementStack* stack);
+
+	// Only tick and paint all "parent" elements (stacks), which in turn paint and tick their children
+	CollapsibleElementStack* m_PlayerElementStack;
+	CollapsibleElement* m_PlayerPosElement;
+	CollapsibleElement* m_PlayerVelElement;
 };

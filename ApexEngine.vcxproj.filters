@@ -15,6 +15,15 @@
     <Filter Include="Source Files\Debug">
       <UniqueIdentifier>{40f3d414-d3af-49ae-9a99-0bee875b5e69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Level">
+      <UniqueIdentifier>{f20e7422-11ff-47c8-ad95-991c9822e0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IO">
+      <UniqueIdentifier>{05ce6e50-94cd-4322-8a65-e222accc2e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Level\Physics">
+      <UniqueIdentifier>{6734c281-0165-4616-bf42-f8ab34a63391}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,20 +44,50 @@
     <ClCompile Include="ParticleEmitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ApexKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ApexDebug.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="CollapsibleElement.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="ApexMouse.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="StandardCursor.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ApexAudio.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexKeyboard.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexMouse.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexCursor.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsActor.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsBody.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Fixture.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyListener.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,20 +109,59 @@
     <ClInclude Include="ParticleEmitter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ApexKeyboard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ApexDebug.h">
       <Filter>Source Files\Debug</Filter>
     </ClInclude>
     <ClInclude Include="CollapsibleElement.h">
       <Filter>Source Files\Debug</Filter>
     </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexAudio.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexKeyboard.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
     <ClInclude Include="ApexMouse.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexCursor.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="logo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="StandardCursor.hpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Map.h">
+      <Filter>Source Files\Level</Filter>
     </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSet.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsActor.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsBody.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Fixture.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyListener.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\level\00\tiles.json" />
   </ItemGroup>
 </Project>
