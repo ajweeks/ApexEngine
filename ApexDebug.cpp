@@ -12,7 +12,6 @@ ApexDebug::ApexDebug()
 	m_PlayerPosElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "pos");
 	m_PlayerVelElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "vel");
 	UpdateBackgroundRect(m_PlayerElementStack);
-
 }
 
 ApexDebug::~ApexDebug()
@@ -21,7 +20,7 @@ ApexDebug::~ApexDebug()
 	delete m_PlayerElementStack;
 }
 
-void ApexDebug::Tick(sf::Time elapsed, Game* game)
+void ApexDebug::Tick(sf::Time elapsed, Game* game, sf::View currentView)
 {
 	if (m_PlayerElementStack->m_CollapsibleElement->m_Collapsed == false)
 	{
@@ -31,15 +30,16 @@ void ApexDebug::Tick(sf::Time elapsed, Game* game)
 			Level* level = ((GameState*)currentState)->GetLevel();
 			Player* player = level->GetPlayer();
 			std::string newPlayerPos = Game::Vector2fToString(player->GetPosition());
-			std::string newPlayerVel = Game::Vector2fToString(player->GetVelocity());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
+
+			std::string newPlayerVel = Game::Vector2fToString(player->GetVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
 	}
 
 	game->SetCursor(sf::ApexCursor::NORMAL);
-	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, game, this)) UpdateBackgroundRect(m_PlayerElementStack);
+	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, game, this, currentView)) UpdateBackgroundRect(m_PlayerElementStack);
 }
 
 void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
@@ -57,7 +57,6 @@ void ApexDebug::Draw(sf::RenderTarget& target) const
 {
 	target.draw(m_PlayerElementStack->m_BackgroundRect);
 	m_PlayerElementStack->m_CollapsibleElement->Draw(target);
-
 }
 
 ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position)

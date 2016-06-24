@@ -2,15 +2,18 @@
 
 #include <SFML\Graphics.hpp>
 
+class PhysicsActor;
+class Level;
+
 class Entity
 {
 public:
 	enum class Type
 	{
-		PLAYER // ...
+		PLAYER, BG_TILE, BULLET, GUN
 	};
 
-	Entity(Type type);
+	Entity(Level* level, sf::Vector2f position, Type type, void* userPointer = nullptr);
 	virtual ~Entity();
 
 	Entity& operator=(const Entity&) = delete;
@@ -19,13 +22,13 @@ public:
 	virtual void Tick(sf::Time elapsed) = 0;
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) = 0;
 
+	sf::Vector2f GetPosition() const;
 	sf::Vector2f GetVelocity() const;
 
 protected:
-	sf::Vector2f m_Vel;
+	PhysicsActor* m_Actor;
 
 private:
-	Type m_Type;
 	sf::FloatRect m_BoundingBox;
 
 };

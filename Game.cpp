@@ -15,8 +15,8 @@
 #include <sstream>
 #include <iomanip>
 
-const int Game::INITAL_WINDOW_WIDTH = 2160;
-const int Game::INITAL_WINDOW_HEIGHT = 1215;
+const int Game::INITAL_WINDOW_WIDTH = 2080;
+const int Game::INITAL_WINDOW_HEIGHT = 1216;
 const bool Game::USE_V_SYNC = false;
 const std::string Game::WINDOW_TITLE = "Apex Engine";
 

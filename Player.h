@@ -4,6 +4,7 @@
 #include "Level.h"
 
 class PhysicsActor;
+class Gun;
 
 class Player : public Entity
 {
@@ -17,14 +18,18 @@ public:
 	void Reset();
 
 	sf::Vector2f GetPosition() const;
+	//sf::Vector2f GetSize() const;
 
 private:
 	void ClampPosition();
 
-	PhysicsActor* m_Actor;
+	sf::Vector2f m_IntialPos;
+	float m_Elapsed = 0.0f;
 
-	Level* m_Level;
+	Level* m_Level = nullptr;
 	sf::Texture m_GlowTexture;
 	sf::Sprite m_GlowSprite;
+
+	Gun* m_Gun = nullptr;
 
 };

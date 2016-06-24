@@ -34,15 +34,6 @@ void GameState::Tick(sf::Time elapsed)
 	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::R))
 		Reset();
 
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::S))
-		ApexAudio::PlaySoundEffect(ApexAudio::Sound::COIN);
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::F))
-		ApexAudio::PlaySoundEffect(ApexAudio::Sound::WALK_WOOD);
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::M))
-		ApexAudio::PlayMusicTrack(ApexAudio::Music::BG_SONG);
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::L))
-		ApexAudio::PlayMusicTrack(ApexAudio::Music::OVERWORLD_BGM);
-
 	if (m_Paused) return;
 
 	m_Level->Tick(elapsed);

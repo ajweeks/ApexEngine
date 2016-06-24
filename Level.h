@@ -7,6 +7,8 @@
 
 class Player;
 class Game;
+class PhysicsActorManager;
+class BulletManager;
 
 class Level : public KeyListener
 {
@@ -26,21 +28,30 @@ public:
 	void Reset();
 
 	Player* GetPlayer();
+	PhysicsActorManager* GetActorManager() const;
+	BulletManager* GetBulletManager() const;
+
+	bool IsShowingDebugOverlay() const;
+
+	sf::View GetCurrentView() const;
+	Game* GetGame() const;
 
 private:
 	const int WIDTH;
 	const int HEIGHT;
 
-	void CheckCollisions();
 	bool IsPointInPolygon(std::vector<sf::Vector2i> points, sf::Vector2f point);
 
-	Game* m_Game;
+	Game* m_Game = nullptr;
 	
 	sf::Vector2u m_Size;
 	sf::View m_View;
-	Map m_Map;
-	Player* m_Player;
+	Map* m_Map = nullptr;
+	Player* m_Player = nullptr;
 
 	ApexDebug m_DebugOverlay;
 	bool m_IsShowingDebugOverlay;
+
+	PhysicsActorManager* m_ActorManager = nullptr;
+	BulletManager* m_BulletManager = nullptr;
 };

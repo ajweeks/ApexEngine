@@ -5,12 +5,16 @@
 #include <SFML\Graphics.hpp>
 
 class Layer;
+class Level;
 
 class Map
 {
 public:
-	Map(std::string filePath);
+	Map();
+	Map(Level* level, std::string filePath);
 	virtual ~Map();
+
+	void Create(Level* level, std::string filePath);
 
 	Map(const Map&) = delete;
 	Map& operator=(const Map&) = delete;

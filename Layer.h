@@ -4,6 +4,9 @@
 #include <SFML\Graphics.hpp>
 #include "TileSet.h"
 
+class Level;
+class PhysicsActor;
+
 class Layer : public sf::Drawable
 {
 public:
@@ -12,7 +15,7 @@ public:
 		TILE, OBJECT, IMAGE, NONE
 	};
 
-	Layer(std::vector<int> tiles, TileSet* tileSet, std::string name, bool visible, float opacity, Type type, int width, int height);
+	Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, std::string name, bool visible, float opacity, Type type, int width, int height);
 	virtual ~Layer();
 
 	Layer(const Layer&) = delete;
@@ -25,6 +28,7 @@ public:
 
 private:
 	std::vector<int> m_Tiles;
+	std::vector<PhysicsActor*> m_Actors;
 	sf::VertexArray m_Verticies;
 
 	std::string m_Name;

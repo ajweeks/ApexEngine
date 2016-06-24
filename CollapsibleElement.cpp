@@ -30,10 +30,10 @@ CollapsibleElement::~CollapsibleElement()
 	}
 }
 
-bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug)
+bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug, sf::View currentView)
 {
 	bool rectNeedsResizing = false;
-	sf::Vector2i mousePos = game->GetMouseCoordsScreenSpace(sf::View(sf::FloatRect(0, 0, 2160, 1215)));
+	sf::Vector2i mousePos = game->GetMouseCoordsScreenSpace(currentView);
 	sf::FloatRect globalBounds = GetBounds(m_Text);
 
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
@@ -52,7 +52,7 @@ bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug)
 	{
 		for (size_t i = 0; i < m_Children.size(); ++i)
 		{
-			m_Children[i]->Tick(elapsed, game, debug);
+			m_Children[i]->Tick(elapsed, game, debug, currentView);
 		}
 	}
 

@@ -15,7 +15,7 @@ public:
 	ApexDebug(const ApexDebug&) = delete;
 	ApexDebug& operator=(const ApexDebug&) = delete;
 
-	void Tick(sf::Time elapsed, Game* game);
+	void Tick(sf::Time elapsed, Game* game, sf::View currentView);
 	void Draw(sf::RenderTarget& target) const;
 
 private:

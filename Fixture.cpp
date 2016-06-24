@@ -1,27 +1,31 @@
 
 #include "Fixture.h"
-#include "PhysicsBody.h"
+#include "PhysicsActor.h"
 
-Fixture::Fixture()
+Fixture::Fixture(PhysicsActor* parentActor, Shape shape, float restitution) :
+	m_ParentActor(parentActor),
+	m_Shape(shape), m_Restitution(restitution)
 {
-	m_BoundingRectangle.setFillColor(sf::Color(80, 80, 80, 150));
+	m_FillColor = sf::Color(100, 100, 100, 155);
+	m_OutlineColor = sf::Color(150, 150, 150, 255);
+	m_OutlineThickness = -1.0f;
 }
 
 Fixture::~Fixture()
 {
 }
 
-bool Fixture::IsPointInFixture(sf::Vector2f point) const
+float Fixture::GetRestitution() const
 {
-	return false;
+	return m_Restitution;
 }
 
-void Fixture::Tick(sf::Time elapsed)
+sf::Vector2f Fixture::GetPosition() const
 {
-	m_BoundingRectangle.setPosition(m_Body->GetPosition() + m_RelativePos);
+	return m_ParentActor->GetPosition() + m_RelativePos;
 }
 
-void Fixture::Draw(sf::RenderTarget& target, sf::RenderStates states)
+Fixture::Shape Fixture::GetShape() const
 {
-	target.draw(m_BoundingRectangle, states);
+	return m_Shape;
 }

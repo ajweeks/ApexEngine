@@ -7,7 +7,16 @@
 
 using json = nlohmann::json;
 
-Map::Map(std::string filePath)
+Map::Map()
+{
+}
+
+Map::Map(Level* level, std::string filePath)
+{
+	Create(level, filePath);
+}
+
+void Map::Create(Level* level, std::string filePath)
 {
 	std::ifstream fileInStream;
 
@@ -41,7 +50,7 @@ Map::Map(std::string filePath)
 
 	const int mapWidth = tileMap["width"];
 	const int mapHeight = tileMap["height"];
-	
+
 	std::vector<json> tileSets = tileMap["tilesets"];
 	if (tileSets.size() != 1)
 	{
@@ -52,6 +61,17 @@ Map::Map(std::string filePath)
 	int tileSetTileSize = tileSets[0]["tilewidth"];
 	int tileSetSpacing = tileSets[0]["spacing"];
 	int tileSetMargin = tileSets[0]["margin"];
+	int tileCount = tileSets[0]["tilecount"];
+	json tilePropertiesObject = tileSets[0]["tileproperties"];
+	std::map<int, bool> solidTileIDs;
+	for (int i = 0; i < tileCount; ++i)
+	{
+		if (tilePropertiesObject.find(std::to_string(i)) != tilePropertiesObject.end())
+		{
+			json currentTile = tilePropertiesObject[std::to_string(i)];
+			solidTileIDs[i] = currentTile["solid"].get<bool>();
+		}
+	}
 	TileSet* tileSet = new TileSet(tileSetImagePath, tileSetTileSize, tileSetMargin, tileSetSpacing);
 
 	json layers = tileMap["layers"];
@@ -71,11 +91,11 @@ Map::Map(std::string filePath)
 		int layerWidth = currentLayer["width"];
 		int layerHeight = currentLayer["height"];
 
-		Layer* newLayer = new Layer(layerData, tileSet, layerName, layerVisible, layerOpacity, layerType, layerWidth, layerHeight);
+		Layer* newLayer = new Layer(level, layerData, tileSet, solidTileIDs, layerName, layerVisible, layerOpacity, layerType, layerWidth, layerHeight);
 		m_Layers.push_back(newLayer);
 	}
 	std::string orientation = tileMap["orientation"];
-	if (orientation.compare("orthogonal") != 0) 
+	if (orientation.compare("orthogonal") != 0)
 	{
 		std::cout << "Non-orthogonal map passed in! The type specified was \"" << orientation << "\"!" << std::endl;
 		return;

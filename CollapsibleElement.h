@@ -16,7 +16,7 @@ public:
 	CollapsibleElement& operator=(const CollapsibleElement&) = delete;
 
 	// Returns true if the width of the stack this element is in needs resizing
-	bool Tick(sf::Time elapsed, Game* game, ApexDebug* debug);
+	bool Tick(sf::Time elapsed, Game* game, ApexDebug* debug, sf::View currentView);
 	void Draw(sf::RenderTarget& target);
 	void SetCollapsed(bool collapsed);
 	void Move(const sf::Vector2f& deltaPosition);

@@ -1,7 +1,10 @@
 
 #include "Layer.h"
+#include "PhysicsActor.h"
+#include "Level.h"
+#include "BoxFixture.h"
 
-Layer::Layer(std::vector<int> tiles, TileSet* tileSet, std::string name, bool visible, float opacity, Type type, int width, int height) :
+Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, std::string name, bool visible, float opacity, Type type, int width, int height) :
 	m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
 {
 	const float tileSize = float(m_TileSet->m_TileSize);
@@ -27,6 +30,13 @@ Layer::Layer(std::vector<int> tiles, TileSet* tileSet, std::string name, bool vi
 			currentQuad[1].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, tileSrcY * tileSize);
 			currentQuad[2].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, (tileSrcY + 1) * tileSize);
 			currentQuad[3].texCoords = sf::Vector2f(tileSrcX * tileSize, (tileSrcY + 1) * tileSize);
+
+			if (solidTileIDs[tileSrc])
+			{
+				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), PhysicsActor::Type::STATIC, level);
+				newActor->AddFixture(new BoxFixture(newActor));
+				m_Actors.push_back(newActor);
+			}
 		}
 	}
 }
@@ -34,6 +44,11 @@ Layer::Layer(std::vector<int> tiles, TileSet* tileSet, std::string name, bool vi
 Layer::~Layer()
 {
 	delete m_TileSet;
+
+	for (size_t i = 0; i < m_Actors.size(); i++)
+	{
+		delete m_Actors[i];
+	}
 }
 
 void Layer::Tick(sf::Time elapsed)

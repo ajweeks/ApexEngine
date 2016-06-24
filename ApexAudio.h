@@ -7,7 +7,7 @@ class ApexAudio
 public:
 	enum class Sound
 	{
-		COIN, WALK_WOOD,
+		GUN_FIRE, GUN_FIRE_EMPTY, GUN_RELOAD,
 
 		// All values must be above this line
 		_LAST_ELEMENT

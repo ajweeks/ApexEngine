@@ -2,23 +2,32 @@
 #include "Player.h"
 #include "ApexKeyboard.h"
 #include "PhysicsActor.h"
+#include "CircleFixture.h"
+#include "Gun.h"
 
 Player::Player(Level* level, sf::Vector2f initalPosition) :
-	Entity(Type::PLAYER), m_Level(level)
+	Entity(level, initalPosition, Type::PLAYER, this), 
+	m_Level(level), m_IntialPos(initalPosition)
 {
-	Reset();
-	m_GlowTexture.loadFromFile("resources/glow.png");
+	m_Actor->AddFixture(new CircleFixture(m_Actor, 21.0f));
+
+	m_GlowTexture.loadFromFile("resources/glow1.png");
 	m_GlowSprite.setTexture(m_GlowTexture);
-	m_Actor = new PhysicsActor(initalPosition);
+
+	m_Gun = new Gun(level, m_IntialPos, this);
+
+	Reset();
 }
 
 Player::~Player()
 {
-	delete m_Actor;
+	delete m_Gun;
 }
 
 void Player::Reset()
 {
+	m_Actor->SetPosition(m_IntialPos);
+	m_Gun->Reset();
 }
 
 sf::Vector2f Player::GetPosition() const
@@ -28,20 +37,50 @@ sf::Vector2f Player::GetPosition() const
 
 void Player::Tick(sf::Time elapsed)
 {
-	m_Actor->Tick(elapsed);
+	const float dt = elapsed.asSeconds();
+	m_Elapsed += dt;
+	const float dVel = 4000.0f * dt;
+	sf::Vector2f newVel = m_Actor->GetVelocity();
+	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
+		newVel.x += dVel;
+	if (ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left))
+		newVel.x -= dVel;
+	if (ApexKeyboard::IsKeyDown(sf::Keyboard::W) || ApexKeyboard::IsKeyDown(sf::Keyboard::Up))
+		newVel.y -= dVel;
+	if (ApexKeyboard::IsKeyDown(sf::Keyboard::S) || ApexKeyboard::IsKeyDown(sf::Keyboard::Down))
+		newVel.y += dVel;
+
+	static const float FRICTION = 5.0f;
+	if (newVel.x != 0 || newVel.y != 0)
+	{
+		newVel.x *= 1.0f - (FRICTION * dt);
+		newVel.y *= 1.0f - (FRICTION * dt);
+
+		static const float epsilon = 0.001f;
+		if (abs(newVel.x) < epsilon) newVel.x = 0.0f;
+		if (abs(newVel.y) < epsilon) newVel.y = 0.0f;
+	}
+
+	m_Actor->SetVelocity(newVel);
+
+	m_GlowSprite.setColor(sf::Color(sf::Uint32(sin(m_Elapsed) * 255), sf::Uint32(cos(m_Elapsed) * 255), sf::Uint32(sin(0.5 - m_Elapsed * 2) * 255)));
+
 	ClampPosition();
+
+	m_Gun->Tick(elapsed);
 }
 
 void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
+	const float radius = ((CircleFixture*)m_Actor->GetFixtures()[0])->GetRadius();
+	const sf::Vector2f topLeft = m_Actor->GetPosition() + sf::Vector2f(-radius, -radius);
 	// Draw glow
 	{
 		sf::BlendMode prevBlendMode = states.blendMode;
 		sf::Transform prevTransform = states.transform;
 
 		states.blendMode = sf::BlendAdd;
-		states.transform.translate(m_Actor->GetPosition());
-		states.transform.translate(-40, -40);
+		states.transform.translate(topLeft + sf::Vector2f(-40, -40));
 		target.draw(m_GlowSprite, states);
 
 		states.blendMode = prevBlendMode;
@@ -49,15 +88,17 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	}
 
 	sf::CircleShape circle;
-	circle.setRadius(25.0f);
-	circle.move(m_Actor->GetPosition());
-	circle.setFillColor(sf::Color(60, 60, 195));
+	circle.setRadius(21.0f);
+	circle.move(topLeft);
+	circle.setFillColor(sf::Color(15, 15, 25));
 	target.draw(circle, states);
 
-	circle.setRadius(21.0f);
-	circle.move(4, 4);
-	circle.setFillColor(sf::Color(125, 125, 255));
+	circle.setRadius(18.0f);
+	circle.move(3, 3);
+	circle.setFillColor(sf::Color(200, 200, 215));
 	target.draw(circle, states);
+
+	m_Gun->Draw(target, states);
 }
 
 void Player::ClampPosition()
@@ -69,21 +110,21 @@ void Player::ClampPosition()
 	if (m_Actor->GetPosition().x < left)
 	{
 		m_Actor->SetPosition(sf::Vector2f(left, m_Actor->GetPosition().y));
-		m_Vel.x = -m_Vel.x;
+		m_Actor->SetVelocity(sf::Vector2f(0, m_Actor->GetVelocity().y));
 	}
 	if (m_Actor->GetPosition().x > right)
 	{
 		m_Actor->SetPosition(sf::Vector2f(right, m_Actor->GetPosition().y));
-		m_Vel.x = -m_Vel.x;
+		m_Actor->SetVelocity(sf::Vector2f(0, m_Actor->GetVelocity().y));
 	}
 	if (m_Actor->GetPosition().y < top)
 	{
 		m_Actor->SetPosition(sf::Vector2f(m_Actor->GetPosition().x, top));
-		m_Vel.y = -m_Vel.y;
+		m_Actor->SetVelocity(sf::Vector2f(m_Actor->GetVelocity().x, 0));
 	}
 	if (m_Actor->GetPosition().y > bottom)
 	{
 		m_Actor->SetPosition(sf::Vector2f(m_Actor->GetPosition().x, bottom));
-		m_Vel.y = -m_Vel.y;
+		m_Actor->SetVelocity(sf::Vector2f(m_Actor->GetVelocity().x, 0));
 	}
 }
