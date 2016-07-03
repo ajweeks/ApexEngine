@@ -1,15 +1,16 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include "enumerations.h"
+#include "KeyListener.h"
 
-class Game;
 class StateManager;
-enum class StateType;
 
-class BaseState
+class BaseState : public KeyListener
 {
 public:
-	BaseState(StateManager* manager, StateType stateType, Game* game);
+	BaseState(StateManager* manager, StateType stateType);
 	virtual ~BaseState();
 
 	BaseState(const BaseState&) = delete;
@@ -18,11 +19,13 @@ public:
 	virtual void Tick(sf::Time elapsed) = 0;
 	virtual void Draw(sf::RenderTarget& target) const = 0;
 
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed);
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
+	
 	StateType GetType() const;
 
 protected:
-	StateManager* m_StateManager = nullptr;
 	StateType m_StateType;
-	Game* m_Game = nullptr;
+	StateManager* m_StateManager = nullptr;
 
 };

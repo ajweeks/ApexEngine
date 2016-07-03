@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Fixture.h"
+#include <SFML\Graphics\CircleShape.hpp>
 
 class CircleFixture : public Fixture
 {
 public:
-	CircleFixture(PhysicsActor* parentActor, float radius, float restitution = 0.8f);
+	CircleFixture(PhysicsActor* parentActor, float radius);
 	virtual ~CircleFixture();
 
 	CircleFixture(const CircleFixture&) = delete;
@@ -16,9 +17,10 @@ public:
 
 	virtual bool IsPointInFixture(sf::Vector2f point) const;
 	float GetRadius() const;
-	virtual bool IsOverlapping(Fixture* otherFixture);
 
 private:
+	void ComputeMass(float density);
+
 	float m_Radius;
 	sf::CircleShape m_BoundingCircle;
 

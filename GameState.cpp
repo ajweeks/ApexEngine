@@ -4,15 +4,12 @@
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
 #include "Level.h"
-
 #include <iostream>
-#define _USE_MATH_DEFINES
-#include <math.h>
 
-GameState::GameState(StateManager* manager, Game* game)
-	: BaseState(manager, StateType::GAME, game)
+GameState::GameState(StateManager* manager) :
+	BaseState(manager, StateType::GAME)
 {
-	m_Level = new Level(game);
+	m_Level = new Level();
 
 	Reset();
 }
@@ -29,11 +26,6 @@ void GameState::Reset()
 
 void GameState::Tick(sf::Time elapsed)
 {
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::Space))
-		TogglePaused(true);
-	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::R))
-		Reset();
-
 	if (m_Paused) return;
 
 	m_Level->Tick(elapsed);
@@ -55,6 +47,33 @@ Level* GameState::GetLevel()
 	return m_Level;
 }
 
+bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+{
+	switch (keyEvent.code)
+	{
+	case sf::Keyboard::F9:
+	{
+		if (keyPressed)
+		{
+			m_Level->ToggleDebugOverlay();
+		}
+	} break;
+	case sf::Keyboard::Space:
+	{
+		TogglePaused(true);
+	} break;
+	case sf::Keyboard::R:
+	{
+		Reset();
+	} break;
+	}
+	return false;
+}
+
+void GameState::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+{
+}
+
 sf::ConvexShape GameState::CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius)
 {
 	if (numPoints == 0) return sf::ConvexShape();
@@ -63,7 +82,7 @@ sf::ConvexShape GameState::CreateStar(sf::Vector2f centerPos, size_t numPoints, 
 	star.setPosition(centerPos);
 	star.setOrigin(centerPos);
 
-	const float deltaAngle = float((2 * M_PI) / (numPoints * 2));
+	const float deltaAngle = float((2.0f * 3.14159f) / (numPoints * 2));
 	float currentAngle = 0.0f;
 	for (size_t i = 0; i < numPoints * 2; ++i)
 	{

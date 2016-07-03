@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Projectile.h"
+#include <SFML\Graphics\CircleShape.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
 
 class BulletManager;
 

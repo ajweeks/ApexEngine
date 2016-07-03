@@ -1,19 +1,23 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
+#include <SFML\Window\Event.hpp>
+
 #include "Map.h"
-#include "KeyListener.h"
+#include "Camera.h"
 #include "ApexDebug.h"
+#include "PhysicsActorManager.h"
+#include "BulletManager.h"
+#include "Player.h"
 
-class Player;
 class Game;
-class PhysicsActorManager;
-class BulletManager;
 
-class Level : public KeyListener
+class Level
 {
 public:
-	Level(Game* game);
+	Level();
 	virtual ~Level();
 
 	void Tick(sf::Time elapsed);
@@ -22,19 +26,16 @@ public:
 	unsigned int GetWidth() const;
 	unsigned int GetHeight() const;
 
-	virtual void OnKeyPress(sf::Event::KeyEvent keyEvent);
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
-
 	void Reset();
 
 	Player* GetPlayer();
-	PhysicsActorManager* GetActorManager() const;
-	BulletManager* GetBulletManager() const;
+	PhysicsActorManager* GetActorManager();
+	BulletManager* GetBulletManager();
 
+	void ToggleDebugOverlay();
 	bool IsShowingDebugOverlay() const;
 
 	sf::View GetCurrentView() const;
-	Game* GetGame() const;
 
 private:
 	const int WIDTH;
@@ -42,16 +43,13 @@ private:
 
 	bool IsPointInPolygon(std::vector<sf::Vector2i> points, sf::Vector2f point);
 
-	Game* m_Game = nullptr;
-	
-	sf::Vector2u m_Size;
-	sf::View m_View;
 	Map* m_Map = nullptr;
 	Player* m_Player = nullptr;
+	Camera* m_Camera = nullptr;
 
 	ApexDebug m_DebugOverlay;
-	bool m_IsShowingDebugOverlay;
+	bool m_ShowingDebugOverlay;
 
 	PhysicsActorManager* m_ActorManager = nullptr;
-	BulletManager* m_BulletManager = nullptr;
+	BulletManager m_BulletManager;
 };

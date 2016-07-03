@@ -2,6 +2,8 @@
 #include "PhysicsActorManager.h"
 #include "PhysicsActor.h"
 #include "Player.h"
+#include "Manifold.h"
+#include <iostream>
 
 PhysicsActorManager::PhysicsActorManager()
 {
@@ -13,6 +15,14 @@ PhysicsActorManager::~PhysicsActorManager()
 
 void PhysicsActorManager::AddPhysicsActor(PhysicsActor* newActor)
 {
+	for (size_t i = 0; i < m_PhysicsActors.size(); ++i)
+	{
+		if (m_PhysicsActors[i] == nullptr)
+		{
+			m_PhysicsActors[i] = newActor;
+			return;
+		}
+	}
 	m_PhysicsActors.push_back(newActor);
 }
 
@@ -31,61 +41,133 @@ bool PhysicsActorManager::RemovePhysicsActor(PhysicsActor* actor)
 
 void PhysicsActorManager::Tick(sf::Time elapsed)
 {
-	for (size_t i = 0; i < m_PhysicsActors.size(); ++i)
+	const size_t numActors = m_PhysicsActors.size();
+	const float dt = elapsed.asSeconds();
+	m_Contacts.clear();
+	for (size_t i = 0; i < numActors; ++i)
 	{
-		if (m_PhysicsActors[i] != nullptr)
+		PhysicsActor* A = m_PhysicsActors[i];
+		if (A != nullptr)
 		{
-			if (m_PhysicsActors[i]->GetType() != PhysicsActor::Type::STATIC)
+			if (A->GetBodyType() != PhysicsActor::BodyType::STATIC)
 			{
-				m_PhysicsActors[i]->Tick(elapsed);
-				m_PhysicsActors[i]->SetPosition(m_PhysicsActors[i]->GetPosition() + (m_PhysicsActors[i]->GetVelocity() * elapsed.asSeconds()));
-			}
-			continue;
+				A->Tick(elapsed);
+				A->SetPosition(A->GetPosition() + (A->GetVelocity() * dt));
 
-			for (size_t j = 0; j < m_PhysicsActors.size(); ++j)
-			{
-				if (m_PhysicsActors[j] != nullptr && 
-					m_PhysicsActors[j]->GetType() != PhysicsActor::Type::STATIC && 
-					m_PhysicsActors[j] != m_PhysicsActors[i])
+				if (A->IsSolid())
 				{
-					if (m_PhysicsActors[i]->IsOverlapping(m_PhysicsActors[j]))
+					for (size_t j = 0; j < numActors; ++j)
 					{
-						/*//Calculate relative velocity
-						Vec2 rv = B.velocity - A.velocity
- 
-						// Calculate relative velocity in terms of the normal direction
-						float velAlongNormal = DotProduct( rv, normal )
- 
-						// Do not resolve if velocities are separating
-						if(velAlongNormal > 0)
-						return;
- 
-						// Calculate restitution
-						float e = min( A.restitution, B.restitution)
- 
-						// Calculate impulse scalar
-						float j = -(1 + e) * velAlongNormal
-						j /= 1 / A.mass + 1 / B.mass
- 
-						// Apply impulse
-						Vec2 impulse = j * normal
-						A.velocity -= 1 / A.mass * impulse
-						B.velocity += 1 / B.mass * impulse*/
-						/*PhysicsActor* A = m_PhysicsActors[i];
 						PhysicsActor* B = m_PhysicsActors[j];
-						const sf::Vector2f dv = A->GetVelocity() - B->GetVelocity();
-						float velocityAlongNormal = dv / std::sqrt(dv.x * dv.x + dv.y * dv.y);
-						float e = std::min(A->GetRestitution(), B->GetRestitution());
-						float j = -(1 + e) * vel;*/
+						if (B != nullptr && B->IsSolid())
+						{
+							if (A->GetInverseMass() == 0.0f && B->GetInverseMass() == 0.0f)
+								continue;
+
+							Manifold m(A, B);
+							m.Solve();
+
+							if (m.GetContactCount())
+							{
+								// Why not push_back?
+								m_Contacts.emplace_back(m);
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
+	for (size_t i = 0; i < numActors; ++i)
+	{
+		if (m_PhysicsActors[i] != nullptr) IntegrateForces(m_PhysicsActors[i], elapsed);
+	}
+
+	for (size_t i = 0; i < m_Contacts.size(); ++i)
+		m_Contacts[i].Initialize(dt);
+
+	for (int j = 0; j < m_Iterations; ++j)
+		for (size_t i = 0; i < m_Contacts.size(); ++i)
+			m_Contacts[i].ApplyImpulse();
+
+	for (size_t i = 0; i < numActors; ++i)
+	{
+		if (m_PhysicsActors[i] != nullptr) IntegrateVelocity(m_PhysicsActors[i], elapsed);
+	}
+
+	for (size_t i = 0; i < m_Contacts.size(); ++i)
+		m_Contacts[i].Positionalorrection();
+
+	for (size_t i = 0; i < numActors; ++i)
+	{
+		if (m_PhysicsActors[i] != nullptr)
+		{
+			m_PhysicsActors[i]->SetForce(sf::Vector2f(0.0f, 0.0f));
+			m_PhysicsActors[i]->SetTorque(0.0f);
+		}
+	}
 }
 
-void PhysicsActorManager::Draw(sf::RenderTarget & target, sf::RenderStates states)
+/*
+
+void PhysicsActorManager::Tick(sf::Time elapsed)
+{
+const size_t numActors = m_PhysicsActors.size();
+const float dt = elapsed.asSeconds();
+for (size_t i = 0; i < numActors; ++i)
+{
+if (m_PhysicsActors[i] != nullptr)
+{
+PhysicsActor* A = m_PhysicsActors[i];
+if (A->GetBodyType() != PhysicsActor::BodyType::STATIC)
+{
+A->Tick(elapsed);
+A->SetPosition(A->GetPosition() + (A->GetVelocity() * dt));
+
+for (size_t j = 0; j < numActors; ++j)
+{
+if (j == i) continue;
+
+if (m_PhysicsActors[j] != nullptr)
+{
+PhysicsActor* B = m_PhysicsActors[j];
+if (A->IsOverlapping(B))
+{
+A->SetOverlapping(true);
+B->SetOverlapping(true);
+
+const sf::Vector2f deltaVel = A->GetVelocity() - B->GetVelocity();
+const sf::Vector2f normal = deltaVel;
+float velocityAlongNormal = deltaVel.x + deltaVel.y;
+
+if (velocityAlongNormal < 0) return; // The objects are already moving away from each other
+
+float e = std::min(A->GetRestitution(), B->GetRestitution());
+float j = -(1 + e) * velocityAlongNormal;
+j /= A->GetInverseMass() + B->GetInverseMass();
+
+sf::Vector2f impluse = j * normal;
+A->SetVelocity(A->GetVelocity() - A->GetInverseMass() * impluse);
+B->SetVelocity(B->GetVelocity() + B->GetInverseMass() * impluse);
+
+const float percent = 0.2f;
+const float slop = 0.01f;
+sf::Vector2f correction = std::max(1.0f - slop, 0.0f) / (A->GetInverseMass() + B->GetInverseMass()) * percent * normal;
+A->SetPosition(A->GetPosition() - A->GetInverseMass() * correction);
+B->SetPosition(B->GetPosition() + B->GetInverseMass() * correction);
+}
+}
+}
+}
+}
+}
+
+}
+
+*/
+
+void PhysicsActorManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	for (size_t i = 0; i < m_PhysicsActors.size(); ++i)
 	{
@@ -94,4 +176,25 @@ void PhysicsActorManager::Draw(sf::RenderTarget & target, sf::RenderStates state
 			m_PhysicsActors[i]->Draw(target, states);
 		}
 	}
+}
+
+void PhysicsActorManager::IntegrateForces(PhysicsActor* actor, sf::Time elapsed)
+{
+	if (actor->GetInverseMass() == 0.0f)
+		return;
+
+	const float dt = elapsed.asSeconds();
+	actor->SetVelocity(actor->GetVelocity() + (actor->GetForce() * actor->GetInverseMass()));// +  friction?);
+	actor->SetAngularVelocity(actor->GetAngularVelocity() + actor->GetTorque() * actor->GetInverseInertia() * (dt / 2.0f));
+}
+
+void PhysicsActorManager::IntegrateVelocity(PhysicsActor* actor, sf::Time elapsed)
+{
+	if (actor->GetInverseMass() == 0.0f)
+		return;
+
+	const float dt = elapsed.asSeconds();
+	actor->SetPosition(actor->GetPosition() + actor->GetVelocity() * dt);
+	actor->SetOrientation(actor->GetAngularVelocity() * dt);
+	IntegrateForces(actor, elapsed);
 }

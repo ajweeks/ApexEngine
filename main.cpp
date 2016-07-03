@@ -1,5 +1,5 @@
 
-#include "Game.h"
+#include "ApexMain.h"
 
 // Gotta catch those leaks!
 #include <Initguid.h>
@@ -16,11 +16,11 @@ int main()
 
 	IDXGIDebug* pDXGIDebug;
 	DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&pDXGIDebug);
-	//_CrtSetBreakAlloc(391);
+	//_CrtSetBreakAlloc(31453);
 #endif
 
-	Game game;
-	game.Run();
+	APEX->Run();
+	delete APEX;
 
 	return 0;
 }

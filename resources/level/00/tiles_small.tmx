@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" nextobjectid="3">
+ <tileset firstgid="1" name="ground" tilewidth="32" tileheight="32" tilecount="64" columns="8">
+  <image source="resources/general-tiles.png" width="256" height="256"/>
+  <terraintypes>
+   <terrain name="dirt" tile="11"/>
+   <terrain name="grass" tile="16"/>
+  </terraintypes>
+  <tile id="0" terrain="0,0,0,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="1" terrain="0,0,1,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="2" terrain="1,1,1,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3" terrain="1,1,0,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="4" terrain="1,1,0,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="8" terrain="0,1,0,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="9" terrain="1,0,0,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10" terrain="1,0,1,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain="0,0,0,0">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12" terrain="0,1,0,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16" terrain="1,1,1,1">
+   <properties>
+    <property name="solid" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="18" terrain="1,0,1,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="19" terrain="0,0,1,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="20" terrain="0,1,1,1">
+   <properties>
+    <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="ground" width="20" height="20">
+  <data encoding="csv">
+12,12,12,12,12,12,12,12,12,12,12,1,20,20,20,20,20,2,12,12,
+12,12,12,12,12,12,12,12,12,12,1,21,17,17,17,17,17,19,2,12,
+12,12,12,12,12,12,12,12,12,1,21,17,17,17,17,17,17,17,19,20,
+12,12,12,12,12,12,12,12,12,13,17,17,17,17,17,17,17,17,17,17,
+12,12,12,12,12,12,12,1,20,21,17,17,17,17,17,17,17,17,17,17,
+12,12,12,12,12,12,12,13,17,17,17,17,17,17,17,17,17,17,17,17,
+12,12,12,12,12,12,12,13,17,17,17,17,17,3,4,4,4,5,17,17,
+12,12,12,12,12,12,1,21,17,17,17,17,3,10,12,12,12,9,4,5,
+12,12,12,12,12,12,13,17,17,17,17,17,11,12,12,12,12,12,12,13,
+12,12,12,12,12,12,9,5,17,17,17,17,11,12,12,12,12,12,12,9,
+12,12,12,12,12,12,12,9,5,17,17,17,19,20,2,12,12,12,12,12,
+12,12,12,12,12,12,12,12,13,17,17,17,17,17,19,2,12,12,12,12,
+12,12,12,12,12,12,12,12,13,17,17,17,17,17,17,11,12,12,12,12,
+12,12,12,12,12,12,12,12,13,17,17,17,17,17,17,19,2,12,12,12,
+12,12,12,12,12,12,12,12,9,5,17,17,17,17,17,17,19,20,2,12,
+12,12,12,12,12,12,12,12,12,9,5,17,17,17,17,17,17,17,11,12,
+12,12,12,12,12,12,12,12,12,12,9,5,17,17,17,17,17,17,19,2,
+12,12,12,12,12,12,12,12,12,12,12,9,5,17,17,17,17,17,17,19,
+1,20,2,12,12,12,12,12,12,12,12,1,21,17,17,17,17,17,17,17,
+13,17,19,20,2,12,12,12,12,12,12,13,17,17,17,17,17,17,17,17
+</data>
+ </layer>
+</map>

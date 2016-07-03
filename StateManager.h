@@ -2,16 +2,17 @@
 
 #include <vector>
 #include "BaseState.h"
-#include <SFML\Graphics.hpp>
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
 
 class StateManager
 {
 public:
-	StateManager(BaseState* startingState);
+	StateManager(BaseState* startingState = nullptr);
 	virtual ~StateManager();
 
-	//StateManager(const StateManager&) = delete;
-	//StateManager& operator=(const StateManager&) = delete;
+	StateManager(const StateManager&) = delete;
+	StateManager& operator=(const StateManager&) = delete;
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target) const;
@@ -20,7 +21,7 @@ public:
 	BaseState* CurrentState();
 
 private:
-	BaseState* m_CurrentState;
+	BaseState* m_CurrentState = nullptr;
 
 };
 

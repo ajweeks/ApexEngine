@@ -1,14 +1,13 @@
 
 #include "KeyListener.h"
-#include "Game.h"
+#include "ApexMain.h"
 
-KeyListener::KeyListener(Game* game) :
-	m_Game(game)
+KeyListener::KeyListener()
 {
-	m_Game->AddKeyListener(this);
+	APEX->AddKeyListener(this);
 }
 
 KeyListener::~KeyListener()
 {
-	m_Game->RemoveKeyListener(this);
+	APEX->RemoveKeyListener(this);
 }

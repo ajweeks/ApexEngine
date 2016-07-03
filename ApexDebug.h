@@ -1,10 +1,11 @@
 #pragma once
 
+#include "CollapsibleElement.h"
 #include <string>
 #include <vector>
-#include <SFML\Graphics.hpp>
-#include "Game.h"
-#include "CollapsibleElement.h"
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
 
 class ApexDebug
 {
@@ -15,8 +16,8 @@ public:
 	ApexDebug(const ApexDebug&) = delete;
 	ApexDebug& operator=(const ApexDebug&) = delete;
 
-	void Tick(sf::Time elapsed, Game* game, sf::View currentView);
-	void Draw(sf::RenderTarget& target) const;
+	void Tick(sf::Time elapsed);
+	void Draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 	struct CollapsibleElementStack

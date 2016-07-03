@@ -3,12 +3,22 @@
 #include "StateManager.h"
 #include "enumerations.h"
 
-BaseState::BaseState(StateManager* manager, StateType stateType, Game* game)
-	: m_StateManager(manager), m_StateType(stateType), m_Game(game)
+BaseState::BaseState(StateManager* manager, StateType stateType) : 
+	KeyListener(),
+	m_StateManager(manager), m_StateType(stateType)
 {
 }
 
 BaseState::~BaseState()
+{
+}
+
+bool BaseState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+{
+	return false;
+}
+
+void BaseState::OnKeyRelease(sf::Event::KeyEvent keyEvent)
 {
 }
 

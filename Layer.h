@@ -1,7 +1,13 @@
 #pragma once
 
 #include <vector>
-#include <SFML\Graphics.hpp>
+#include <string>
+#include <map>
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\VertexArray.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
+
 #include "TileSet.h"
 
 class Level;

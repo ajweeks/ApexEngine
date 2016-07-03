@@ -2,12 +2,13 @@
 #include "PhysicsActor.h"
 #include "Level.h"
 #include "PhysicsActorManager.h"
+#include "ApexMath.h"
 #include "Fixture.h"
 
-PhysicsActor::PhysicsActor(sf::Vector2f centerPos, Type type, Level* level) :
-	m_Level(level), m_Type(type)
+PhysicsActor::PhysicsActor(sf::Vector2f centerPos, BodyType bodyType, Level* level) :
+	m_Level(level), m_BodyType(bodyType)
 {
-	m_Level->GetActorManager()->AddPhysicsActor(this);
+	level->GetActorManager()->AddPhysicsActor(this);
 	m_Pos = centerPos;
 	m_Solid = true;
 
@@ -17,38 +18,51 @@ PhysicsActor::PhysicsActor(sf::Vector2f centerPos, Type type, Level* level) :
 	m_DebugYAxisRect = sf::RectangleShape(sf::Vector2f(2, 15));
 	m_DebugYAxisRect.setFillColor(sf::Color::Green);
 	m_DebugYAxisRect.setPosition(m_Pos);
+	if (m_BodyType == BodyType::STATIC) 
+	{
+		m_InverseIntertia = 0.0f;
+		m_InverseMass = 0.0f;
+	}
+	else 
+	{
+		m_InverseIntertia = 1.0f / 5.0f;
+		m_InverseMass = 1.0f / 2.0f;
+	}
 }
 
 PhysicsActor::~PhysicsActor()
 {
 	m_Level->GetActorManager()->RemovePhysicsActor(this);
-	for (size_t i = 0; i < m_Fixtures.size(); ++i)
-	{
-		delete m_Fixtures[i];
-	}
+	delete m_Fixture;
 }
 
 void PhysicsActor::Tick(sf::Time elapsed)
 {
-	if (m_Type != Type::STATIC)
+	if (m_BodyType != BodyType::STATIC)
 	{
 		m_DebugXAxisRect.setPosition(m_Pos);
 		m_DebugYAxisRect.setPosition(m_Pos);
-		for (size_t i = 0; i < m_Fixtures.size(); ++i)
-		{
-			m_Fixtures[i]->Tick(elapsed);
-		}
 	}
+	m_Fixture->Tick(elapsed);
 }
 
 void PhysicsActor::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	for (size_t i = 0; i < m_Fixtures.size(); ++i)
-	{
-		m_Fixtures[i]->Draw(target, states);
-	}
-	target.draw(m_DebugXAxisRect, states);	
+	target.draw(m_DebugXAxisRect, states);
 	target.draw(m_DebugYAxisRect, states);
+	if (m_Fixture != nullptr) m_Fixture->Draw(target, states);
+	SetOverlapping(false);
+}
+
+void PhysicsActor::ApplyForce(const sf::Vector2f& force)
+{
+	m_Force += force;
+}
+
+void PhysicsActor::ApplyImpulse(const sf::Vector2f& impulse, const sf::Vector2f& contactVector)
+{
+	m_Vel += m_InverseMass * impulse;
+	m_AngularVel += m_InverseIntertia * ApexMath::Cross(contactVector, impulse);
 }
 
 void PhysicsActor::SetPosition(sf::Vector2f newPosition)
@@ -71,15 +85,14 @@ sf::Vector2f PhysicsActor::GetVelocity() const
 	return m_Vel;
 }
 
-void PhysicsActor::AddFixture(Fixture* newFixture)
+void PhysicsActor::SetAngularVelocity(float angularVelocity)
 {
-	if (newFixture == nullptr) return;
-	m_Fixtures.push_back(newFixture);
+	m_AngularVel = angularVelocity;
 }
 
-std::vector<Fixture*> PhysicsActor::GetFixtures() const
+float PhysicsActor::GetAngularVelocity() const
 {
-	return m_Fixtures;
+	return m_AngularVel;
 }
 
 void PhysicsActor::SetUserData(int userData)
@@ -112,25 +125,87 @@ bool PhysicsActor::IsSolid() const
 	return m_Solid;
 }
 
-bool PhysicsActor::IsOverlapping(PhysicsActor* otherActor)
+PhysicsActor::BodyType PhysicsActor::GetBodyType() const
 {
-	const std::vector<Fixture*> otherFixtures = otherActor->GetFixtures();
-	for (size_t i = 0; i < m_Fixtures.size(); ++i)
-	{
-		for (size_t j = 0; j < otherFixtures.size(); ++j)
-		{
-			if (m_Fixtures[i]->IsOverlapping(otherFixtures[i])) return true;
-		}
-	}
-	return false;
-}
-
-PhysicsActor::Type PhysicsActor::GetType() const
-{
-	return m_Type;
+	return m_BodyType;
 }
 
 float PhysicsActor::GetRestitution() const
 {
-	return m_Fixtures[0]->GetRestitution();
+	return m_Restitution;
+}
+
+void PhysicsActor::SetOverlapping(bool overlapping)
+{
+	m_IsOverlapping = overlapping;
+}
+
+void PhysicsActor::SetInverseMass(float inverseMass)
+{
+	m_InverseMass = inverseMass;
+}
+
+float PhysicsActor::GetInverseMass() const
+{
+	return m_InverseMass;
+}
+
+void PhysicsActor::SetInverseInertia(float inverseIntertia)
+{
+	m_InverseIntertia = inverseIntertia;
+}
+
+float PhysicsActor::GetInverseInertia() const
+{
+	return m_InverseIntertia;
+}
+
+void PhysicsActor::SetOrientation(float orientation)
+{
+	m_Orientation = orientation;
+}
+
+float PhysicsActor::GetOrientation() const
+{
+	return m_Orientation;
+}
+
+void PhysicsActor::SetFixture(Fixture* fixture)
+{
+	m_Fixture = fixture;
+}
+
+Fixture* PhysicsActor::GetFixture() const
+{
+	return m_Fixture;
+}
+
+float PhysicsActor::GetStaticFriction() const
+{
+	return m_StaticFriction;
+}
+
+float PhysicsActor::GetDynamicFriction() const
+{
+	return m_DynamicFriction;
+}
+
+sf::Vector2f PhysicsActor::GetForce() const
+{
+	return m_Force;
+}
+
+void PhysicsActor::SetForce(sf::Vector2f force)
+{
+	m_Force = force;
+}
+
+float PhysicsActor::GetTorque() const
+{
+	return m_Torque;
+}
+
+void PhysicsActor::SetTorque(float torque)
+{
+	m_Torque = torque;
 }

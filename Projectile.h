@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\System\Time.hpp>
 #include "Entity.h"
 
 class Projectile : public Entity

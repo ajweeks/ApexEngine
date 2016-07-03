@@ -1,8 +1,10 @@
 
 #include "CollapsibleElement.h"
+#include "ApexMain.h"
 #include "ApexMouse.h"
 #include "ApexCursor.h"
 #include "ApexDebug.h"
+#include <SFML\Graphics\CircleShape.hpp>
 
 const float CollapsibleElement::INDENTATION = 35.0f;
 const float CollapsibleElement::LINE_HEIGHT = 50.0f;
@@ -10,14 +12,14 @@ const int CollapsibleElement::FONT_SIZE = 32;
 
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string prefixString, 
 	float(*GetValue)(), float initialValue, bool collapsed)
-	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), Game::font12, FONT_SIZE), GetValue(GetValue),
+	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::font12, FONT_SIZE), GetValue(GetValue),
 	m_Value(initialValue), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
 }
 
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string string, bool collapsed) :
-	m_PrefixString(string), m_Text(string, Game::font12, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
+	m_PrefixString(string), m_Text(string, ApexMain::font12, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
 }
@@ -30,16 +32,16 @@ CollapsibleElement::~CollapsibleElement()
 	}
 }
 
-bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug, sf::View currentView)
+bool CollapsibleElement::Tick(sf::Time elapsed, ApexDebug* debug)
 {
 	bool rectNeedsResizing = false;
-	sf::Vector2i mousePos = game->GetMouseCoordsScreenSpace(currentView);
+	sf::Vector2i mousePos = APEX->GetMouseCoordsScreenSpace();
 	sf::FloatRect globalBounds = GetBounds(m_Text);
 
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
 	if (m_Hover)
 	{
-		game->SetCursor(sf::ApexCursor::HAND);
+		APEX->SetCursor(sf::ApexCursor::HAND);
 
 		if (!m_Children.empty() && ApexMouse::IsButtonPressed(sf::Mouse::Left))
 		{
@@ -52,18 +54,18 @@ bool CollapsibleElement::Tick(sf::Time elapsed, Game* game, ApexDebug* debug, sf
 	{
 		for (size_t i = 0; i < m_Children.size(); ++i)
 		{
-			m_Children[i]->Tick(elapsed, game, debug, currentView);
+			m_Children[i]->Tick(elapsed, debug);
 		}
 	}
 
 	return rectNeedsResizing;
 }
 
-void CollapsibleElement::Draw(sf::RenderTarget& target)
+void CollapsibleElement::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	if (m_Children.empty() == false)
 	{
-		DrawTriangle(target, m_Position + sf::Vector2f(0, 20), m_Collapsed);
+		DrawTriangle(target, m_Position + sf::Vector2f(0, 20), m_Collapsed, states);
 	}
 
 	if (m_Hover) 
@@ -75,18 +77,18 @@ void CollapsibleElement::Draw(sf::RenderTarget& target)
 	{
 		m_Text.setColor(sf::Color(200, 200, 215));
 	}
-	target.draw(m_Text);
+	target.draw(m_Text, states);
 
 	if (!m_Collapsed)
 	{
 		for (size_t i = 0; i < m_Children.size(); ++i)
 		{
-			m_Children[i]->Draw(target);
+			m_Children[i]->Draw(target, states);
 		}
 	}
 }
 
-void CollapsibleElement::DrawTriangle(sf::RenderTarget& target, const sf::Vector2f centerPos, bool rotatedDown) const
+void CollapsibleElement::DrawTriangle(sf::RenderTarget& target, const sf::Vector2f centerPos, bool rotatedDown, sf::RenderStates states) const
 {
 	static const float HALF_TRIANGLE_WIDTH = 15.0f;
 	sf::CircleShape triangle(float(HALF_TRIANGLE_WIDTH), 3);
@@ -95,7 +97,7 @@ void CollapsibleElement::DrawTriangle(sf::RenderTarget& target, const sf::Vector
 	const float rotation = rotatedDown ? 90.0f : 180.0f;
 	triangle.setRotation(rotation);
 	triangle.setFillColor(sf::Color(190, 190, 200));
-	target.draw(triangle);
+	target.draw(triangle, states);
 }
 
 CollapsibleElement* CollapsibleElement::AddChildElement(CollapsibleElement* newElement)

@@ -3,11 +3,14 @@
 #include "BulletManager.h"
 #include "PhysicsActor.h"
 #include "Level.h"
+#include "CircleFixture.h"
 
 Bullet::Bullet(Level* level, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity) :
 	Projectile(level, position + sf::Vector2f(-4.5f, -4.5f), Type::BULLET, this),
 	m_Direction(direction)
 {
+	m_Actor->SetFixture(new CircleFixture(m_Actor, 1.5f));
+
 	m_BulletManager = level->GetBulletManager();
 	m_BulletManager->AddBullet(this);
 	m_Actor->SetVelocity(additionalVelcity + sf::Vector2f(cos(m_Direction) * 600.0f, sin(m_Direction) * 600.0f));

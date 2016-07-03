@@ -33,8 +33,8 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 
 			if (solidTileIDs[tileSrc])
 			{
-				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), PhysicsActor::Type::STATIC, level);
-				newActor->AddFixture(new BoxFixture(newActor));
+				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), PhysicsActor::BodyType::STATIC, level);
+				newActor->SetFixture(new BoxFixture(newActor));
 				m_Actors.push_back(newActor);
 			}
 		}
@@ -47,7 +47,10 @@ Layer::~Layer()
 
 	for (size_t i = 0; i < m_Actors.size(); i++)
 	{
-		delete m_Actors[i];
+		if (m_Actors[i] != nullptr)
+		{
+			delete m_Actors[i];
+		}
 	}
 }
 

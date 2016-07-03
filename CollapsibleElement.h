@@ -1,7 +1,11 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
-#include "Game.h"
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\Text.hpp>
+#include <SFML\System\Vector2.hpp>
+
+class ApexDebug;
 
 class CollapsibleElement
 {
@@ -16,8 +20,8 @@ public:
 	CollapsibleElement& operator=(const CollapsibleElement&) = delete;
 
 	// Returns true if the width of the stack this element is in needs resizing
-	bool Tick(sf::Time elapsed, Game* game, ApexDebug* debug, sf::View currentView);
-	void Draw(sf::RenderTarget& target);
+	bool Tick(sf::Time elapsed, ApexDebug* debug);
+	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 	void SetCollapsed(bool collapsed);
 	void Move(const sf::Vector2f& deltaPosition);
 	sf::Vector2f GetPosition() const;
@@ -32,7 +36,7 @@ private:
 	static const int FONT_SIZE;
 
 	CollapsibleElement* AddChildElement(CollapsibleElement* newElement);
-	void DrawTriangle(sf::RenderTarget& target, const sf::Vector2f centerPos, bool rotatedDown) const;
+	void DrawTriangle(sf::RenderTarget& target, const sf::Vector2f centerPos, bool rotatedDown, sf::RenderStates states) const;
 
 	sf::FloatRect GetBounds(sf::Text text);
 	float GetFarthestRightPointInStack(float farthestSoFar);

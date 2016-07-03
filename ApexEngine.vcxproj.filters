@@ -27,6 +27,9 @@
     <Filter Include="Source Files\Level\Weapon">
       <UniqueIdentifier>{00a1836c-0490-42bf-902d-1e022d6a1f54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{df87255f-0a20-472a-9335-be4a536bd0a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -40,12 +43,6 @@
     </ClCompile>
     <ClCompile Include="GameState.cpp">
       <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ApexDebug.cpp">
       <Filter>Source Files\Debug</Filter>
@@ -83,9 +80,6 @@
     <ClCompile Include="PhysicsActor.cpp">
       <Filter>Source Files\Level\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Fixture.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="KeyListener.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
@@ -110,6 +104,33 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files\Level\Weapon</Filter>
     </ClCompile>
+    <ClCompile Include="Fixture.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Manifold.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Transition.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSheet.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -123,12 +144,6 @@
     </ClInclude>
     <ClInclude Include="GameState.h">
       <Filter>Source Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleEmitter.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ApexDebug.h">
       <Filter>Source Files\Debug</Filter>
@@ -172,9 +187,6 @@
     <ClInclude Include="PhysicsActor.h">
       <Filter>Source Files\Level\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Fixture.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="KeyListener.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
@@ -198,6 +210,36 @@
     </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Source Files\Level\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Fixture.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexMath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Manifold.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Source Files\Level\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Transition.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheet.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexMain.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

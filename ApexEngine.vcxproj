@@ -154,6 +154,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="SpriteSheet.cpp" />
+    <ClCompile Include="Transition.cpp" />
     <ClCompile Include="ApexDebug.cpp" />
     <ClCompile Include="ApexKeyboard.cpp" />
     <ClCompile Include="ApexMouse.cpp" />
@@ -164,15 +171,23 @@
     <ClCompile Include="BulletManager.cpp" />
     <ClCompile Include="CircleFixture.cpp" />
     <ClCompile Include="CollapsibleElement.cpp" />
+    <ClCompile Include="Collision.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Fixture.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="ApexMain.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="KeyListener.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manifold.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="PhysicsActorManager.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
@@ -183,8 +198,16 @@
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="SpriteSheet.h" />
+    <ClInclude Include="Transition.h" />
     <ClInclude Include="ApexDebug.h" />
     <ClInclude Include="ApexKeyboard.h" />
+    <ClInclude Include="ApexMath.h" />
     <ClInclude Include="ApexMouse.h" />
     <ClInclude Include="ApexAudio.h" />
     <ClInclude Include="BaseState.h" />
@@ -193,16 +216,24 @@
     <ClInclude Include="BulletManager.h" />
     <ClInclude Include="CircleFixture.h" />
     <ClInclude Include="CollapsibleElement.h" />
+    <ClInclude Include="Collision.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Entity.h" />
     <ClInclude Include="enumerations.h" />
     <ClInclude Include="Fixture.h" />
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="ApexMain.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="KeyListener.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="logo.h" />
+    <ClInclude Include="Manifold.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Map.h" />
     <ClInclude Include="PhysicsActorManager.h" />
     <ClInclude Include="ParticleEmitter.h" />

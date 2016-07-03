@@ -1,18 +1,16 @@
 #pragma once
 
 #include "BaseState.h"
-#include "Game.h"
+#include <SFML\Graphics\ConvexShape.hpp>
 
 class Level;
 
-
 // TODO: Add OnKeyPress/OnMouseButton functions to all states?
-
 
 class GameState : public BaseState
 {
 public:
-	GameState(StateManager* manager, Game* game);
+	GameState(StateManager* manager);
 	virtual ~GameState();
 
 	GameState(const GameState&) = delete;
@@ -22,6 +20,9 @@ public:
 	void Draw(sf::RenderTarget& target) const;
 	void TogglePaused(bool pauseSounds);
 	Level* GetLevel();
+
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed);
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
 
 	void Reset();
 

@@ -1,6 +1,11 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
+#include <SFML\Graphics\Drawable.hpp>
+#include <SFML\Graphics\Transformable.hpp>
+#include <SFML\Graphics\VertexArray.hpp>
+#include <SFML\System\Time.hpp>
 
 class ParticleEmitter : public sf::Drawable, public sf::Transformable
 {

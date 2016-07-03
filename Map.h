@@ -2,7 +2,9 @@
 
 #include <string>
 #include <vector>
-#include <SFML\Graphics.hpp>
+#include <SFML\System\Time.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
 
 class Layer;
 class Level;

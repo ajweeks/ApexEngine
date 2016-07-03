@@ -1,7 +1,6 @@
 #pragma once
 
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
+#include <SFML/Window/WindowHandle.hpp>
 
 #ifdef SFML_SYSTEM_WINDOWS
 #include <windows.h>

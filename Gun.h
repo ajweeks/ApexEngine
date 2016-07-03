@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Entity.h"
+#include <SFML\System\Vector2.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
 
 class Player;
 class Level;

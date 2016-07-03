@@ -20,7 +20,7 @@ void StateManager::Draw(sf::RenderTarget& target) const
 	m_CurrentState->Draw(target);
 }
 
-void StateManager::SetState(BaseState * newState)
+void StateManager::SetState(BaseState* newState)
 {
 	delete m_CurrentState;
 	m_CurrentState = newState;

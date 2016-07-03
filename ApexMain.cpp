@@ -1,6 +1,7 @@
 
-#include "Game.h"
+#include "ApexMain.h"
 #include "GameState.h"
+#include "MainMenuState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "KeyListener.h"
@@ -15,20 +16,31 @@
 #include <sstream>
 #include <iomanip>
 
-const int Game::INITAL_WINDOW_WIDTH = 2080;
-const int Game::INITAL_WINDOW_HEIGHT = 1216;
-const bool Game::USE_V_SYNC = false;
-const std::string Game::WINDOW_TITLE = "Apex Engine";
+const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
+const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
+const bool ApexMain::USE_V_SYNC = false;
+const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
+ApexMain* ApexMain::m_Singelton = nullptr;
 
-sf::Font Game::font12;
+sf::Font ApexMain::font12;
 
-Game::Game()
+ApexMain::ApexMain()
+{
+}
+
+ApexMain::~ApexMain()
+{
+	delete m_StateManager;
+}
+
+void ApexMain::Init()
 {
 	m_Window.create(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE);
 	m_Window.setVerticalSyncEnabled(USE_V_SYNC);
 	m_Window.setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
-	
-	m_StateManager = new StateManager(new GameState(m_StateManager, this));
+
+	m_StateManager = new StateManager();
+	m_StateManager->SetState(new MainMenuState(m_StateManager));
 
 	if (!font12.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
@@ -38,11 +50,7 @@ Game::Game()
 	ApexAudio::LoadSounds();
 }
 
-Game::~Game()
-{
-	delete m_StateManager;
-}
-void Game::Run()
+void ApexMain::Run()
 {
 	sf::Clock clock;
 
@@ -89,11 +97,15 @@ void Game::Run()
 			{
 				if (m_Window.hasFocus())
 				{
+					const bool keyPressed = ApexKeyboard::IsKeyPressed(event.key.code);
 					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
 						if (m_KeyListeners[i] != nullptr)
 						{
-							m_KeyListeners[i]->OnKeyPress(event.key);
+							if (m_KeyListeners[i]->OnKeyPress(event.key, keyPressed))
+							{
+								break;
+							}
 						}
 					}
 
@@ -101,8 +113,7 @@ void Game::Run()
 					{
 					case sf::Keyboard::F10:
 					{
-						// Prevent multiple calls from a press and hold
-						if (ApexKeyboard::IsKeyPressed(event.key.code))
+						if (keyPressed)
 						{
 							TakeScreenshot();
 						}
@@ -132,49 +143,50 @@ void Game::Run()
 	}
 }
 
-void Game::Tick(sf::Time elapsed)
+void ApexMain::Tick(sf::Time elapsed)
 {
 	m_StateManager->Tick(elapsed);
 }
 
-void Game::Draw()
+void ApexMain::Draw()
 {
 	m_Window.clear();
-	
-	m_StateManager->Draw(m_Window);
-
 	m_Window.setView(m_Window.getDefaultView());
-	
+	m_StateManager->Draw(m_Window);
 	m_Window.display();
 }
 
-sf::Vector2f Game::GetMouseCoordsWorldSpace(sf::View view) const
+sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
 {
 	sf::Vector2i mouse = sf::Mouse::getPosition(m_Window);
 	return m_Window.mapPixelToCoords(mouse, view);
 }
 
-sf::Vector2i Game::GetMouseCoordsScreenSpace(sf::View currentView) const
+sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 {
 	sf::Vector2i mouseCoords = sf::Mouse::getPosition(m_Window);
-	if (m_Window.getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
+	if (currentView.getSize() != sf::Vector2f())
 	{
-		// Adjust for when the window has been resized the content stretched or squeezed
-		const float xScale = currentView.getSize().x / m_Window.getSize().x;
-		const float yScale = currentView.getSize().y / m_Window.getSize().y;
-		mouseCoords.x = static_cast<int>(mouseCoords.x * xScale);
-		mouseCoords.y = static_cast<int>(mouseCoords.y * yScale);
+		if (m_Window.getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
+		{
+			// Adjust for when the window has been resized the content stretched or squeezed
+			const float xScale = currentView.getSize().x / m_Window.getSize().x;
+			const float yScale = currentView.getSize().y / m_Window.getSize().y;
+			mouseCoords.x = static_cast<int>(mouseCoords.x * xScale);
+			mouseCoords.y = static_cast<int>(mouseCoords.y * yScale);
+		}
+		mouseCoords += static_cast<sf::Vector2i>((currentView.getCenter() - currentView.getSize() / 2.0f));
 	}
 	return mouseCoords;
 }
 
-void Game::SetCursor(sf::ApexCursor::TYPE cursorType)
+void ApexMain::SetCursor(sf::ApexCursor::TYPE cursorType)
 {
 	sf::ApexCursor Cursor(cursorType);
 	Cursor.set(m_Window.getSystemHandle());
 }
 
-void Game::TakeScreenshot()
+void ApexMain::TakeScreenshot()
 {
 	sf::Image screen = m_Window.capture();
 	SYSTEMTIME localTime;
@@ -198,24 +210,24 @@ void Game::TakeScreenshot()
 	std::cout << "Saved screenshot as \"" + filename << "\" successfully!" << std::endl;
 }
 
-StateManager* Game::GetStateManager()
+StateManager* ApexMain::GetStateManager()
 {
 	return m_StateManager;
 }
 
-sf::Vector2u Game::GetWindowSize() const
+sf::Vector2u ApexMain::GetWindowSize() const
 {
 	return m_Window.getSize();
 }
 
-std::string Game::Vector2fToString(sf::Vector2f vec)
+std::string ApexMain::Vector2fToString(sf::Vector2f vec)
 {
 	std::stringstream stream;
 	stream  << std::setprecision(2) << std::fixed << vec.x << "," << vec.y;
 	return stream.str();
 }
 
-void Game::AddKeyListener(KeyListener* keyListener)
+void ApexMain::AddKeyListener(KeyListener* keyListener)
 {
 	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 	{
@@ -228,10 +240,20 @@ void Game::AddKeyListener(KeyListener* keyListener)
 	m_KeyListeners.push_back(keyListener);
 }
 
-void Game::RemoveKeyListener(KeyListener * keyListener)
+void ApexMain::RemoveKeyListener(KeyListener * keyListener)
 {
 	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 	{
 		if (m_KeyListeners[i] == keyListener) m_KeyListeners[i] = nullptr;
 	}
+}
+
+ApexMain* ApexMain::GetSingelton()
+{
+	if (m_Singelton == nullptr) 
+	{
+		m_Singelton = new ApexMain();
+		m_Singelton->Init();
+	}
+	return m_Singelton;
 }

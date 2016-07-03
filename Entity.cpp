@@ -4,7 +4,7 @@
 
 Entity::Entity(Level* level, sf::Vector2f position, Type type, void* userPointer)
 {
-	m_Actor = new PhysicsActor(position, PhysicsActor::Type::DYNAMIC, level);
+	m_Actor = new PhysicsActor(position, PhysicsActor::BodyType::DYNAMIC, level);
 	m_Actor->SetUserData(int(type));
 	m_Actor->SetUserPointer(userPointer);
 }

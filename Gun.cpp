@@ -1,18 +1,22 @@
 
 #include "Gun.h"
+#include "ApexMain.h"
 #include "Bullet.h"
 #include "PhysicsActor.h"
 #include "Level.h"
 #include "ApexMouse.h"
 #include "ApexAudio.h"
 #include "Player.h"
-#include "Game.h"
+#include "CircleFixture.h"
 
 Gun::Gun(Level* level, sf::Vector2f position, Player* playerHolding) :
 	Entity(level, position, Type::GUN, this),
 	m_Level(level),
 	m_PlayerHolding(playerHolding)
 {
+	m_Actor->SetFixture(new CircleFixture(m_Actor, 5.0f));
+	m_Actor->SetSolid(false);
+
 	m_BulletManager = level->GetBulletManager();
 	m_Direction = 0.0f;
 
@@ -38,7 +42,7 @@ void Gun::Tick(sf::Time elapsed)
 {
 	if (m_PlayerHolding != nullptr)
 	{
-		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(m_Level->GetGame()->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
+		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
 		const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
 		m_Direction = atan2(dPos.y, dPos.x);
 		

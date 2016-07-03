@@ -1,9 +1,10 @@
 
 #include "CircleFixture.h"
 #include "PhysicsActor.h"
+#include "BoxFixture.h"
 
-CircleFixture::CircleFixture(PhysicsActor* parentActor, float radius, float restitution) :
-	Fixture(parentActor, Shape::CIRCLE, restitution),
+CircleFixture::CircleFixture(PhysicsActor* parentActor, float radius) :
+	Fixture(parentActor, Shape::CIRCLE),
 	m_Radius(radius)
 {
 	m_BoundingCircle.setFillColor(m_FillColor);
@@ -12,6 +13,8 @@ CircleFixture::CircleFixture(PhysicsActor* parentActor, float radius, float rest
 	m_BoundingCircle.setRadius(radius);
 	m_RelativePos = sf::Vector2f(-radius, -radius);
 	m_BoundingCircle.setPosition(m_ParentActor->GetPosition() + m_RelativePos);
+
+	ComputeMass(1.0f);
 }
 
 CircleFixture::~CircleFixture()
@@ -20,7 +23,7 @@ CircleFixture::~CircleFixture()
 
 void CircleFixture::Tick(sf::Time elapsed)
 {
-	if (m_ParentActor->GetType() != PhysicsActor::Type::STATIC)
+	if (m_ParentActor->GetBodyType() != PhysicsActor::BodyType::STATIC)
 	{
 		m_BoundingCircle.setPosition(m_ParentActor->GetPosition() + m_RelativePos);
 	}
@@ -36,26 +39,15 @@ float CircleFixture::GetRadius() const
 	return m_Radius;
 }
 
-bool CircleFixture::IsOverlapping(Fixture* otherFixture)
+void CircleFixture::ComputeMass(float density)
 {
-	switch (otherFixture->GetShape())
-	{
-	case Shape::BOX:
-	{
-		return false;
-	} break;
-	case Shape::CIRCLE:
-	{
-		CircleFixture* otherCircleFixture = (CircleFixture*)otherFixture;
-		const sf::Vector2f ourPos = GetPosition();
-		const sf::Vector2f otherPos = otherCircleFixture->GetPosition();
-		const float dx = (otherPos.x - ourPos.x);
-		const float dy = (otherPos.y - ourPos.y);
-		return (m_Radius * m_Radius) < (dx*dx + dy*dy);
-	} break;
-	default:
-		return false;
-	}
+	const float mass = 3.14159f * m_Radius * density;
+	if (mass == 0.0f) m_ParentActor->SetInverseMass(0.0f);
+	else m_ParentActor->SetInverseMass(1.0f / mass);
+
+	const float inertia = mass * m_Radius * m_Radius;
+	if (inertia == 0.0f) m_ParentActor->SetInverseInertia(0.0f);
+	else m_ParentActor->SetInverseInertia(1.0f / inertia);
 }
 
 bool CircleFixture::IsPointInFixture(sf::Vector2f point) const

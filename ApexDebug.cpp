@@ -1,6 +1,6 @@
 
 #include "ApexDebug.h"
-#include "Game.h"
+#include "ApexMain.h"
 #include "Player.h"
 #include "enumerations.h"
 #include "GameState.h"
@@ -20,26 +20,26 @@ ApexDebug::~ApexDebug()
 	delete m_PlayerElementStack;
 }
 
-void ApexDebug::Tick(sf::Time elapsed, Game* game, sf::View currentView)
+void ApexDebug::Tick(sf::Time elapsed)
 {
 	if (m_PlayerElementStack->m_CollapsibleElement->m_Collapsed == false)
 	{
-		BaseState* currentState = game->GetStateManager()->CurrentState();
+		BaseState* currentState = APEX->GetStateManager()->CurrentState();
 		if (currentState->GetType() == StateType::GAME)
 		{
 			Level* level = ((GameState*)currentState)->GetLevel();
 			Player* player = level->GetPlayer();
-			std::string newPlayerPos = Game::Vector2fToString(player->GetPosition());
+			std::string newPlayerPos = ApexMain::Vector2fToString(player->GetPosition());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
 
-			std::string newPlayerVel = Game::Vector2fToString(player->GetVelocity());
+			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
 	}
 
-	game->SetCursor(sf::ApexCursor::NORMAL);
-	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, game, this, currentView)) UpdateBackgroundRect(m_PlayerElementStack);
+	APEX->SetCursor(sf::ApexCursor::NORMAL);
+	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, this)) UpdateBackgroundRect(m_PlayerElementStack);
 }
 
 void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
@@ -53,10 +53,10 @@ void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
 	stack->m_BackgroundRect.setFillColor(sf::Color(50, 55, 60, 135));
 }
 
-void ApexDebug::Draw(sf::RenderTarget& target) const
+void ApexDebug::Draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_PlayerElementStack->m_BackgroundRect);
-	m_PlayerElementStack->m_CollapsibleElement->Draw(target);
+	m_PlayerElementStack->m_CollapsibleElement->Draw(target, states);
 }
 
 ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position)
@@ -74,6 +74,5 @@ CollapsibleElement* ApexDebug::AddCollapsibleElementChild(CollapsibleElement* pa
 {
 	CollapsibleElement* newElement = parentElement->AddChildElement(new CollapsibleElement(parentElement, string));
 
-	//UpdateBackgroundRect(newElement);
 	return newElement;
 }

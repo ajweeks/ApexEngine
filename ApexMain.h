@@ -1,24 +1,29 @@
 #pragma once
 
-#include <SFML\Graphics.hpp>
+#include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Graphics\Font.hpp>
 #include "StateManager.h"
 #include "ApexCursor.h"
+
+#define APEX (ApexMain::GetSingelton())
 
 class ApexDebug;
 class KeyListener;
 
-class Game
+class ApexMain
 {
 public:
-	Game();
-	virtual ~Game();
+	ApexMain();
+	virtual ~ApexMain();
 
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
+	ApexMain(const ApexMain&) = delete;
+	ApexMain& operator=(const ApexMain&) = delete;
+
+	void Init();
 
 	void Run();
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
-	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView) const;
+	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
 
 	void SetCursor(sf::ApexCursor::TYPE cursorType);
 
@@ -33,15 +38,19 @@ public:
 	void AddKeyListener(KeyListener* keyListener);
 	void RemoveKeyListener(KeyListener* keyListener);
 
+	static ApexMain* GetSingelton();
+
 private:
+	void Tick(sf::Time elapsed);
+	void Draw();
+
 	static const int INITAL_WINDOW_WIDTH;
 	static const int INITAL_WINDOW_HEIGHT;
 	static const bool USE_V_SYNC;
 
 	static const std::string WINDOW_TITLE;
 
-	void Tick(sf::Time elapsed);
-	void Draw();
+	static ApexMain* m_Singelton;
 
 	sf::RenderWindow m_Window;
 	sf::Time m_TotalElapsed;

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Fixture.h"
+#include <SFML\Graphics\RectangleShape.hpp>
 
 class BoxFixture : public Fixture
 {
 public:
-	BoxFixture(PhysicsActor* parentActor, sf::Vector2f size = sf::Vector2f(32, 32), float restitution = 0.8f);
+	BoxFixture(PhysicsActor* parentActor, sf::Vector2f size = sf::Vector2f(32, 32));
 	virtual ~BoxFixture();
 
 	BoxFixture(const BoxFixture&) = delete;
@@ -16,10 +17,18 @@ public:
 
 	virtual bool IsPointInFixture(sf::Vector2f point) const;
 	sf::Vector2f GetSize() const;
-	virtual bool IsOverlapping(Fixture* otherFixture);
+
+	size_t GetVertexCount() const;
+	std::vector<sf::Vector2f> GetNormals() const;
+	std::vector<sf::Vector2f> GetVerticies() const;
 
 private:
+	void ComputeMass(float density);
+
 	sf::Vector2f m_Size;
 	sf::RectangleShape m_BoundingRectangle;
 
+	size_t m_VertexCount;
+	std::vector<sf::Vector2f> m_Verticies;
+	std::vector<sf::Vector2f> m_Normals;
 };
