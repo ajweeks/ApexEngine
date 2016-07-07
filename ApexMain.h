@@ -5,7 +5,7 @@
 #include "StateManager.h"
 #include "ApexCursor.h"
 
-#define APEX (ApexMain::GetSingelton())
+#define APEX (ApexMain::GetSingleton())
 
 class ApexDebug;
 class ApexKeyListener;
@@ -37,13 +37,13 @@ public:
 
 	static std::string Vector2fToString(sf::Vector2f vec);
 
-	void AddKeyListener(KeyListener* keyListener);
-	void RemoveKeyListener(KeyListener* keyListener);
+	void AddKeyListener(ApexKeyListener* keyListener);
+	void RemoveKeyListener(ApexKeyListener* keyListener);
 
-	static ApexMain* GetSingelton();
 	void AddMouseListener(ApexMouseListener* mouseListener);
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
 
+	static ApexMain* GetSingleton();
 
 private:
 	void Tick(sf::Time elapsed);
@@ -55,7 +55,7 @@ private:
 
 	static const std::string WINDOW_TITLE;
 
-	static ApexMain* m_Singelton;
+	static ApexMain* m_Singleton;
 
 	sf::RenderWindow m_Window;
 	sf::Time m_TotalElapsed;

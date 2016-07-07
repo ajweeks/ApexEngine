@@ -20,11 +20,15 @@ public:
 	// NOTE: This only effects the scale that the level renders at, (not the GUI)
 	void SetZoom(float zoom);
 
+	void Shake(float xScale, float yScale);
+
 private:
 	void BoundsCheck(sf::View& view, Level* level);
 
 	static const float ACCELERATION;
 
 	sf::View m_View;
+	sf::Vector2f m_ShakeRadius;
+	sf::Vector2f m_ShakeOffset;
 
 };

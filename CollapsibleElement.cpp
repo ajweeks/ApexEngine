@@ -12,14 +12,14 @@ const int CollapsibleElement::FONT_SIZE = 32;
 
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string prefixString, 
 	float(*GetValue)(), float initialValue, bool collapsed)
-	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::font12, FONT_SIZE), GetValue(GetValue),
+	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::FontOpenSans, FONT_SIZE), GetValue(GetValue),
 	m_Value(initialValue), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
 }
 
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string string, bool collapsed) :
-	m_PrefixString(string), m_Text(string, ApexMain::font12, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
+	m_PrefixString(string), m_Text(string, ApexMain::FontOpenSans, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
 }

@@ -80,6 +80,8 @@ void Gun::Shoot()
 		}
 	}
 
+	m_Level->SetScreenShake(abs(20.0f * cos(m_Direction)), abs(20.0f * sin(m_Direction)));
+
 	sf::Vector2f posOffset = sf::Vector2f(cos(m_Direction) * 22, sin(m_Direction) * 22);
 	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, m_PlayerHolding->GetVelocity() / 2.0f);
 	--m_BulletsRemaining;

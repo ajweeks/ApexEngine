@@ -80,9 +80,6 @@
     <ClCompile Include="PhysicsActor.cpp">
       <Filter>Source Files\Level\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="KeyListener.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsActorManager.cpp">
       <Filter>Source Files\Level\Physics</Filter>
     </ClCompile>
@@ -130,6 +127,15 @@
     </ClCompile>
     <ClCompile Include="ApexMain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexButton.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexKeyListener.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexMouseListener.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,9 +193,6 @@
     <ClInclude Include="PhysicsActor.h">
       <Filter>Source Files\Level\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="KeyListener.h">
-      <Filter>Source Files\IO</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsActorManager.h">
       <Filter>Source Files\Level\Physics</Filter>
     </ClInclude>
@@ -240,6 +243,15 @@
     </ClInclude>
     <ClInclude Include="ApexMain.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexButton.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexKeyListener.h">
+      <Filter>Source Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexMouseListener.h">
+      <Filter>Source Files\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

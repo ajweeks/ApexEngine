@@ -37,6 +37,8 @@ public:
 
 	sf::View GetCurrentView() const;
 
+	void SetScreenShake(float xScale, float yScale);
+
 private:
 	const int WIDTH;
 	const int HEIGHT;

@@ -116,3 +116,8 @@ sf::View Level::GetCurrentView() const
 {
 	return m_Camera->GetCurrentView();
 }
+
+void Level::SetScreenShake(float xScale, float yScale)
+{
+	m_Camera->Shake(xScale, yScale);
+}

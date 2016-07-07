@@ -59,7 +59,7 @@ void Player::Tick(sf::Time elapsed)
 
 	// Rainbow glow
 	//m_GlowSprite.setColor(sf::Color(sf::Uint32(sin(m_SecondsElapsed) * 255), sf::Uint32(cos(m_SecondsElapsed) * 255), sf::Uint32(sin(0.5 - m_SecondsElapsed * 2) * 255)));
-	m_GlowSprite.setColor(sf::Color(255, 255, 255, 55 + sin(m_SecondsElapsed * 3.5f) * 45 + 45));
+	m_GlowSprite.setColor(sf::Color(255, 255, 255, 55 + int(sin(m_SecondsElapsed * 3.5f) * 45) + 45));
 	m_SpriteSheet.Tick(elapsed);
 
 	m_Gun.Tick(elapsed);

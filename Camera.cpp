@@ -24,15 +24,25 @@ Camera::~Camera()
 
 void Camera::Tick(sf::Time elapsed, Level* level)
 {
+	const float dt = elapsed.asSeconds();
+	
 	Player* player = level->GetPlayer();
 	sf::Vector2f playerPos = player->GetPosition();
 
 	sf::View newView(m_View);
 	
+	m_ShakeRadius *= 1.0f - 0.995f * dt;
+	if (m_ShakeRadius.x > 1.0f || 
+		m_ShakeRadius.y > 1.0f)
+	{
+		const float angle = (std::rand() % 360);
+		m_ShakeOffset.x = cos(angle) * m_ShakeRadius.x;
+		m_ShakeOffset.y = sin(angle) * m_ShakeRadius.y;
+	}
+
 	const float dx = playerPos.x - newView.getCenter().x;
 	const float dy = playerPos.y - newView.getCenter().y;
 
-	const float dt = elapsed.asSeconds();
 	const float acc = ACCELERATION * dt;
 	newView.move(dx * acc, dy * acc);
 
@@ -42,12 +52,20 @@ void Camera::Tick(sf::Time elapsed, Level* level)
 
 sf::View Camera::GetCurrentView() const
 {
-	return m_View;
+	sf::View view(m_View);
+	view.move(m_ShakeOffset);
+	return view;
 }
 
 void Camera::SetZoom(float zoom)
 {
 	m_View.setSize(m_View.getSize().x / zoom, m_View.getSize().y / zoom);
+}
+
+void Camera::Shake(float xScale, float yScale)
+{
+	m_ShakeRadius.x = (std::rand() % 1001 / 1000.0f) * xScale;
+	m_ShakeRadius.y = (std::rand() % 1001 / 1000.0f) * yScale;
 }
 
 void Camera::BoundsCheck(sf::View& view, Level* level)

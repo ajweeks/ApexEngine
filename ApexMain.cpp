@@ -21,7 +21,7 @@ const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
 const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
 const bool ApexMain::USE_V_SYNC = false;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
-ApexMain* ApexMain::m_Singelton = nullptr;
+ApexMain* ApexMain::m_Singleton = nullptr;
 
 sf::Font ApexMain::FontOpenSans;
 
@@ -282,7 +282,6 @@ void ApexMain::RemoveKeyListener(ApexKeyListener * keyListener)
 	}
 }
 
-ApexMain* ApexMain::GetSingelton()
 void ApexMain::AddMouseListener(ApexMouseListener* mouseListener)
 {
 	for (size_t i = 0; i < m_MouseListeners.size(); ++i)
@@ -304,11 +303,12 @@ void ApexMain::RemoveMouseListener(ApexMouseListener* mouseListener)
 	}
 }
 
+ApexMain* ApexMain::GetSingleton()
 {
-	if (m_Singelton == nullptr) 
+	if (m_Singleton == nullptr) 
 	{
-		m_Singelton = new ApexMain();
-		m_Singelton->Init();
+		m_Singleton = new ApexMain();
+		m_Singleton->Init();
 	}
-	return m_Singelton;
+	return m_Singleton;
 }

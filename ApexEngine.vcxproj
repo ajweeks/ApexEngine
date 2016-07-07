@@ -154,6 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApexButton.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="ApexMouseListener.cpp" />
     <ClCompile Include="Camera.cpp">
       <SubType>
       </SubType>
@@ -180,7 +185,7 @@
     <ClCompile Include="ApexMain.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Gun.cpp" />
-    <ClCompile Include="KeyListener.cpp" />
+    <ClCompile Include="ApexKeyListener.cpp" />
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
@@ -198,6 +203,11 @@
     <ClCompile Include="StateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApexButton.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="ApexMouseListener.h" />
     <ClInclude Include="Camera.h">
       <SubType>
       </SubType>
@@ -226,7 +236,7 @@
     <ClInclude Include="ApexMain.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gun.h" />
-    <ClInclude Include="KeyListener.h" />
+    <ClInclude Include="ApexKeyListener.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="logo.h" />
