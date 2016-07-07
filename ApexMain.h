@@ -8,7 +8,8 @@
 #define APEX (ApexMain::GetSingelton())
 
 class ApexDebug;
-class KeyListener;
+class ApexKeyListener;
+class ApexMouseListener;
 
 class ApexMain
 {
@@ -22,12 +23,13 @@ public:
 	void Init();
 
 	void Run();
+	void Quit();
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
 
 	void SetCursor(sf::ApexCursor::TYPE cursorType);
 
-	static sf::Font font12;
+	static sf::Font FontOpenSans;
 	void TakeScreenshot();
 
 	StateManager* GetStateManager();
@@ -39,6 +41,9 @@ public:
 	void RemoveKeyListener(KeyListener* keyListener);
 
 	static ApexMain* GetSingelton();
+	void AddMouseListener(ApexMouseListener* mouseListener);
+	void RemoveMouseListener(ApexMouseListener* mouseListener);
+
 
 private:
 	void Tick(sf::Time elapsed);
@@ -57,9 +62,10 @@ private:
 	sf::Time m_ElapsedThisFrame;
 	int m_Frames;
 	int m_FPS;
+	bool m_IsRunning;
 
 	StateManager* m_StateManager = nullptr;
-	sf::Font m_Font;
 
-	std::vector<KeyListener*> m_KeyListeners;
+	std::vector<ApexKeyListener*> m_KeyListeners;
+	std::vector<ApexMouseListener*> m_MouseListeners;
 };

@@ -31,7 +31,7 @@ void GameState::Tick(sf::Time elapsed)
 	m_Level->Tick(elapsed);
 }
 
-void GameState::Draw(sf::RenderTarget& target) const
+void GameState::Draw(sf::RenderTarget& target)
 {
 	m_Level->Draw(target, sf::RenderStates::Default);
 }

@@ -2,14 +2,14 @@
 
 #include <SFML\Window\Event.hpp>
 
-class KeyListener
+class ApexKeyListener
 {
 public:
-	KeyListener();
-	virtual ~KeyListener();
+	ApexKeyListener();
+	virtual ~ApexKeyListener();
 
-	KeyListener(const KeyListener&) = delete;
-	KeyListener& operator=(const KeyListener&) = delete;
+	ApexKeyListener(const ApexKeyListener&) = delete;
+	ApexKeyListener& operator=(const ApexKeyListener&) = delete;
 
 	// If keypressed, this is the first frame the key was pressed (it was not held down)
 	// Should return true if the key code should not be applied to any other listeners

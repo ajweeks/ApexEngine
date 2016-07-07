@@ -4,8 +4,9 @@
 #include "MainMenuState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
-#include "KeyListener.h"
+#include "ApexKeyListener.h"
 #include "ApexMouse.h"
+#include "ApexMouseListener.h"
 #include "ApexDebug.h"
 #include "ApexAudio.h"
 #include "Entity.h"
@@ -22,7 +23,7 @@ const bool ApexMain::USE_V_SYNC = false;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
 ApexMain* ApexMain::m_Singelton = nullptr;
 
-sf::Font ApexMain::font12;
+sf::Font ApexMain::FontOpenSans;
 
 ApexMain::ApexMain()
 {
@@ -42,7 +43,7 @@ void ApexMain::Init()
 	m_StateManager = new StateManager();
 	m_StateManager->SetState(new MainMenuState(m_StateManager));
 
-	if (!font12.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
+	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
 		std::cout << "Couldn't load font OpenSans-Regular.ttf!" << std::endl;
 	}
@@ -50,12 +51,17 @@ void ApexMain::Init()
 	ApexAudio::LoadSounds();
 }
 
+void ApexMain::Quit()
+{
+	m_IsRunning = false;
+}
+
 void ApexMain::Run()
 {
 	sf::Clock clock;
 
-	bool running = true;
-	while (running)
+	m_IsRunning = true;
+	while (m_IsRunning)
 	{
 		sf::Time elapsed = clock.restart();
 		m_ElapsedThisFrame += elapsed;
@@ -76,26 +82,26 @@ void ApexMain::Run()
 		sf::Event event;
 		while (m_Window.pollEvent(event))
 		{
-			switch(event.type)
+			if (m_Window.hasFocus())
 			{
-			case sf::Event::Closed:
-			{
-				running = false;
-				break;
-			}
-			case sf::Event::LostFocus:
-			{
-				ApexAudio::SetAllPaused(true);
-				break;
-			}
-			case sf::Event::GainedFocus:
-			{
-				ApexAudio::SetAllPaused(false);
-				break;
-			}
-			case sf::Event::KeyPressed:
-			{
-				if (m_Window.hasFocus())
+				switch(event.type)
+				{
+				case sf::Event::Closed:
+				{
+					m_IsRunning = false;
+					break;
+				}
+				case sf::Event::LostFocus:
+				{
+					ApexAudio::SetAllPaused(true);
+					break;
+				}
+				case sf::Event::GainedFocus:
+				{
+					ApexAudio::SetAllPaused(false);
+					break;
+				}
+				case sf::Event::KeyPressed:
 				{
 					const bool keyPressed = ApexKeyboard::IsKeyPressed(event.key.code);
 					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
@@ -107,23 +113,20 @@ void ApexMain::Run()
 								break;
 							}
 						}
-					}
 
-					switch (event.key.code)
-					{
-					case sf::Keyboard::F10:
-					{
-						if (keyPressed)
+						switch (event.key.code)
 						{
-							TakeScreenshot();
+						case sf::Keyboard::F10:
+						{
+							if (keyPressed)
+							{
+								TakeScreenshot();
+							}
+						} break;
 						}
-					} break;
 					}
-				}
-			} break;
-			case sf::Event::KeyReleased:
-			{
-				if (m_Window.hasFocus())
+				} break;
+				case sf::Event::KeyReleased:
 				{
 					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
@@ -132,8 +135,38 @@ void ApexMain::Run()
 							m_KeyListeners[i]->OnKeyRelease(event.key);
 						}
 					}
+				} break;
+				case sf::Event::MouseButtonPressed:
+				{
+					for (size_t i = 0; i < m_MouseListeners.size(); ++i)
+					{
+						if (m_MouseListeners[i] != nullptr)
+						{
+							m_MouseListeners[i]->OnButtonPress(event.mouseButton);
+						}
+					}
+				} break;
+				case sf::Event::MouseButtonReleased:
+				{
+					for (size_t i = 0; i < m_MouseListeners.size(); ++i)
+					{
+						if (m_MouseListeners[i] != nullptr)
+						{
+							m_MouseListeners[i]->OnButtonRelease(event.mouseButton);
+						}
+					}
+				} break;
+				case sf::Event::MouseWheelMoved:
+				{
+					for (size_t i = 0; i < m_MouseListeners.size(); ++i)
+					{
+						if (m_MouseListeners[i] != nullptr)
+						{
+							m_MouseListeners[i]->OnScroll(event.mouseWheelScroll);
+						}
+					}
+				} break;
 				}
-			} break;
 			}
 		}
 
@@ -175,8 +208,9 @@ sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 			mouseCoords.x = static_cast<int>(mouseCoords.x * xScale);
 			mouseCoords.y = static_cast<int>(mouseCoords.y * yScale);
 		}
-		mouseCoords += static_cast<sf::Vector2i>((currentView.getCenter() - currentView.getSize() / 2.0f));
 	}
+	mouseCoords += static_cast<sf::Vector2i>((currentView.getCenter() - currentView.getSize() / 2.0f));
+
 	return mouseCoords;
 }
 
@@ -227,11 +261,11 @@ std::string ApexMain::Vector2fToString(sf::Vector2f vec)
 	return stream.str();
 }
 
-void ApexMain::AddKeyListener(KeyListener* keyListener)
+void ApexMain::AddKeyListener(ApexKeyListener* keyListener)
 {
 	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 	{
-		if (m_KeyListeners[i] == nullptr) 
+		if (m_KeyListeners[i] == nullptr)
 		{
 			m_KeyListeners[i] = keyListener;
 			return;
@@ -240,7 +274,7 @@ void ApexMain::AddKeyListener(KeyListener* keyListener)
 	m_KeyListeners.push_back(keyListener);
 }
 
-void ApexMain::RemoveKeyListener(KeyListener * keyListener)
+void ApexMain::RemoveKeyListener(ApexKeyListener * keyListener)
 {
 	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 	{
@@ -249,6 +283,27 @@ void ApexMain::RemoveKeyListener(KeyListener * keyListener)
 }
 
 ApexMain* ApexMain::GetSingelton()
+void ApexMain::AddMouseListener(ApexMouseListener* mouseListener)
+{
+	for (size_t i = 0; i < m_MouseListeners.size(); ++i)
+	{
+		if (m_MouseListeners[i] == nullptr)
+		{
+			m_MouseListeners[i] = mouseListener;
+			return;
+		}
+	}
+	m_MouseListeners.push_back(mouseListener);
+}
+
+void ApexMain::RemoveMouseListener(ApexMouseListener* mouseListener)
+{
+	for (size_t i = 0; i < m_MouseListeners.size(); ++i)
+	{
+		if (m_MouseListeners[i] == mouseListener) m_MouseListeners[i] = nullptr;
+	}
+}
+
 {
 	if (m_Singelton == nullptr) 
 	{

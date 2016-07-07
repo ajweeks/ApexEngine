@@ -4,7 +4,7 @@
 #include "enumerations.h"
 
 BaseState::BaseState(StateManager* manager, StateType stateType) : 
-	KeyListener(),
+	ApexKeyListener(),
 	m_StateManager(manager), m_StateType(stateType)
 {
 }

@@ -17,7 +17,7 @@ public:
 	GameState& operator=(const GameState&) = delete;
 
 	void Tick(sf::Time elapsed);
-	void Draw(sf::RenderTarget& target) const;
+	void Draw(sf::RenderTarget& target);
 	void TogglePaused(bool pauseSounds);
 	Level* GetLevel();
 
