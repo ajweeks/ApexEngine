@@ -5,6 +5,7 @@
 #include "enumerations.h"
 #include "GameState.h"
 #include "Level.h"
+#include "PhysicsActor.h"
 
 ApexDebug::ApexDebug()
 {
@@ -32,7 +33,7 @@ void ApexDebug::Tick(sf::Time elapsed)
 			std::string newPlayerPos = ApexMain::Vector2fToString(player->GetPosition());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
 
-			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetVelocity());
+			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetPhysicsActor()->GetLinearVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
