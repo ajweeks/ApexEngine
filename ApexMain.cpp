@@ -12,8 +12,8 @@
 #include "Entity.h"
 #include "StateManager.h"
 #include "logo.h"
-#include "PhysicsActorManager.h"
 
+#include <iostream>
 #include <sstream>
 #include <iomanip>
 
@@ -25,11 +25,6 @@ ApexMain* ApexMain::m_Singleton = nullptr;
 
 sf::Font ApexMain::FontOpenSans;
 
-void OutputDebugString(const std::string& string)
-{
-	OutputDebugStringA(string.c_str());
-}
-
 ApexMain::ApexMain()
 {
 }
@@ -37,23 +32,20 @@ ApexMain::ApexMain()
 ApexMain::~ApexMain()
 {
 	delete m_StateManager;
-	delete m_PhysicsActorManager;
 }
 
 void ApexMain::Init()
 {
-	m_Window.create(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE, sf::Style::Close);
+	m_Window.create(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE);
 	m_Window.setVerticalSyncEnabled(USE_V_SYNC);
 	m_Window.setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
-
-	m_PhysicsActorManager = new PhysicsActorManager(m_Window);
 
 	m_StateManager = new StateManager();
 	m_StateManager->SetState(new MainMenuState(m_StateManager));
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
-		OutputDebugString("Couldn't load font OpenSans-Regular.ttf!\n");
+		std::cout << "Couldn't load font OpenSans-Regular.ttf!" << std::endl;
 	}
 
 	ApexAudio::LoadSounds();
@@ -68,13 +60,10 @@ void ApexMain::Run()
 {
 	sf::Clock clock;
 
-	double accumulator = 0.0f;
 	m_IsRunning = true;
 	while (m_IsRunning)
 	{
 		sf::Time elapsed = clock.restart();
-
-		// Calculate FPS
 		m_ElapsedThisFrame += elapsed;
 		if (m_ElapsedThisFrame.asSeconds() >= 1.0f)
 		{
@@ -90,13 +79,12 @@ void ApexMain::Run()
 			ApexMouse::Tick();
 		}
 
-		// Process events
 		sf::Event event;
 		while (m_Window.pollEvent(event))
 		{
 			if (m_Window.hasFocus())
 			{
-				switch (event.type)
+				switch(event.type)
 				{
 				case sf::Event::Closed:
 				{
@@ -106,8 +94,6 @@ void ApexMain::Run()
 				case sf::Event::LostFocus:
 				{
 					ApexAudio::SetAllPaused(true);
-					ApexKeyboard::Clear();
-					ApexMouse::Clear();
 					break;
 				}
 				case sf::Event::GainedFocus:
@@ -127,24 +113,17 @@ void ApexMain::Run()
 								break;
 							}
 						}
-					}
 
-					switch (event.key.code)
-					{
-					case sf::Keyboard::F10:
-					{
-						if (keyPressed)
+						switch (event.key.code)
 						{
-							TakeScreenshot();
-						}
-					} break;
-					case sf::Keyboard::P:
-					{
-						if (keyPressed)
+						case sf::Keyboard::F10:
 						{
-							m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
+							if (keyPressed)
+							{
+								TakeScreenshot();
+							}
+						} break;
 						}
-					} break;
 					}
 				} break;
 				case sf::Event::KeyReleased:
@@ -163,10 +142,7 @@ void ApexMain::Run()
 					{
 						if (m_MouseListeners[i] != nullptr)
 						{
-							if (!m_MouseListeners[i]->OnButtonPress(event.mouseButton))
-							{
-								break;
-							}
+							m_MouseListeners[i]->OnButtonPress(event.mouseButton);
 						}
 					}
 				} break;
@@ -194,25 +170,15 @@ void ApexMain::Run()
 			}
 		}
 
-		// Step physics
-		accumulator += elapsed.asSeconds();
-		Tick(accumulator);
-
+		Tick(elapsed);
 		Draw();
+		++m_Frames;
 	}
 }
 
-void ApexMain::Tick(double& accumulator)
+void ApexMain::Tick(sf::Time elapsed)
 {
-	while (accumulator > PhysicsActorManager::TIMESTEP)
-	{
-		const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
-
-		m_StateManager->Tick(dt);
-		m_PhysicsActorManager->Tick(dt);
-
-		accumulator -= PhysicsActorManager::TIMESTEP;
-	}
+	m_StateManager->Tick(elapsed);
 }
 
 void ApexMain::Draw()
@@ -220,14 +186,7 @@ void ApexMain::Draw()
 	m_Window.clear();
 	m_Window.setView(m_Window.getDefaultView());
 	m_StateManager->Draw(m_Window);
-
-	if (m_ShowingPhysicsDebug)
-	{
-		m_PhysicsActorManager->Draw(m_Window);
-	}
-
 	m_Window.display();
-	++m_Frames;
 }
 
 sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
@@ -273,20 +232,16 @@ void ApexMain::TakeScreenshot()
 	filenameStream << std::setw(2) << std::setfill('0') << std::to_string(localTime.wDay);
 	const std::string dateString = filenameStream.str();
 
-	const std::string path = "screenshots/" + dateString + "_";
-	const std::string filetype = ".png";
-
-	// Keep opening files until one doesn't exist
 	sf::FileInputStream fileInStream;
 	int index = 0;
-	while (fileInStream.open(path + std::to_string(index) + filetype))
+	// Keep opening files until one doesn't exist
+	while (fileInStream.open("screenshots/" + dateString + "_" + std::to_string(index) + ".png"))
 		++index;
 
-	const std::string filename = path + std::to_string(index) + filetype;
-	if (screen.saveToFile(filename))
-	{
-		OutputDebugString("Saved screenshot as \"" + filename + "\" successfully!\n");
-	}
+	const std::string filename = "screenshots/" + dateString + "_" + std::to_string(index) + ".png";
+	screen.saveToFile(filename);
+
+	std::cout << "Saved screenshot as \"" + filename << "\" successfully!" << std::endl;
 }
 
 StateManager* ApexMain::GetStateManager()
@@ -346,11 +301,6 @@ void ApexMain::RemoveMouseListener(ApexMouseListener* mouseListener)
 	{
 		if (m_MouseListeners[i] == mouseListener) m_MouseListeners[i] = nullptr;
 	}
-}
-
-b2World* ApexMain::GetPhysicsWorld() const
-{
-	return m_PhysicsActorManager->GetWorld();
 }
 
 ApexMain* ApexMain::GetSingleton()

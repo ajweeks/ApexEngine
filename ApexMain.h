@@ -10,11 +10,6 @@
 class ApexDebug;
 class ApexKeyListener;
 class ApexMouseListener;
-class PhysicsActorManager;
-
-class b2World;
-
-void OutputDebugString(const std::string &string);
 
 class ApexMain
 {
@@ -24,8 +19,6 @@ public:
 
 	ApexMain(const ApexMain&) = delete;
 	ApexMain& operator=(const ApexMain&) = delete;
-
-	static ApexMain* GetSingleton();
 
 	void Init();
 
@@ -50,10 +43,10 @@ public:
 	void AddMouseListener(ApexMouseListener* mouseListener);
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
 
-	b2World* GetPhysicsWorld() const;
+	static ApexMain* GetSingleton();
 
 private:
-	void Tick(double& accumulator);
+	void Tick(sf::Time elapsed);
 	void Draw();
 
 	static const int INITAL_WINDOW_WIDTH;
@@ -71,10 +64,7 @@ private:
 	int m_FPS;
 	bool m_IsRunning;
 
-	bool m_ShowingPhysicsDebug = false;
-
 	StateManager* m_StateManager = nullptr;
-	PhysicsActorManager* m_PhysicsActorManager = nullptr;
 
 	std::vector<ApexKeyListener*> m_KeyListeners;
 	std::vector<ApexMouseListener*> m_MouseListeners;
