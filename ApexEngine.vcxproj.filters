@@ -21,14 +21,14 @@
     <Filter Include="Source Files\IO">
       <UniqueIdentifier>{05ce6e50-94cd-4322-8a65-e222accc2e3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Level\Physics">
-      <UniqueIdentifier>{6734c281-0165-4616-bf42-f8ab34a63391}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Level\Weapon">
       <UniqueIdentifier>{00a1836c-0490-42bf-902d-1e022d6a1f54}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{df87255f-0a20-472a-9335-be4a536bd0a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{a1f708e7-235e-4a7a-8902-2b49ddf5be15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -77,18 +77,6 @@
     <ClCompile Include="Layer.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsActor.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsActorManager.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxFixture.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="CircleFixture.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Source Files\Level\Weapon</Filter>
     </ClCompile>
@@ -100,15 +88,6 @@
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>Source Files\Level\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Fixture.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Manifold.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Source Files\Level\Physics</Filter>
     </ClCompile>
     <ClCompile Include="Transition.cpp">
       <Filter>Source Files\Graphics</Filter>
@@ -136,6 +115,15 @@
     </ClCompile>
     <ClCompile Include="ApexMouseListener.cpp">
       <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsActorManager.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsActor.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="ApexDebugDraw.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,18 +178,6 @@
     <ClInclude Include="TileSet.h">
       <Filter>Source Files\Level</Filter>
     </ClInclude>
-    <ClInclude Include="PhysicsActor.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsActorManager.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="BoxFixture.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CircleFixture.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Source Files\Level\Weapon</Filter>
     </ClInclude>
@@ -214,17 +190,8 @@
     <ClInclude Include="Projectile.h">
       <Filter>Source Files\Level\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="Fixture.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="ApexMath.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Manifold.h">
-      <Filter>Source Files\Level\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Source Files\Level\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Transition.h">
       <Filter>Source Files\Graphics</Filter>
@@ -253,6 +220,13 @@
     <ClInclude Include="ApexMouseListener.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
+    <ClInclude Include="PhysicsActorManager.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsActor.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexDebugDraw.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\level\00\tiles.json" />

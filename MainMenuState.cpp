@@ -6,13 +6,11 @@
 #include "ApexAudio.h"
 #include "GameState.h"
 
-#include <iostream>
-
 MainMenuState::MainMenuState(StateManager* manager)
 	: BaseState(manager, StateType::MAIN_MENU)
 {
 	float x = APEX->GetWindowSize().x / 2.0f;
-	float y = 250;
+	float y = 400;
 	m_PlayButton = new ApexButton(x, y, sf::Vector2f(400, 125), "Play");
 	y += 150;
 	m_QuitButton = new ApexButton(x, y, sf::Vector2f(400, 125), "Quit");

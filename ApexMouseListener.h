@@ -11,7 +11,9 @@ public:
 	ApexMouseListener(const ApexMouseListener&) = delete;
 	ApexMouseListener& operator=(const ApexMouseListener&) = delete;
 
-	virtual void OnButtonPress(sf::Event::MouseButtonEvent buttonEvent) = 0;
+	// Return whether or not to propogate the event
+	// eg. return false if no other listeners should 'hear' this event
+	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent) = 0;
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent) = 0;
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent) = 0;
 

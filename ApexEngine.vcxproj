@@ -89,14 +89,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;Box2DDebug.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,16 +123,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;E:\OneDrive\Code\C++\ApexEngine\Box2DInclude</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib;E:\OneDrive\Code\C++\ApexEngine\Box2DLib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;Box2DRelease.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,12 +158,21 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ApexDebugDraw.cpp" />
     <ClCompile Include="ApexMouseListener.cpp" />
     <ClCompile Include="Camera.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="PhysicsActor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="PhysicsActorManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Transition.cpp" />
     <ClCompile Include="ApexDebug.cpp" />
@@ -171,17 +180,10 @@
     <ClCompile Include="ApexMouse.cpp" />
     <ClCompile Include="ApexAudio.cpp" />
     <ClCompile Include="BaseState.cpp" />
-    <ClCompile Include="BoxFixture.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletManager.cpp" />
-    <ClCompile Include="CircleFixture.cpp" />
     <ClCompile Include="CollapsibleElement.cpp" />
-    <ClCompile Include="Collision.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Fixture.cpp" />
     <ClCompile Include="ApexMain.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Gun.cpp" />
@@ -189,15 +191,9 @@
     <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Manifold.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="PhysicsActorManager.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="ApexCursor.cpp" />
-    <ClCompile Include="PhysicsActor.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -207,12 +203,21 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="ApexDebugDraw.h" />
     <ClInclude Include="ApexMouseListener.h" />
     <ClInclude Include="Camera.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="PhysicsActor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="PhysicsActorManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Transition.h" />
     <ClInclude Include="ApexDebug.h" />
@@ -221,18 +226,11 @@
     <ClInclude Include="ApexMouse.h" />
     <ClInclude Include="ApexAudio.h" />
     <ClInclude Include="BaseState.h" />
-    <ClInclude Include="BoxFixture.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletManager.h" />
-    <ClInclude Include="CircleFixture.h" />
     <ClInclude Include="CollapsibleElement.h" />
-    <ClInclude Include="Collision.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Entity.h" />
     <ClInclude Include="enumerations.h" />
-    <ClInclude Include="Fixture.h" />
     <ClInclude Include="ApexMain.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Gun.h" />
@@ -240,15 +238,9 @@
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="logo.h" />
-    <ClInclude Include="Manifold.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Map.h" />
-    <ClInclude Include="PhysicsActorManager.h" />
     <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="ApexCursor.h" />
-    <ClInclude Include="PhysicsActor.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="StateManager.h" />

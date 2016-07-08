@@ -9,6 +9,7 @@ public:
 	virtual ~ApexKeyboard();
 
 	static void Tick();
+	static void Clear();
 	static bool IsKeyDown(const sf::Keyboard::Key& key);
 	static bool IsKeyPressed(const sf::Keyboard::Key& key);
 	static bool IsKeyReleased(const sf::Keyboard::Key& key);

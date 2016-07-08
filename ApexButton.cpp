@@ -57,12 +57,14 @@ bool ApexButton::IsDown() const
 	return m_IsDown;
 }
 
-void ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
+bool ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
 	if (m_Hovering && buttonEvent.button == sf::Mouse::Button::Left)
 	{
 		m_IsDown = true;
+		return false;
 	}
+	return true;
 }
 
 void ApexButton::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)

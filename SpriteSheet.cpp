@@ -1,7 +1,6 @@
 
 #include "SpriteSheet.h"
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <iostream>
 #include <assert.h>
 
 SpriteSheet::SpriteSheet(std::string filePath, int frameWidth, int frameHeight) :
@@ -39,16 +38,15 @@ void SpriteSheet::Tick(sf::Time elapsed)
 	}
 }
 
-void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, float left, float top, int col, int row)
+void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, int col, int row)
 {
 	const sf::IntRect srcRect(col * m_FrameWidth, row * m_FrameHeight, m_FrameWidth, m_FrameHeight);
 	m_Sprite.setTextureRect(srcRect);
 
-	states.transform.translate(left, top);
 	target.draw(m_Sprite, states);
 }
 
-void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, float left, float top)
+void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	if (m_CurrentSequenceIndex >= m_Sequences.size())
 	{
@@ -68,7 +66,7 @@ void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, float 
 	const sf::IntRect srcRect(col * m_FrameWidth, row * m_FrameHeight, m_FrameWidth, m_FrameHeight);
 	m_Sprite.setTextureRect(srcRect);
 
-	states.transform.translate(left - m_FrameWidth / 2, top - m_FrameHeight / 2);
+	states.transform.translate(-m_FrameWidth / 2.0f, -m_FrameHeight / 2.0f);
 	target.draw(m_Sprite, states);
 }
 

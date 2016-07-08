@@ -16,7 +16,16 @@ void ApexKeyboard::Tick()
 	for (size_t i = 0; i < sf::Keyboard::KeyCount; ++i)
 	{
 		keysdownLastFrame[i] = keysdown[i];
-		keysdown[i] = sf::Keyboard::isKeyPressed((sf::Keyboard::Key)i);
+		keysdown[i] = sf::Keyboard::isKeyPressed(sf::Keyboard::Key(i));
+	}
+}
+
+void ApexKeyboard::Clear()
+{
+	for (size_t i = 0; i < sf::Keyboard::KeyCount; ++i)
+	{
+		keysdownLastFrame[i] = false;
+		keysdown[i] = false;
 	}
 }
 

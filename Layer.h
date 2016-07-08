@@ -30,6 +30,8 @@ public:
 	void Tick(sf::Time elapsed);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+	int GetTileSize() const;
+
 	static Type StringToType(std::string string);
 
 private:

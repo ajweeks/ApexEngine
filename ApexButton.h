@@ -24,7 +24,7 @@ public:
 
 	bool IsDown() const;
 	
-	virtual void OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
+	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
 

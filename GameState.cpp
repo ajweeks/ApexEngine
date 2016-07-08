@@ -4,7 +4,6 @@
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
 #include "Level.h"
-#include <iostream>
 
 GameState::GameState(StateManager* manager) :
 	BaseState(manager, StateType::GAME)

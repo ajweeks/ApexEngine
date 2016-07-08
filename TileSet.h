@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML\Graphics\Texture.hpp>
-#include <iostream>
+#include "ApexMain.h"
 
 struct TileSet
 {
@@ -11,7 +11,7 @@ struct TileSet
 		m_Texture = new sf::Texture();
 		if (!m_Texture->loadFromFile(imageFilePath))
 		{
-			std::cout << "Couldn't load image \"" << imageFilePath << "\"!" << std::endl;
+			OutputDebugString("Couldn't load image \"" + imageFilePath + "\"!\n");
 		}
 		m_TilesWide = m_Texture->getSize().x / m_TileSize;
 		m_TilesHigh = m_Texture->getSize().y / m_TileSize;

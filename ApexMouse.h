@@ -9,6 +9,7 @@ public:
 	virtual ~ApexMouse();
 
 	static void Tick();
+	static void Clear(); // Forget all inputs
 	static bool IsButtonDown(sf::Mouse::Button button);
 	static bool IsButtonReleased(sf::Mouse::Button button);
 	static bool IsButtonPressed(sf::Mouse::Button button);

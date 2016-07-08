@@ -2,7 +2,6 @@
 #include "Layer.h"
 #include "PhysicsActor.h"
 #include "Level.h"
-#include "BoxFixture.h"
 
 Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, std::string name, bool visible, float opacity, Type type, int width, int height) :
 	m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
@@ -33,8 +32,8 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 
 			if (solidTileIDs[tileSrc])
 			{
-				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), PhysicsActor::BodyType::STATIC, level);
-				newActor->SetFixture(new BoxFixture(newActor));
+				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), b2BodyType::b2_staticBody, 0.0f);
+				newActor->AddBoxFixture(float(tileSet->m_TileSize), float(tileSet->m_TileSize));
 				m_Actors.push_back(newActor);
 			}
 		}
@@ -56,29 +55,17 @@ Layer::~Layer()
 
 void Layer::Tick(sf::Time elapsed)
 {
-	// Uncomment to trip ballz
-	//m_Elapsed += elapsed;
-	//const float tileSize = float(m_TileSet->m_TileSize);
-	//for (int y = 0; y < m_Height; ++y)
-	//{
-	//	for (int x = 0; x < m_Width; ++x)
-	//	{
-	//		const int tileIndex = (x + y * m_Width);
-	//		sf::Vertex* currentQuad = &m_Verticies[tileIndex * 4];
-	//		int col = int(sin(m_Elapsed.asSeconds()) * 255.0f);
-	//		int col2 = int(cos(0.129 + m_Elapsed.asSeconds()) * 255.0f);
-	//		currentQuad[0].color = sf::Color(col, 255 - col, col);
-	//		currentQuad[1].color = sf::Color(col, col, 255 - col);
-	//		currentQuad[2].color = sf::Color(col2, 127 - col2, col2);
-	//		currentQuad[3].color = sf::Color(col2 + 5, col2, col2);
-	//	}
-	//}
 }
 
 void Layer::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	states.texture = m_TileSet->m_Texture;
 	target.draw(m_Verticies, states);
+}
+
+int Layer::GetTileSize() const
+{
+	return m_TileSet->m_TileSize;
 }
 
 Layer::Type Layer::StringToType(std::string string)

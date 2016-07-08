@@ -12,7 +12,8 @@ const int CollapsibleElement::FONT_SIZE = 32;
 
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string prefixString, 
 	float(*GetValue)(), float initialValue, bool collapsed)
-	: m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::FontOpenSans, FONT_SIZE), GetValue(GetValue),
+	: ApexMouseListener(),
+	m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::FontOpenSans, FONT_SIZE), GetValue(GetValue),
 	m_Value(initialValue), m_Collapsed(collapsed)
 {
 	m_Text.move(18, 0);
@@ -34,30 +35,24 @@ CollapsibleElement::~CollapsibleElement()
 
 bool CollapsibleElement::Tick(sf::Time elapsed, ApexDebug* debug)
 {
-	bool rectNeedsResizing = false;
+	bool rectNeedsResizing = m_NeedsBackgroundResize;
 	sf::Vector2i mousePos = APEX->GetMouseCoordsScreenSpace();
 	sf::FloatRect globalBounds = GetBounds(m_Text);
 
+	const bool wasHovering = m_Hover;
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
-	if (m_Hover)
-	{
-		APEX->SetCursor(sf::ApexCursor::HAND);
-
-		if (!m_Children.empty() && ApexMouse::IsButtonPressed(sf::Mouse::Left))
-		{
-			SetCollapsed(!m_Collapsed);
-			rectNeedsResizing = true;
-		}
-	}
+	if (m_Hover && !wasHovering) APEX->SetCursor(sf::ApexCursor::HAND);
+	else if (!m_Hover && wasHovering) APEX->SetCursor(sf::ApexCursor::NORMAL);
 
 	if (m_Collapsed == false)
 	{
 		for (size_t i = 0; i < m_Children.size(); ++i)
 		{
-			m_Children[i]->Tick(elapsed, debug);
+			if (m_Children[i]->Tick(elapsed, debug)) rectNeedsResizing = true;
 		}
 	}
 
+	m_NeedsBackgroundResize = false;
 	return rectNeedsResizing;
 }
 
@@ -161,6 +156,28 @@ void CollapsibleElement::UpdateString(std::string newString, bool usePrefix)
 {
 	if (usePrefix) m_Text.setString(m_PrefixString + ": " + newString);
 	else m_Text.setString(newString);
+}
+
+bool CollapsibleElement::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
+{
+	if (buttonEvent.button == sf::Mouse::Button::Left && m_Hover)
+	{
+		if (!m_Children.empty())
+		{
+			SetCollapsed(!m_Collapsed);
+			m_NeedsBackgroundResize = true;
+		}
+		return false;
+	}
+	return true;
+}
+
+void CollapsibleElement::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
+{
+}
+
+void CollapsibleElement::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
+{
 }
 
 void CollapsibleElement::SetCollapsed(bool collapsed)

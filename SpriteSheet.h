@@ -22,8 +22,8 @@ public:
 	virtual ~SpriteSheet();
 
 	void Tick(sf::Time elapsed);
-	void Draw(sf::RenderTarget& target, sf::RenderStates states, float left, float top, int col, int row); // Draws specific frame
-	void Draw(sf::RenderTarget& target, sf::RenderStates states, float left, float top); // Draws the current frame of the current sequence
+	void Draw(sf::RenderTarget& target, sf::RenderStates states, int col, int row); // Draws specific frame
+	void Draw(sf::RenderTarget& target, sf::RenderStates states); // Draws the current frame of the current sequence
 
 	void AddSequence(unsigned int sequenceIndex, Sequence sequence);
 	void SetCurrentSequence(int sequenceIndex, bool restartAnimation = true);

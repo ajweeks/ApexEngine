@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ApexMouseListener.h"
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\Text.hpp>
@@ -7,7 +9,7 @@
 
 class ApexDebug;
 
-class CollapsibleElement
+class CollapsibleElement : public ApexMouseListener
 {
 public:
 	// Use this constructor for elements which need to call the passed in callback every frame to update their value
@@ -30,6 +32,11 @@ public:
 
 	void UpdateString(std::string newString, bool usePrefix = true);
 
+	// Apex Mouse Listener overrides
+	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
+	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
+	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
+
 private:
 	static const float INDENTATION;
 	static const float LINE_HEIGHT;
@@ -49,6 +56,7 @@ private:
 	std::vector<CollapsibleElement*> m_Children;
 	bool m_Collapsed = true;
 	bool m_Hover = false; // True when the mouse is hovering over this element (text or arrow)
+	bool m_NeedsBackgroundResize = false;
 
 	// A function callback which get's called every frame to update this element's value
 	float (*GetValue)() = nullptr;

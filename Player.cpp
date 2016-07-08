@@ -2,21 +2,22 @@
 #include "Player.h"
 #include "ApexKeyboard.h"
 #include "PhysicsActor.h"
-#include "CircleFixture.h"
 #include "Level.h"
+#include "enumerations.h"
 
-const float Player::MAX_VEL = 300.0f;
+const float Player::VEL = 500000.0f;
+const float Player::MAX_VEL = 6800000.0f;
 const float Player::FRICTION = 5.0f;
 
-Player::Player(Level* level, sf::Vector2f initalPosition) :
-	Entity(level, initalPosition, Type::PLAYER, this), 
+Player::Player(Level* level) :
+	Entity(level, sf::Vector2f(), ActorID::PLAYER, this),
 	m_Level(level), 
-	m_IntialPos(initalPosition), 
 	m_SpriteSheet("resources/small-mario.png", 18, 32),
-	m_Gun(level, m_IntialPos, this)
+	m_IntialPos(200.0f, 75.0f),
+	m_Gun(level, m_IntialPos)
 {
-	m_Actor->SetFixture(new CircleFixture(m_Actor, 18.0f));
-
+	m_Actor->AddCircleFixture(7.0f);
+	
 	m_GlowTexture.loadFromFile("resources/glow_white.png");
 	m_GlowSprite.setTexture(m_GlowTexture);
 
@@ -43,7 +44,7 @@ Player::~Player()
 void Player::Reset()
 {
 	m_Actor->SetPosition(m_IntialPos);
-	m_Actor->SetVelocity(sf::Vector2f());
+	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
 	m_Gun.Reset();
 	m_IsCrouching = false;
 }
@@ -57,8 +58,6 @@ void Player::Tick(sf::Time elapsed)
 {
 	HandleMovement(elapsed);
 
-	// Rainbow glow
-	//m_GlowSprite.setColor(sf::Color(sf::Uint32(sin(m_SecondsElapsed) * 255), sf::Uint32(cos(m_SecondsElapsed) * 255), sf::Uint32(sin(0.5 - m_SecondsElapsed * 2) * 255)));
 	m_GlowSprite.setColor(sf::Color(255, 255, 255, 55 + int(sin(m_SecondsElapsed * 3.5f) * 45) + 45));
 	m_SpriteSheet.Tick(elapsed);
 
@@ -69,8 +68,8 @@ void Player::HandleMovement(sf::Time elapsed)
 {
 	const float dt = elapsed.asSeconds();
 	m_SecondsElapsed += dt;
-	const float dVel = 1500.0f * dt;
-	sf::Vector2f newVel = m_Actor->GetVelocity();
+	const float dVel = VEL * dt;
+	sf::Vector2f newVel = m_Actor->GetLinearVelocity();
 
 	if (ApexKeyboard::IsKeyPressed(sf::Keyboard::D) || ApexKeyboard::IsKeyPressed(sf::Keyboard::Right))
 		m_SpriteSheet.SetCurrentSequence(int(AnimationSequence::RUNNING));
@@ -120,35 +119,12 @@ void Player::HandleMovement(sf::Time elapsed)
 		if (abs(newVel.y) < EPSILON) newVel.y = 0.0f;
 	}
 
-	m_Actor->SetVelocity(newVel);
+	m_Actor->SetLinearVelocity(newVel);
 	ClampPosition();
 }
 
-void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
-{
-	const float centerX = m_Actor->GetPosition().x;
-	const float centerY = m_Actor->GetPosition().y;
-
-	const float radius = ((CircleFixture*)m_Actor->GetFixture())->GetRadius();
-	const sf::Vector2f topLeft = m_Actor->GetPosition() + sf::Vector2f(-radius, -radius);
-	// Draw glow
-	{
-		sf::BlendMode prevBlendMode = states.blendMode;
-		sf::Transform prevTransform = states.transform;
-
-		states.blendMode = sf::BlendAdd;
-		states.transform.translate(topLeft + sf::Vector2f(-40, -40));
-		target.draw(m_GlowSprite, states);
-
-		states.blendMode = prevBlendMode;
-		states.transform = prevTransform;
-	}
-
-	m_SpriteSheet.Draw(target, states, centerX - radius, centerY - radius);
-
-	m_Gun.Draw(target, states);
-}
-
+// Bounds check against the edges of the level (in theory shouldn't be neccessary, the levels
+// should have 4 containing walls)
 void Player::ClampPosition()
 {
 	const float left = 0;
@@ -157,22 +133,50 @@ void Player::ClampPosition()
 	const float bottom = float(m_Level->GetHeight()) - 50.0f;
 	if (m_Actor->GetPosition().x < left)
 	{
-		m_Actor->SetPosition(sf::Vector2f(left, m_Actor->GetPosition().y));
-		m_Actor->SetVelocity(sf::Vector2f(0, m_Actor->GetVelocity().y));
+		m_Actor->SetXPosition(left);
+		m_Actor->SetXVelocity(0.0f);
 	}
 	if (m_Actor->GetPosition().x > right)
 	{
-		m_Actor->SetPosition(sf::Vector2f(right, m_Actor->GetPosition().y));
-		m_Actor->SetVelocity(sf::Vector2f(0, m_Actor->GetVelocity().y));
+		m_Actor->SetXPosition(right);
+		m_Actor->SetXVelocity(0.0f);
 	}
 	if (m_Actor->GetPosition().y < top)
 	{
-		m_Actor->SetPosition(sf::Vector2f(m_Actor->GetPosition().x, top));
-		m_Actor->SetVelocity(sf::Vector2f(m_Actor->GetVelocity().x, 0));
+		m_Actor->SetYPosition(top);
+		m_Actor->SetYVelocity(0.0f);
 	}
 	if (m_Actor->GetPosition().y > bottom)
 	{
-		m_Actor->SetPosition(sf::Vector2f(m_Actor->GetPosition().x, bottom));
-		m_Actor->SetVelocity(sf::Vector2f(m_Actor->GetVelocity().x, 0));
+		m_Actor->SetYPosition(bottom);
+		m_Actor->SetYVelocity(0.0f);
 	}
+}
+
+void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
+{
+	const float centerX = m_Actor->GetPosition().x;
+	const float centerY = m_Actor->GetPosition().y;
+
+	states.transform.translate(centerX, centerY);
+
+	DrawGlow(target, states);
+	DrawShadow(target, states);
+
+	m_SpriteSheet.Draw(target, states);
+
+	m_Gun.Draw(target, states);
+}
+
+void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)
+{
+	states.transform.translate(sf::Vector2f(-13, 0));
+	target.draw(*m_ShadowSprite, states);
+}
+
+void Player::DrawGlow(sf::RenderTarget& target, sf::RenderStates states)
+{
+	states.blendMode = sf::BlendAdd;
+	states.transform.translate(sf::Vector2f(-60, -50));
+	target.draw(m_GlowSprite, states);
 }

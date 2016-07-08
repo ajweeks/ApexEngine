@@ -15,12 +15,8 @@ public:
 	{
 		WALKING, RUNNING
 	};
-	enum class PlayerTransition
-	{
-		CROUCH, COLOUR
-	};
 
-	Player(Level* level, sf::Vector2f initalPosition = sf::Vector2f());
+	Player(Level* level);
 	virtual ~Player();
 
 	void Tick(sf::Time elapsed);
@@ -33,7 +29,10 @@ public:
 private:
 	void ClampPosition();
 	void HandleMovement(sf::Time elapsed);
+	void DrawShadow(sf::RenderTarget& target, sf::RenderStates states);
+	void DrawGlow(sf::RenderTarget& target, sf::RenderStates states);
 	
+	static const float VEL;
 	static const float MAX_VEL;
 	static const float FRICTION;
 

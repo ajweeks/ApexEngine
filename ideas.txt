@@ -8,10 +8,15 @@ THEME
 -Tools
 -Music?
 -No Violence
-
-
+-Electricity
+  -Build up charge by doing something
+    -Use that charge to 
+	  -charge things?
+	  -Get money from electricity company
+	  
 MECHANICS
 -Top down
 -Shooter? (nah)
 -Automation (cookie clicker progression)
-
+  -Mining?
+-

@@ -29,7 +29,6 @@ public:
 	void Reset();
 
 	Player* GetPlayer();
-	PhysicsActorManager* GetActorManager();
 	BulletManager* GetBulletManager();
 
 	void ToggleDebugOverlay();
@@ -40,18 +39,17 @@ public:
 	void SetScreenShake(float xScale, float yScale);
 
 private:
-	const int WIDTH;
-	const int HEIGHT;
-
 	bool IsPointInPolygon(std::vector<sf::Vector2i> points, sf::Vector2f point);
+
+	int m_Width;
+	int m_Height;
 
 	Map* m_Map = nullptr;
 	Player* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
 
-	ApexDebug m_DebugOverlay;
-	bool m_ShowingDebugOverlay;
+	BulletManager* m_BulletManager = nullptr;
 
-	PhysicsActorManager* m_ActorManager = nullptr;
-	BulletManager m_BulletManager;
+	ApexDebug* m_DebugOverlay = nullptr;
+	bool m_ShowingDebugOverlay;
 };

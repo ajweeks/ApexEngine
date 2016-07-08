@@ -48,8 +48,8 @@ void Map::Create(Level* level, std::string filePath)
 		return;
 	}
 
-	const int mapWidth = tileMap["width"];
-	const int mapHeight = tileMap["height"];
+	m_TilesWide = tileMap["width"];
+	m_TilesHigh = tileMap["height"];
 
 	std::vector<json> tileSets = tileMap["tilesets"];
 	if (tileSets.size() != 1)
@@ -127,4 +127,19 @@ void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	states.blendMode = sf::BlendAlpha;
 
 	target.draw(gradMult, states);*/
+}
+
+int Map::GetTileSize() const
+{
+	return m_Layers[0]->GetTileSize();
+}
+
+int Map::GetTilesWide() const
+{
+	return m_TilesWide;
+}
+
+int Map::GetTilesHigh() const
+{
+	return m_TilesHigh;
 }

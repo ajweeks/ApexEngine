@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML\Graphics\Sprite.hpp>
+#include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Rect.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderStates.hpp>
@@ -11,12 +13,12 @@ class Level;
 class Entity
 {
 public:
-	enum class Type
+	enum class ActorID
 	{
 		PLAYER, BG_TILE, BULLET, GUN
 	};
 
-	Entity(Level* level, sf::Vector2f position, Type type, void* userPointer = nullptr);
+	Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer = nullptr);
 	virtual ~Entity();
 
 	Entity& operator=(const Entity&) = delete;
@@ -25,13 +27,15 @@ public:
 	virtual void Tick(sf::Time elapsed) = 0;
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) = 0;
 
-	sf::Vector2f GetPosition() const;
-	sf::Vector2f GetVelocity() const;
+	PhysicsActor* GetPhysicsActor() const;
 
 protected:
 	PhysicsActor* m_Actor;
+	static sf::Sprite* m_ShadowSprite;
+	static sf::Texture* m_ShadowTexture;
 
 private:
 	sf::FloatRect m_BoundingBox;
+	static unsigned int m_InstanceCount;
 
 };

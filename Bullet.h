@@ -20,6 +20,8 @@ public:
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 private:
+	static const float RADIUS;
+
 	BulletManager* m_BulletManager = nullptr;
 	float m_Direction; // Angle in radians
 	sf::CircleShape m_Circle;

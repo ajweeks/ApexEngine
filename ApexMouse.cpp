@@ -21,6 +21,15 @@ void ApexMouse::Tick()
 	}
 }
 
+void ApexMouse::Clear()
+{
+	for (size_t i = 0; i < sf::Mouse::ButtonCount; ++i)
+	{
+		buttonsdownLastFrame[i] = false;
+		buttonsdown[i] = false;
+	}
+}
+
 bool ApexMouse::IsButtonDown(sf::Mouse::Button button)
 {
 	return buttonsdown[button];

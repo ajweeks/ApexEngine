@@ -25,6 +25,7 @@ public:
 private:
 	void BoundsCheck(sf::View& view, Level* level);
 
+	static const float DEFAULT_ZOOM;
 	static const float ACCELERATION;
 
 	sf::View m_View;

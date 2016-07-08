@@ -3,10 +3,11 @@
 #include "Player.h"
 #include "Level.h"
 
+const float Camera::DEFAULT_ZOOM = 2.0f;
 const float Camera::ACCELERATION = 4.0f;
 
 Camera::Camera(sf::Vector2f windowSize) :
-	m_View(sf::FloatRect(0, 0, windowSize.x, windowSize.y))
+	m_View(sf::FloatRect(0, 0, windowSize.x / DEFAULT_ZOOM, windowSize.y / DEFAULT_ZOOM))
 {
 }
 
@@ -35,7 +36,7 @@ void Camera::Tick(sf::Time elapsed, Level* level)
 	if (m_ShakeRadius.x > 1.0f || 
 		m_ShakeRadius.y > 1.0f)
 	{
-		const float angle = (std::rand() % 360);
+		const float angle = float(std::rand() % 360);
 		m_ShakeOffset.x = cos(angle) * m_ShakeRadius.x;
 		m_ShakeOffset.y = sin(angle) * m_ShakeRadius.y;
 	}
@@ -43,10 +44,11 @@ void Camera::Tick(sf::Time elapsed, Level* level)
 	const float dx = playerPos.x - newView.getCenter().x;
 	const float dy = playerPos.y - newView.getCenter().y;
 
+
 	const float acc = ACCELERATION * dt;
 	newView.move(dx * acc, dy * acc);
 
-	BoundsCheck(newView, level);
+	//BoundsCheck(newView, level);
 	m_View = newView;
 }
 
@@ -73,8 +75,8 @@ void Camera::BoundsCheck(sf::View& view, Level* level)
 	const float levelWidth = float(level->GetWidth());
 	const float levelHeight = float(level->GetHeight());
 
-	const float halfCameraWidth = m_View.getSize().x / 2.0f;
-	const float halfCameraHeight = m_View.getSize().y / 2.0f;
+	const float halfCameraWidth = view.getSize().x / 2.0f;
+	const float halfCameraHeight = view.getSize().y / 2.0f;
 
 	if (view.getCenter().x - halfCameraWidth < 0.0f)
 	{

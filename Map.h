@@ -24,6 +24,10 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
+	int GetTilesWide() const;
+	int GetTilesHigh() const;
+	int GetTileSize() const;
+
 private:
 	int m_TilesWide;
 	int m_TilesHigh;

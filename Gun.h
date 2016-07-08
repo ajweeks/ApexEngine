@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Entity.h"
+#include "ApexMouseListener.h"
+
 #include <SFML\System\Vector2.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
@@ -11,10 +13,10 @@ class Level;
 class BulletManager;
 class Game;
 
-class Gun : public Entity
+class Gun : public Entity, public ApexMouseListener
 {
 public:
-	Gun(Level* level, sf::Vector2f position, Player* playerHolding = nullptr);
+	Gun(Level* level, sf::Vector2f position);
 	virtual ~Gun();
 
 	Gun(const Gun&) = delete;
@@ -26,9 +28,13 @@ public:
 	void Shoot();
 	void Reset();
 
+	// Apex Mouse Listener overrides
+	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
+	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
+	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
+
 private:
 	bool m_BeingHeld;
-	Player* m_PlayerHolding = nullptr;
 	Level* m_Level = nullptr;
 	BulletManager* m_BulletManager = nullptr;
 

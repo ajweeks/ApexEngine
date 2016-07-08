@@ -7,15 +7,13 @@
 #include "ApexMouse.h"
 #include "ApexAudio.h"
 #include "Player.h"
-#include "CircleFixture.h"
 
-Gun::Gun(Level* level, sf::Vector2f position, Player* playerHolding) :
-	Entity(level, position, Type::GUN, this),
-	m_Level(level),
-	m_PlayerHolding(playerHolding)
+Gun::Gun(Level* level, sf::Vector2f position) :
+	Entity(level, position, ActorID::GUN, this),
+	m_Level(level)
 {
-	m_Actor->SetFixture(new CircleFixture(m_Actor, 5.0f));
-	m_Actor->SetSolid(false);
+	//m_Actor->AddCircleFixture(5.0f);
+	//m_Actor->SetSensor(true);
 
 	m_BulletManager = level->GetBulletManager();
 	m_Direction = 0.0f;
@@ -38,28 +36,42 @@ void Gun::Reset()
 	m_BulletsRemaining = m_ClipSize;
 }
 
+bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
+{
+	if (buttonEvent.button == sf::Mouse::Button::Left)
+	{
+		Shoot();
+		return false;
+	}
+	return true;
+}
+
+void Gun::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
+{
+}
+
+void Gun::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
+{
+}
+
 void Gun::Tick(sf::Time elapsed)
 {
-	if (m_PlayerHolding != nullptr)
+	if (m_Level->GetPlayer() != nullptr)
 	{
 		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
 		const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
 		m_Direction = atan2(dPos.y, dPos.x);
 		
-		m_Actor->SetPosition(m_PlayerHolding->GetPosition());
+		m_Actor->SetPosition(m_Level->GetPlayer()->GetPosition());
 
-		const bool mouseInBounds = mousePos.x > 0 && mousePos.x < 2080 &&
-			mousePos.y > 0 && mousePos.y < 1216;
-		if (mouseInBounds && ApexMouse::IsButtonPressed(sf::Mouse::Button::Left))
-		{
-			Shoot();
-		}
+		//const bool mouseInBounds = mousePos.x > 0 && mousePos.x < 2080 &&
+		//	mousePos.y > 0 && mousePos.y < 1216;
 	}
 }
 
 void Gun::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	states.transform.translate(m_Actor->GetPosition()).rotate(m_Direction * (180.0f/ 3.1415f));
+	states.transform.rotate(m_Direction * (180.0f/ 3.1415f));
 	target.draw(m_RectShape, states);
 }
 
@@ -82,8 +94,9 @@ void Gun::Shoot()
 
 	m_Level->SetScreenShake(abs(20.0f * cos(m_Direction)), abs(20.0f * sin(m_Direction)));
 
-	sf::Vector2f posOffset = sf::Vector2f(cos(m_Direction) * 22, sin(m_Direction) * 22);
-	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, m_PlayerHolding->GetVelocity() / 2.0f);
+	const sf::Vector2f posOffset = sf::Vector2f(cos(m_Direction) * 22.0f, sin(m_Direction) * 22.0f);
+	const sf::Vector2f playerVel = m_Level->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
+	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsRemaining;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
 }
