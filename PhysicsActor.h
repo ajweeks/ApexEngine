@@ -1,40 +1,24 @@
 #pragma once
 
-#include <SFML\System\Vector2.hpp>
-#include <SFML\System\Time.hpp>
-#include <SFML\Graphics\RectangleShape.hpp>
+#include <Box2D\Dynamics\b2Fixture.h>
 
-class Level;
-class Fixture;
+#include <SFML\System\Vector2.hpp>
+
+class b2Body;
+class ContactListener;
 
 class PhysicsActor
 {
 public:
-	enum class BodyType
-	{
-		STATIC, DYNAMIC //, KINEMATIC?
-	};
-
-	PhysicsActor(sf::Vector2f centerPos, BodyType bodyType, Level* level);
+	PhysicsActor(sf::Vector2f pos, b2BodyType bodyType, float angle);
 	virtual ~PhysicsActor();
 
 	PhysicsActor(const PhysicsActor&) = delete;
 	PhysicsActor& operator=(const PhysicsActor&) = delete;
-	
-	void Tick(sf::Time elapsed);
-	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	void ApplyForce(const sf::Vector2f& force);
-	void ApplyImpulse(const sf::Vector2f& impulse, const sf::Vector2f& contactVector);
-
-	void SetPosition(sf::Vector2f newPosition);
-	sf::Vector2f GetPosition() const;
-
-	void SetVelocity(sf::Vector2f newVelocity);
-	sf::Vector2f GetVelocity() const;
-	
-	void SetAngularVelocity(float angularVelocity);
-	float GetAngularVelocity() const;
+	b2Fixture* AddBoxFixture(float width, float height, float resitiution = 0.8f, float friction = 0.7f, float density = 1.0f);
+	b2Fixture* AddCircleFixture(float radius, sf::Vector2f offset = sf::Vector2f(0, 0), float resitiution = 0.8f,
+		float friction = 0.7f, float density = 1.0f);
 
 	void SetUserData(int userData);
 	int GetUserData() const;
@@ -42,62 +26,63 @@ public:
 	void SetUserPointer(void* userPointer);
 	void* GetUserPointer() const;
 
-	void SetSolid(bool solid);
-	bool IsSolid() const;
-	
-	BodyType GetBodyType() const;
+	b2Body* GetBody() const;
 
-	float GetRestitution() const;
-	void SetOverlapping(bool overlapping);
+	void SetPosition(sf::Vector2f pos);
+	void SetPosition(float x, float y);
+	void SetXPosition(float xPos);
+	void SetYPosition(float yPos);
+	sf::Vector2f GetPosition() const;
 
-	void SetInverseMass(float inverseMass);
-	float GetInverseMass() const;
+	void SetLinearVelocity(sf::Vector2f vel);
+	void SetLinearVelocity(float xv, float yv);
+	void SetXVelocity(float xv);
+	void SetYVelocity(float yv);
+	sf::Vector2f GetLinearVelocity() const;
 
-	void SetInverseInertia(float inverseIntertia);
-	float GetInverseInertia() const;
-	
-	void SetOrientation(float orientation);
-	float GetOrientation() const;
+	void SetAngle(float angle);
+	float GetAngle() const;
 
-	void SetFixture(Fixture* fixture);
-	Fixture* GetFixture() const;
+	void SetAngularVelocity(float angularVel);
+	float GetAngularVelocity() const;
 
-	float GetStaticFriction() const;
-	float GetDynamicFriction() const;
+	void SetFixedRotation(bool hasFixedRotation);
+	bool IsFixedRotation() const;
 
-	sf::Vector2f GetForce() const;
-	void SetForce(sf::Vector2f force);
+	void SetBullet(bool isBullet);
+	bool IsBullet() const;
 
-	float GetTorque() const;
-	void SetTorque(float torque);
+	void SetBodyType(b2BodyType bodyType);
+	b2BodyType GetBodyType() const;
 
+	void SetAwake(bool awake);
+	bool IsAwake() const;
+
+	void SetActive(bool active);
+	bool IsActive() const;
+
+	void SetSensor(bool sensor);
+	bool IsSensor() const;
+
+	void SetCollisionFilter(const b2Filter& collisionFilter);
+	b2Filter GetCollisionFilter() const;
+
+	void AddContactListener(ContactListener* listener);
+	void RemoveContactListener();
+	ContactListener* GetContactListener() const;
+
+	void ApplyForce(sf::Vector2f force, sf::Vector2f offsetPoint);
+	void ApplyTorque(float torque);
+	void ApplyLinearImpulse(sf::Vector2f impulse, sf::Vector2f offsetPoint);
+	void ApplyAngularImpulse(float impulse);
+
+	static const int SCALE;
 private:
-	sf::Vector2f m_Pos;
-	sf::Vector2f m_Vel;
-	float m_AngularVel;
-	float m_Torque;
-	float m_Orientation; // in radians
-	sf::Vector2f m_Force;
-	float m_InverseMass;
-	float m_InverseIntertia;
 
-	float m_StaticFriction;
-	float m_DynamicFriction;
-	float m_Restitution;
-
-	BodyType m_BodyType;
-	bool m_Solid;
-
-	sf::RectangleShape m_DebugXAxisRect;
-	sf::RectangleShape m_DebugYAxisRect;
-
-	Level* m_Level = nullptr;
-	Fixture* m_Fixture = nullptr;
-
-	int m_UserData;
+	bool m_IsSensor = false;
+	int m_UserData = 0;
 	void* m_UserPointer = nullptr;
 
-	bool m_IsOverlapping = false;
-
+	b2Body* m_Body = nullptr;
+	b2Filter m_CollisionFilter;
 };
-

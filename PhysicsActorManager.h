@@ -1,35 +1,34 @@
 #pragma once
 
+#include <Box2D\Dynamics\b2World.h>
+#include <Box2D\Dynamics\b2Body.h>
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderStates.hpp>
-#include <vector>
 
-class PhysicsActor;
-class Manifold;
+class ApexDebugDraw;
 
 class PhysicsActorManager
 {
 public:
-	PhysicsActorManager();
+	PhysicsActorManager(sf::RenderTarget& target);
 	virtual ~PhysicsActorManager();
 
 	PhysicsActorManager(const PhysicsActorManager&) = delete;
 	PhysicsActorManager& operator=(const PhysicsActorManager&) = delete;
 
-	void AddPhysicsActor(PhysicsActor* actor);
-	bool RemovePhysicsActor(PhysicsActor* actor);
-
 	void Tick(sf::Time elapsed);
-	void Draw(sf::RenderTarget& target, sf::RenderStates states);
+	void Draw(sf::RenderTarget& target);
 
+	b2World* GetWorld() const;
+
+	static const float TIMESTEP;
 private:
-	void IntegrateForces(PhysicsActor* actor, sf::Time elapsed);
-	void IntegrateVelocity(PhysicsActor* actor, sf::Time elapsed);
+	static const int POS_ITERATIONS;
+	static const int VEL_ITERATIONS;
 
-	std::vector<PhysicsActor*> m_PhysicsActors;
-	std::vector<Manifold> m_Contacts;
-
-	int m_Iterations = 2;
+	b2World* m_World = nullptr;
+	ApexDebugDraw* m_DebugDraw = nullptr;
 
 };

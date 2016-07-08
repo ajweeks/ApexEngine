@@ -5,6 +5,7 @@
 #include "enumerations.h"
 #include "GameState.h"
 #include "Level.h"
+#include "PhysicsActor.h"
 
 ApexDebug::ApexDebug()
 {
@@ -32,7 +33,7 @@ void ApexDebug::Tick(sf::Time elapsed)
 			std::string newPlayerPos = ApexMain::Vector2fToString(player->GetPosition());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
 
-			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetVelocity());
+			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetPhysicsActor()->GetLinearVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
@@ -62,7 +63,7 @@ void ApexDebug::Draw(sf::RenderTarget& target, sf::RenderStates states) const
 ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position)
 {
 	CollapsibleElementStack* newStack = new CollapsibleElementStack();
-	CollapsibleElement* newElement  = new CollapsibleElement(nullptr, string);
+	CollapsibleElement* newElement = new CollapsibleElement(nullptr, string);
 	newElement->Move(position);
 	newStack->m_CollapsibleElement = newElement;
 
