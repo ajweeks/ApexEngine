@@ -51,10 +51,15 @@ public:
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
 
 	b2World* GetPhysicsWorld() const;
+	void SetPhysicsPaused(bool physicsPaused);
+
+	bool DEBUGIsGamePaused() const;
 
 private:
 	void Tick(double& accumulator);
 	void Draw();
+
+	void DEBUGToggleGamePaused();
 
 	static const int INITAL_WINDOW_WIDTH;
 	static const int INITAL_WINDOW_HEIGHT;
@@ -71,6 +76,12 @@ private:
 	int m_FPS;
 	bool m_IsRunning;
 
+	// True when the world should be frozen
+	bool m_PhysicsPaused = false;
+	// True when the state manager shouldn't be Ticked (no animations, etc.)
+	// This pauses the physics too (only a debug feature)
+	bool m_DEBUG_GamePaused = false; 
+	// Whether or not to show the physics fixtures
 	bool m_ShowingPhysicsDebug = false;
 
 	StateManager* m_StateManager = nullptr;

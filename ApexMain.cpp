@@ -83,13 +83,14 @@ void ApexMain::Run()
 			m_Window.setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " fps");
 			m_Frames = 0;
 		}
-
+		
 		if (m_Window.hasFocus())
 		{
 			ApexKeyboard::Tick();
 			ApexMouse::Tick();
 		}
 
+		bool stepOneFrame = false;
 		// Process events
 		sf::Event event;
 		while (m_Window.pollEvent(event))
@@ -129,22 +130,27 @@ void ApexMain::Run()
 						}
 					}
 
-					switch (event.key.code)
+					if (keyPressed)
 					{
-					case sf::Keyboard::F10:
-					{
-						if (keyPressed)
+						switch (event.key.code)
+						{
+						case sf::Keyboard::F10:
 						{
 							TakeScreenshot();
-						}
-					} break;
-					case sf::Keyboard::P:
-					{
-						if (keyPressed)
+						} break;
+						case sf::Keyboard::Space:
+						{
+							DEBUGToggleGamePaused();
+						} break;
+						case sf::Keyboard::Period:
+						{
+							if (m_DEBUG_GamePaused) stepOneFrame = true;
+						} break;
+						case sf::Keyboard::P:
 						{
 							m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
+						} break;
 						}
-					} break;
 					}
 				} break;
 				case sf::Event::KeyReleased:
@@ -195,8 +201,13 @@ void ApexMain::Run()
 		}
 
 		// Step physics
-		accumulator += elapsed.asSeconds();
-		Tick(accumulator);
+		if (!m_DEBUG_GamePaused || stepOneFrame)
+		{
+			if (stepOneFrame) accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
+			else accumulator += elapsed.asSeconds();
+
+			Tick(accumulator);
+		}
 
 		Draw();
 	}
@@ -204,12 +215,12 @@ void ApexMain::Run()
 
 void ApexMain::Tick(double& accumulator)
 {
-	while (accumulator > PhysicsActorManager::TIMESTEP)
+	while (accumulator >= PhysicsActorManager::TIMESTEP)
 	{
 		const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
 
 		m_StateManager->Tick(dt);
-		m_PhysicsActorManager->Tick(dt);
+		if (!m_PhysicsPaused) m_PhysicsActorManager->Tick(dt);
 
 		accumulator -= PhysicsActorManager::TIMESTEP;
 	}
@@ -228,6 +239,27 @@ void ApexMain::Draw()
 
 	m_Window.display();
 	++m_Frames;
+}
+
+void ApexMain::DEBUGToggleGamePaused()
+{
+	m_DEBUG_GamePaused = !m_DEBUG_GamePaused;
+	if (m_DEBUG_GamePaused)
+	{
+		m_PhysicsPaused = true;
+	}
+	else if (!m_DEBUG_GamePaused)
+	{
+		BaseState* currentState = m_StateManager->CurrentState();
+		if (currentState->GetType() == StateType::GAME)
+		{
+			GameState* gameState = static_cast<GameState*>(currentState);
+			if (!gameState->IsLevelPaused())
+			{
+				m_PhysicsPaused = false;
+			}
+		 }
+	}
 }
 
 sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
@@ -351,6 +383,19 @@ void ApexMain::RemoveMouseListener(ApexMouseListener* mouseListener)
 b2World* ApexMain::GetPhysicsWorld() const
 {
 	return m_PhysicsActorManager->GetWorld();
+}
+
+void ApexMain::SetPhysicsPaused(bool physicsPaused)
+{
+	if (!m_DEBUG_GamePaused)
+	{
+		m_PhysicsPaused = physicsPaused;
+	}
+}
+
+bool ApexMain::DEBUGIsGamePaused() const
+{
+	return m_DEBUG_GamePaused;
 }
 
 ApexMain* ApexMain::GetSingleton()

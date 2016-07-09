@@ -18,8 +18,9 @@ public:
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target);
-	void TogglePaused(bool pauseSounds);
+
 	Level* GetLevel();
+	bool IsLevelPaused() const;
 
 	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed);
 	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
@@ -27,10 +28,7 @@ public:
 	void Reset();
 
 private:
-	sf::ConvexShape CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius);
-
 	Level* m_Level = nullptr;
-	bool m_Paused = false;
 
 };
 

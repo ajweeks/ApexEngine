@@ -38,6 +38,9 @@ void Gun::Reset()
 
 bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
+	if (m_Level->IsPaused()) return true;
+	if (APEX->DEBUGIsGamePaused()) return true;
+
 	if (buttonEvent.button == sf::Mouse::Button::Left)
 	{
 		Shoot();
@@ -48,10 +51,15 @@ bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 
 void Gun::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
 {
+	if (m_Level->IsPaused()) return;
+	if (APEX->DEBUGIsGamePaused()) return;
 }
 
 void Gun::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 {
+	if (m_Level->IsPaused()) return;
+	if (APEX->DEBUGIsGamePaused()) return;
+}
 }
 
 void Gun::Tick(sf::Time elapsed)

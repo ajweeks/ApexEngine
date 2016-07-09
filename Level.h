@@ -38,9 +38,10 @@ public:
 
 	void SetScreenShake(float xScale, float yScale);
 
-private:
-	bool IsPointInPolygon(std::vector<sf::Vector2i> points, sf::Vector2f point);
+	void TogglePaused(bool pauseSounds);
+	bool IsPaused() const;
 
+private:
 	int m_Width;
 	int m_Height;
 
@@ -51,5 +52,6 @@ private:
 	BulletManager* m_BulletManager = nullptr;
 
 	ApexDebug* m_DebugOverlay = nullptr;
-	bool m_ShowingDebugOverlay;
+	bool m_ShowingDebugOverlay = false;
+	bool m_Paused = false;
 };

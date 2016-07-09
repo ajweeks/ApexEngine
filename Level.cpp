@@ -4,10 +4,13 @@
 #include "Map.h"
 #include "ApexKeyboard.h"
 #include "Camera.h"
+#include "ApexAudio.h"
 
 Level::Level()
 {
 	m_DebugOverlay = new ApexDebug();
+	m_ShowingDebugOverlay = true;
+
 	m_BulletManager = new BulletManager();
 	m_Map = new Map(this, "resources/level/00/tiles_small.json");
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
@@ -35,29 +38,14 @@ void Level::Reset()
 
 void Level::Tick(sf::Time elapsed)
 {
+	if (m_Paused) return;
+
 	m_Map->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
 
 	m_DebugOverlay->Tick(elapsed);
-}
-
-bool Level::IsPointInPolygon(std::vector<sf::Vector2i> points, sf::Vector2f point) 
-{
-	bool c = false;
-	int l = points.size();
-	int j = l - 1;
-	for (int i = -1; ++i < l; j = i)
-	{
-		// Magic algorithm
-		if (((points[i].y <= point.y && point.y < points[j].y) || (points[j].y <= point.y && point.y < points[i].y))
-			&& (point.x < (points[j].x - points[i].x) * (point.y - points[i].y) / (points[j].y - points[i].y) + points[i].x))
-		{
-			c = !c;
-		}
-	}
-	return c;
 }
 
 void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
@@ -75,9 +63,28 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		m_DebugOverlay->Draw(target, states);
 	}
 
+	if (m_Paused)
+	{
+		target.setView(target.getDefaultView());
+		sf::RectangleShape bgRect(static_cast<sf::Vector2f>(target.getSize()));
+		bgRect.setFillColor(sf::Color(25, 25, 40, 140));
+		target.draw(bgRect);
+	}
+
 	target.setView(currentView);
 }
 
+void Level::TogglePaused(bool pauseSounds)
+{
+	m_Paused = !m_Paused;
+	APEX->SetPhysicsPaused(m_Paused);
+	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
+}
+
+bool Level::IsPaused() const
+{
+	return m_Paused;
+}
 
 unsigned int Level::GetWidth() const
 {
