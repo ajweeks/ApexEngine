@@ -12,8 +12,6 @@ class ApexDebug;
 class CollapsibleElement : public ApexMouseListener
 {
 public:
-	// Use this constructor for elements which need to call the passed in callback every frame to update their value
-	CollapsibleElement(CollapsibleElement* parent, std::string prefixString, float (*GetValue)(), float initalValue = 0.0f, bool collapsed = false);
 	// Use this constructor for elements which only display a non-changing string
 	CollapsibleElement(CollapsibleElement* parent, std::string string, bool collapsed = false);
 	virtual ~CollapsibleElement();
@@ -31,6 +29,8 @@ public:
 	float GetStackHeight(); // Returns the height of the stack of all child elements (at minimum will return LINE_HEIGHT)
 
 	void UpdateString(std::string newString, bool usePrefix = true);
+	int GetCurrentStringIndex() const;
+	void SetNumberOfTextValues(int num);
 
 	// Apex Mouse Listener overrides
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
@@ -52,6 +52,8 @@ private:
 	sf::Vector2f m_Position;
 	std::string m_PrefixString;
 	sf::Text m_Text;
+	int m_NumberOfTextValues = 1;
+	int m_CurrentTextShowingIndex; // Which text value we're currently showing (click cycles through)
 	CollapsibleElement* m_Parent = nullptr;
 	std::vector<CollapsibleElement*> m_Children;
 	bool m_Collapsed = true;

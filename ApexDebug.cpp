@@ -6,12 +6,15 @@
 #include "GameState.h"
 #include "Level.h"
 #include "PhysicsActor.h"
+#include "Gun.h"
 
 ApexDebug::ApexDebug()
 {
 	m_PlayerElementStack = CreateCollapsibleElementStack("Player", sf::Vector2f(35, 35));
 	m_PlayerPosElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "pos");
 	m_PlayerVelElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "vel");
+	m_PlayerGunDirectionElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "gun dir");
+	m_PlayerGunDirectionElement->SetNumberOfTextValues(2);
 	UpdateBackgroundRect(m_PlayerElementStack);
 }
 
@@ -35,6 +38,16 @@ void ApexDebug::Tick(sf::Time elapsed)
 
 			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetPhysicsActor()->GetLinearVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
+
+			float newGunDirRad = player->GetGun().GetDirection();
+			if (m_PlayerGunDirectionElement->GetCurrentStringIndex() == 0)
+			{
+				m_PlayerGunDirectionElement->UpdateString(std::to_string(newGunDirRad) + " rad");
+			}
+			else
+			{
+				m_PlayerGunDirectionElement->UpdateString(std::to_string(newGunDirRad * 180.0f / 3.1415f) + " deg");
+			}
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
 	}

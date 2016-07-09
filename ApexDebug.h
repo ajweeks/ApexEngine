@@ -34,4 +34,5 @@ private:
 	CollapsibleElementStack* m_PlayerElementStack;
 	CollapsibleElement* m_PlayerPosElement;
 	CollapsibleElement* m_PlayerVelElement;
+	CollapsibleElement* m_PlayerGunDirectionElement;
 };

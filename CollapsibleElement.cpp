@@ -10,15 +10,6 @@ const float CollapsibleElement::INDENTATION = 35.0f;
 const float CollapsibleElement::LINE_HEIGHT = 50.0f;
 const int CollapsibleElement::FONT_SIZE = 32;
 
-CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string prefixString, 
-	float(*GetValue)(), float initialValue, bool collapsed)
-	: ApexMouseListener(),
-	m_Parent(parent), m_PrefixString(prefixString), m_Text(prefixString + ": " + std::to_string(initialValue), ApexMain::FontOpenSans, FONT_SIZE), GetValue(GetValue),
-	m_Value(initialValue), m_Collapsed(collapsed)
-{
-	m_Text.move(18, 0);
-}
-
 CollapsibleElement::CollapsibleElement(CollapsibleElement* parent, std::string string, bool collapsed) :
 	m_PrefixString(string), m_Text(string, ApexMain::FontOpenSans, FONT_SIZE), m_Parent(parent), m_Collapsed(collapsed)
 {
@@ -154,8 +145,21 @@ float CollapsibleElement::GetStackHeight()
 
 void CollapsibleElement::UpdateString(std::string newString, bool usePrefix)
 {
-	if (usePrefix) m_Text.setString(m_PrefixString + ": " + newString);
-	else m_Text.setString(newString);
+	sf::String str;
+	if (usePrefix) str = m_PrefixString + ": " + newString;
+	else str = newString;
+
+	m_Text.setString(str);
+}
+
+int CollapsibleElement::GetCurrentStringIndex() const
+{
+	return m_CurrentTextShowingIndex;
+}
+
+void CollapsibleElement::SetNumberOfTextValues(int num)
+{
+	m_NumberOfTextValues = num;
 }
 
 bool CollapsibleElement::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
@@ -167,6 +171,8 @@ bool CollapsibleElement::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 			SetCollapsed(!m_Collapsed);
 			m_NeedsBackgroundResize = true;
 		}
+		++m_CurrentTextShowingIndex;
+		m_CurrentTextShowingIndex %= m_NumberOfTextValues;
 		return false;
 	}
 	return true;
