@@ -80,7 +80,7 @@ void SpriteSheet::AddSequence(unsigned int sequenceIndex, Sequence sequence)
 	{
 		if (sequenceIndex > m_Sequences.size()) // Allow out of order additions (index 3, followed by index 1 for example)
 		{
-			m_Sequences.resize(sequenceIndex);
+			m_Sequences.resize(sequenceIndex+1);
 		}
 		m_Sequences[sequenceIndex] = sequence;
 	}

@@ -13,6 +13,7 @@
 #include "Player.h"
 
 class Game;
+class ApexPauseScreen;
 
 class Level
 {
@@ -36,6 +37,7 @@ public:
 
 	sf::View GetCurrentView() const;
 
+	void JoltCamera(float xAmount, float yAmount);
 	void SetScreenShake(float xScale, float yScale);
 
 	void TogglePaused(bool pauseSounds);
@@ -50,6 +52,7 @@ private:
 	Camera* m_Camera = nullptr;
 
 	BulletManager* m_BulletManager = nullptr;
+	ApexPauseScreen* m_PauseScreen = nullptr;
 
 	ApexDebug* m_DebugOverlay = nullptr;
 	bool m_ShowingDebugOverlay = false;

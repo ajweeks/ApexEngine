@@ -5,12 +5,10 @@
 
 class Level;
 
-// TODO: Add OnKeyPress/OnMouseButton functions to all states?
-
 class GameState : public BaseState
 {
 public:
-	GameState(StateManager* manager);
+	GameState();
 	virtual ~GameState();
 
 	GameState(const GameState&) = delete;

@@ -1,22 +1,45 @@
 
+
 	GAME IDEAS
 
+	
 THEME
 -Fruits
 -Vegetables
 -Space
 -Tools
 -Music?
--No Violence
+
 -Electricity
   -Build up charge by doing something
-    -Use that charge to 
-	  -charge things?
-	  -Get money from electricity company
-	  
+  -You're a battery
+    -You need to disperse your charge to various devices
+	-The lower your charge, the slower you move
+	-You're invisibly moving around an inhabited house chargin stuff
+
+
+-
+
+	
+***
+-Alien
+  -You crash landed on a planet, and developed amnesia
+  -You must attempt to communicate with the locals (using an in-ear translator?)
+  -You need to find an old wizard who will provide you with a material you need to fix your ship
+  -You need to gather other materials as you go
+    -You can build (or purchase?) robots to do resourse gathering for you (mining, etc.)
+  
+  Objectives:
+    -Find a dictionary on the planet so that your in-ear translator will work
+	-Collect parts to fix your ship
+	-Find the old wizard to get the special ingredient
+	
+***
+
+
 MECHANICS
--Top down
--Shooter? (nah)
--Automation (cookie clicker progression)
-  -Mining?
+-Top down ✓
+-Automation
+-Inventory?
+-Multiplayer?
 -

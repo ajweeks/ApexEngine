@@ -6,14 +6,16 @@
 #include "ApexAudio.h"
 #include "GameState.h"
 
-MainMenuState::MainMenuState(StateManager* manager)
-	: BaseState(manager, StateType::MAIN_MENU)
+MainMenuState::MainMenuState()
+	: BaseState(StateType::MAIN_MENU)
 {
 	float x = APEX->GetWindowSize().x / 2.0f;
-	float y = 400;
-	m_PlayButton = new ApexButton(x, y, sf::Vector2f(400, 125), "Play");
+	float y = 650;
+	const float width = 400.0f;
+	const float height = 125.0f;
+	m_PlayButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Play");
 	y += 150;
-	m_QuitButton = new ApexButton(x, y, sf::Vector2f(400, 125), "Quit");
+	m_QuitButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Quit");
 
 	m_VignetteTexture.loadFromFile("resources/vig.png");
 	m_VignetteSprite.setTexture(m_VignetteTexture);
@@ -30,7 +32,7 @@ void MainMenuState::Tick(sf::Time elapsed)
 	m_PlayButton->Tick(elapsed);
 	if (m_PlayButton->IsDown())
 	{
-		m_StateManager->SetState(new GameState(m_StateManager));
+		APEX->GetStateManager()->SetState(new GameState());
 		return;
 	}
 

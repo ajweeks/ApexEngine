@@ -11,7 +11,7 @@ struct TileSet
 		m_Texture = new sf::Texture();
 		if (!m_Texture->loadFromFile(imageFilePath))
 		{
-			OutputDebugString("Couldn't load image \"" + imageFilePath + "\"!\n");
+			ApexOutputDebugString("Couldn't load image \"" + imageFilePath + "\"!\n");
 		}
 		m_TilesWide = m_Texture->getSize().x / m_TileSize;
 		m_TilesHigh = m_Texture->getSize().y / m_TileSize;

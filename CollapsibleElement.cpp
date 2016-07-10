@@ -2,7 +2,6 @@
 #include "CollapsibleElement.h"
 #include "ApexMain.h"
 #include "ApexMouse.h"
-#include "ApexCursor.h"
 #include "ApexDebug.h"
 #include <SFML\Graphics\CircleShape.hpp>
 
@@ -32,8 +31,8 @@ bool CollapsibleElement::Tick(sf::Time elapsed, ApexDebug* debug)
 
 	const bool wasHovering = m_Hover;
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
-	if (m_Hover && !wasHovering) APEX->SetCursor(sf::ApexCursor::HAND);
-	else if (!m_Hover && wasHovering) APEX->SetCursor(sf::ApexCursor::NORMAL);
+	if (m_Hover && !wasHovering) APEX->SetCursor(ApexCursor::POINT);
+	else if (!m_Hover && wasHovering) APEX->SetCursor(ApexCursor::NORMAL);
 
 	if (m_Collapsed == false)
 	{

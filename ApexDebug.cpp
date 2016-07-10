@@ -13,8 +13,7 @@ ApexDebug::ApexDebug()
 	m_PlayerElementStack = CreateCollapsibleElementStack("Player", sf::Vector2f(35, 35));
 	m_PlayerPosElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "pos");
 	m_PlayerVelElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "vel");
-	m_PlayerGunDirectionElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "gun dir");
-	m_PlayerGunDirectionElement->SetNumberOfTextValues(2);
+	m_PlayerGunDirectionElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "gun dir", 2);
 	UpdateBackgroundRect(m_PlayerElementStack);
 }
 
@@ -52,7 +51,7 @@ void ApexDebug::Tick(sf::Time elapsed)
 		UpdateBackgroundRect(m_PlayerElementStack);
 	}
 
-	APEX->SetCursor(sf::ApexCursor::NORMAL);
+	APEX->SetCursor(ApexCursor::NORMAL);
 	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, this)) UpdateBackgroundRect(m_PlayerElementStack);
 }
 
@@ -73,10 +72,11 @@ void ApexDebug::Draw(sf::RenderTarget& target, sf::RenderStates states) const
 	m_PlayerElementStack->m_CollapsibleElement->Draw(target, states);
 }
 
-ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position)
+ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position, int numOfStringValues)
 {
 	CollapsibleElementStack* newStack = new CollapsibleElementStack();
 	CollapsibleElement* newElement = new CollapsibleElement(nullptr, string);
+	newElement->SetNumberOfTextValues(numOfStringValues);
 	newElement->Move(position);
 	newStack->m_CollapsibleElement = newElement;
 
@@ -84,9 +84,10 @@ ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(con
 	return newStack;
 }
 
-CollapsibleElement* ApexDebug::AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& string)
+CollapsibleElement* ApexDebug::AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& string, int numOfStringValues)
 {
 	CollapsibleElement* newElement = parentElement->AddChildElement(new CollapsibleElement(parentElement, string));
+	newElement->SetNumberOfTextValues(numOfStringValues);
 
 	return newElement;
 }

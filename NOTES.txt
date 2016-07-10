@@ -9,4 +9,6 @@ __ NOTES __
   3. In-level pausing
       - This type of pauing is a release feature which allows the player to pause the level
 	    and access the pause screen (sets 2 to true)
-  4. (?) Defocusing pause? 
+  4. (?) Defocusing pause?
+
+  

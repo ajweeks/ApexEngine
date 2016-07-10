@@ -33,6 +33,8 @@ public:
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
 
+	float GetDirection() const;
+
 private:
 	bool m_BeingHeld;
 	Level* m_Level = nullptr;

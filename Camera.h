@@ -20,6 +20,7 @@ public:
 	// NOTE: This only effects the scale that the level renders at, (not the GUI)
 	void SetZoom(float zoom);
 
+	void Jolt(float xScale, float yScale);
 	void Shake(float xScale, float yScale);
 
 private:

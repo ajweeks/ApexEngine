@@ -11,11 +11,11 @@ class SpriteSheet
 public:
 	struct Sequence
 	{
-		sf::Vector2i startFrameIndex;
-		sf::Int32 msPerFrame;
-		int framesLong;
-		int currentFrame;
-		sf::Time timeElapsedThisFrame;
+		sf::Vector2i startFrameIndex = sf::Vector2i();
+		sf::Int32 msPerFrame = 0;
+		int framesLong = 1;
+		int currentFrame = 0;
+		sf::Time timeElapsedThisFrame = sf::Time::Zero;
 	};
 
 	SpriteSheet(std::string filePath, int frameWidth, int frameHeight);

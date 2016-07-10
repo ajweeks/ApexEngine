@@ -13,7 +13,7 @@ class Player : public Entity
 public:
 	enum class AnimationSequence
 	{
-		WALKING, RUNNING
+		STANDING, WALKING
 	};
 
 	Player(Level* level);
@@ -25,6 +25,7 @@ public:
 	void Reset();
 
 	sf::Vector2f GetPosition() const;
+	Gun& GetGun();
 
 private:
 	void ClampPosition();

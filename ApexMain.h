@@ -1,9 +1,10 @@
 #pragma once
 
+#include "StateManager.h"
+
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\Font.hpp>
-#include "StateManager.h"
-#include "ApexCursor.h"
+#include <SFML\Graphics\Sprite.hpp>
 
 #define APEX (ApexMain::GetSingleton())
 
@@ -14,7 +15,7 @@ class PhysicsActorManager;
 
 class b2World;
 
-void OutputDebugString(const std::string &string);
+void ApexOutputDebugString(const std::string &string);
 
 class ApexMain
 {
@@ -34,7 +35,7 @@ public:
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
 
-	void SetCursor(sf::ApexCursor::TYPE cursorType);
+	void SetCursor(ApexCursor cursorType);
 
 	static sf::Font FontOpenSans;
 	void TakeScreenshot();
@@ -52,12 +53,16 @@ public:
 
 	b2World* GetPhysicsWorld() const;
 	void SetPhysicsPaused(bool physicsPaused);
-
 	bool DEBUGIsGamePaused() const;
 
+	void ToggleWindowFullscreen();
+	void SetWindowFullscreen(bool fullscreen);
+
 private:
+	void CreateApexWindow(bool fullscreen);
 	void Tick(double& accumulator);
 	void Draw();
+	void LoadCursorTextures();
 
 	void DEBUGToggleGamePaused();
 
@@ -69,7 +74,8 @@ private:
 
 	static ApexMain* m_Singleton;
 
-	sf::RenderWindow m_Window;
+	bool m_WindowFullscreen;
+	sf::RenderWindow* m_Window = nullptr;
 	sf::Time m_TotalElapsed;
 	sf::Time m_ElapsedThisFrame;
 	int m_Frames;
@@ -86,6 +92,10 @@ private:
 
 	StateManager* m_StateManager = nullptr;
 	PhysicsActorManager* m_PhysicsActorManager = nullptr;
+
+	ApexCursor m_CursorType;
+	sf::Sprite m_CursorSprite;
+	std::vector<sf::Texture> m_CursorTextures;
 
 	std::vector<ApexKeyListener*> m_KeyListeners;
 	std::vector<ApexMouseListener*> m_MouseListeners;

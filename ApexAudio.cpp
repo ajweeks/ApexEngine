@@ -103,7 +103,7 @@ void ApexAudio::SetAllSoundsVolume(float volume)
 
 void ApexAudio::SetSoundVolume(Sound sound, float volume)
 {
-	m_SoundEffects[int(sound)].m_Sound.setVolume(volume);
+	m_SoundEffects[int(sound)].m_Sound.setVolume(volume * 100.0f);
 }
 
 void ApexAudio::SetAllMusicVolume(float volume)
@@ -116,5 +116,5 @@ void ApexAudio::SetAllMusicVolume(float volume)
 
 void ApexAudio::SetMusicVolume(Music track, float volume)
 {
-	m_MusicTracks[int(track)].setVolume(volume);
+	m_MusicTracks[int(track)].setVolume(volume * 100.0f);
 }

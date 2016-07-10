@@ -5,6 +5,7 @@
 #include "ApexKeyboard.h"
 #include "Camera.h"
 #include "ApexAudio.h"
+#include "ApexPauseScreen.h"
 
 Level::Level()
 {
@@ -18,6 +19,7 @@ Level::Level()
 	m_Player = new Player(this);
 	m_Camera = new Camera(sf::Vector2f(float(APEX->GetWindowSize().x), float(APEX->GetWindowSize().y)));
 	m_Camera->SetZoom(2.0f);
+	m_PauseScreen = new ApexPauseScreen(this);
 	Reset();
 }
 
@@ -28,6 +30,7 @@ Level::~Level()
 	delete m_Camera;
 	delete m_DebugOverlay;
 	delete m_BulletManager;
+	delete m_PauseScreen;
 }
 
 void Level::Reset()
@@ -38,13 +41,16 @@ void Level::Reset()
 
 void Level::Tick(sf::Time elapsed)
 {
-	if (m_Paused) return;
+	if (m_Paused)
+	{
+		m_PauseScreen->Tick(elapsed);
+		return;
+	}
 
 	m_Map->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
-
 	m_DebugOverlay->Tick(elapsed);
 }
 
@@ -65,10 +71,7 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	if (m_Paused)
 	{
-		target.setView(target.getDefaultView());
-		sf::RectangleShape bgRect(static_cast<sf::Vector2f>(target.getSize()));
-		bgRect.setFillColor(sf::Color(25, 25, 40, 140));
-		target.draw(bgRect);
+		m_PauseScreen->Draw(target, sf::RenderStates::Default);
 	}
 
 	target.setView(currentView);
@@ -78,6 +81,12 @@ void Level::TogglePaused(bool pauseSounds)
 {
 	m_Paused = !m_Paused;
 	APEX->SetPhysicsPaused(m_Paused);
+
+	if (m_Paused)
+	{
+		m_PauseScreen->SetScreenShowing(ApexPauseScreen::Screen::MAIN);
+	}
+
 	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
 }
 
@@ -119,6 +128,11 @@ bool Level::IsShowingDebugOverlay() const
 sf::View Level::GetCurrentView() const
 {
 	return m_Camera->GetCurrentView();
+}
+
+void Level::JoltCamera(float xAmount, float yAmount)
+{
+	m_Camera->Jolt(xAmount, yAmount);
 }
 
 void Level::SetScreenShake(float xScale, float yScale)

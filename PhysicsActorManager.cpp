@@ -17,7 +17,7 @@ PhysicsActorManager::PhysicsActorManager(sf::RenderTarget& target)
 	m_World = new b2World(b2Vec2(0.0f, 0.0f));
 
 	m_DebugDraw = new ApexDebugDraw(target);
-	m_DebugDraw->AppendFlags(b2Draw::e_centerOfMassBit | b2Draw::e_jointBit | b2Draw::e_shapeBit);
+	m_DebugDraw->AppendFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);
 	m_World->SetDebugDraw(m_DebugDraw);
 }
 

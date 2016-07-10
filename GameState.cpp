@@ -1,15 +1,16 @@
 
 #include "GameState.h"
+#include "ApexMain.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
 #include "Level.h"
-#include "ApexMain.h"
 
-GameState::GameState(StateManager* manager) :
-	BaseState(manager, StateType::GAME)
+GameState::GameState() :
+	BaseState(StateType::GAME)
 {
 	m_Level = new Level();
+	APEX->SetPhysicsPaused(false);
 
 	Reset();
 }

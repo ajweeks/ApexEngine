@@ -3,9 +3,9 @@
 #include "StateManager.h"
 #include "enumerations.h"
 
-BaseState::BaseState(StateManager* manager, StateType stateType) : 
+BaseState::BaseState(StateType stateType) : 
 	ApexKeyListener(),
-	m_StateManager(manager), m_StateType(stateType)
+	m_StateType(stateType)
 {
 }
 

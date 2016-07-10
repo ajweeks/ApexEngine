@@ -14,6 +14,7 @@
 #include "logo.h"
 #include "PhysicsActorManager.h"
 
+#include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
 #include <iomanip>
 
@@ -21,11 +22,11 @@ const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
 const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
 const bool ApexMain::USE_V_SYNC = false;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
-ApexMain* ApexMain::m_Singleton = nullptr;
 
+ApexMain* ApexMain::m_Singleton = nullptr;
 sf::Font ApexMain::FontOpenSans;
 
-void OutputDebugString(const std::string& string)
+void ApexOutputDebugString(const std::string& string)
 {
 	OutputDebugStringA(string.c_str());
 }
@@ -38,25 +39,34 @@ ApexMain::~ApexMain()
 {
 	delete m_StateManager;
 	delete m_PhysicsActorManager;
+	delete m_Window;
 }
 
 void ApexMain::Init()
 {
-	m_Window.create(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE, sf::Style::Close);
-	m_Window.setVerticalSyncEnabled(USE_V_SYNC);
-	m_Window.setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
+	m_WindowFullscreen = false;
+	CreateApexWindow(m_WindowFullscreen);
+	LoadCursorTextures();
 
-	m_PhysicsActorManager = new PhysicsActorManager(m_Window);
+	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
 
-	m_StateManager = new StateManager();
-	m_StateManager->SetState(new MainMenuState(m_StateManager));
+	m_StateManager = new StateManager(new MainMenuState());
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
-		OutputDebugString("Couldn't load font OpenSans-Regular.ttf!\n");
+		ApexOutputDebugString("Couldn't load font OpenSans-Regular.ttf!\n");
 	}
 
 	ApexAudio::LoadSounds();
+}
+
+void ApexMain::CreateApexWindow(bool fullscreen)
+{
+	delete m_Window;
+	m_Window = new sf::RenderWindow(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE, (fullscreen ? sf::Style::Fullscreen : sf::Style::Close));
+	m_Window->setVerticalSyncEnabled(USE_V_SYNC);
+	m_Window->setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
+	m_Window->setMouseCursorVisible(false);
 }
 
 void ApexMain::Quit()
@@ -80,11 +90,11 @@ void ApexMain::Run()
 		{
 			m_ElapsedThisFrame -= sf::seconds(1.0f);
 			m_FPS = m_Frames;
-			m_Window.setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " fps");
+			m_Window->setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " fps");
 			m_Frames = 0;
 		}
 		
-		if (m_Window.hasFocus())
+		if (m_Window->hasFocus())
 		{
 			ApexKeyboard::Tick();
 			ApexMouse::Tick();
@@ -93,9 +103,9 @@ void ApexMain::Run()
 		bool stepOneFrame = false;
 		// Process events
 		sf::Event event;
-		while (m_Window.pollEvent(event))
+		while (m_Window->pollEvent(event))
 		{
-			if (m_Window.hasFocus())
+			if (m_Window->hasFocus())
 			{
 				switch (event.type)
 				{
@@ -228,56 +238,39 @@ void ApexMain::Tick(double& accumulator)
 
 void ApexMain::Draw()
 {
-	m_Window.clear();
-	m_Window.setView(m_Window.getDefaultView());
-	m_StateManager->Draw(m_Window);
+	m_Window->clear();
+	m_Window->setView(m_Window->getDefaultView());
+	m_StateManager->Draw(*m_Window);
 
 	if (m_ShowingPhysicsDebug)
 	{
-		m_PhysicsActorManager->Draw(m_Window);
+		m_PhysicsActorManager->Draw(*m_Window);
 	}
 
-	m_Window.display();
+	m_Window->setView(m_Window->getDefaultView());
+	m_CursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*m_Window)));
+	m_Window->draw(m_CursorSprite);
+
+	m_Window->display();
 	++m_Frames;
-}
-
-void ApexMain::DEBUGToggleGamePaused()
-{
-	m_DEBUG_GamePaused = !m_DEBUG_GamePaused;
-	if (m_DEBUG_GamePaused)
-	{
-		m_PhysicsPaused = true;
-	}
-	else if (!m_DEBUG_GamePaused)
-	{
-		BaseState* currentState = m_StateManager->CurrentState();
-		if (currentState->GetType() == StateType::GAME)
-		{
-			GameState* gameState = static_cast<GameState*>(currentState);
-			if (!gameState->IsLevelPaused())
-			{
-				m_PhysicsPaused = false;
-			}
-		 }
-	}
 }
 
 sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
 {
-	sf::Vector2i mouse = sf::Mouse::getPosition(m_Window);
-	return m_Window.mapPixelToCoords(mouse, view);
+	sf::Vector2i mouse = sf::Mouse::getPosition(*m_Window);
+	return m_Window->mapPixelToCoords(mouse, view);
 }
 
 sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 {
-	sf::Vector2i mouseCoords = sf::Mouse::getPosition(m_Window);
+	sf::Vector2i mouseCoords = sf::Mouse::getPosition(*m_Window);
 	if (currentView.getSize() != sf::Vector2f())
 	{
-		if (m_Window.getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
+		if (m_Window->getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
 		{
 			// Adjust for when the window has been resized the content stretched or squeezed
-			const float xScale = currentView.getSize().x / m_Window.getSize().x;
-			const float yScale = currentView.getSize().y / m_Window.getSize().y;
+			const float xScale = currentView.getSize().x / m_Window->getSize().x;
+			const float yScale = currentView.getSize().y / m_Window->getSize().y;
 			mouseCoords.x = static_cast<int>(mouseCoords.x * xScale);
 			mouseCoords.y = static_cast<int>(mouseCoords.y * yScale);
 		}
@@ -287,15 +280,24 @@ sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 	return mouseCoords;
 }
 
-void ApexMain::SetCursor(sf::ApexCursor::TYPE cursorType)
+void ApexMain::LoadCursorTextures()
 {
-	sf::ApexCursor Cursor(cursorType);
-	Cursor.set(m_Window.getSystemHandle());
+	m_CursorTextures.resize(int(ApexCursor::_LAST_ELEMENT));
+	m_CursorTextures[int(ApexCursor::NORMAL)].loadFromFile("resources/cursor-normal-x2.png");
+	m_CursorTextures[int(ApexCursor::POINT)].loadFromFile("resources/cursor-point-x2.png");
+
+	m_CursorSprite.setTexture(m_CursorTextures[int(ApexCursor::NORMAL)]);
+}
+
+void ApexMain::SetCursor(ApexCursor cursorType)
+{
+	m_CursorType = cursorType;
+	m_CursorSprite.setTexture(m_CursorTextures[int(m_CursorType)]);
 }
 
 void ApexMain::TakeScreenshot()
 {
-	sf::Image screen = m_Window.capture();
+	sf::Image screen = m_Window->capture();
 	SYSTEMTIME localTime;
 	GetLocalTime(&localTime);
 
@@ -317,7 +319,7 @@ void ApexMain::TakeScreenshot()
 	const std::string filename = path + std::to_string(index) + filetype;
 	if (screen.saveToFile(filename))
 	{
-		OutputDebugString("Saved screenshot as \"" + filename + "\" successfully!\n");
+		ApexOutputDebugString("Saved screenshot as \"" + filename + "\" successfully!\n");
 	}
 }
 
@@ -328,7 +330,7 @@ StateManager* ApexMain::GetStateManager()
 
 sf::Vector2u ApexMain::GetWindowSize() const
 {
-	return m_Window.getSize();
+	return m_Window->getSize();
 }
 
 std::string ApexMain::Vector2fToString(sf::Vector2f vec)
@@ -396,6 +398,41 @@ void ApexMain::SetPhysicsPaused(bool physicsPaused)
 bool ApexMain::DEBUGIsGamePaused() const
 {
 	return m_DEBUG_GamePaused;
+}
+
+void ApexMain::ToggleWindowFullscreen()
+{
+	SetWindowFullscreen(!m_WindowFullscreen);
+}
+
+void ApexMain::SetWindowFullscreen(bool fullscreen)
+{
+	if (fullscreen != m_WindowFullscreen)
+	{
+		m_WindowFullscreen = fullscreen;
+		CreateApexWindow(m_WindowFullscreen);
+	}
+}
+
+void ApexMain::DEBUGToggleGamePaused()
+{
+	m_DEBUG_GamePaused = !m_DEBUG_GamePaused;
+	if (m_DEBUG_GamePaused)
+	{
+		m_PhysicsPaused = true;
+	}
+	else if (!m_DEBUG_GamePaused)
+	{
+		BaseState* currentState = m_StateManager->CurrentState();
+		if (currentState->GetType() == StateType::GAME)
+		{
+			GameState* gameState = static_cast<GameState*>(currentState);
+			if (!gameState->IsLevelPaused())
+			{
+				m_PhysicsPaused = false;
+			}
+		}
+	}
 }
 
 ApexMain* ApexMain::GetSingleton()

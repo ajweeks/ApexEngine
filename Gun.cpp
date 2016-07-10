@@ -12,9 +12,6 @@ Gun::Gun(Level* level, sf::Vector2f position) :
 	Entity(level, position, ActorID::GUN, this),
 	m_Level(level)
 {
-	//m_Actor->AddCircleFixture(5.0f);
-	//m_Actor->SetSensor(true);
-
 	m_BulletManager = level->GetBulletManager();
 	m_Direction = 0.0f;
 
@@ -60,6 +57,10 @@ void Gun::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 	if (m_Level->IsPaused()) return;
 	if (APEX->DEBUGIsGamePaused()) return;
 }
+
+float Gun::GetDirection() const
+{
+	return m_Direction;
 }
 
 void Gun::Tick(sf::Time elapsed)
@@ -100,9 +101,13 @@ void Gun::Shoot()
 		}
 	}
 
-	m_Level->SetScreenShake(abs(20.0f * cos(m_Direction)), abs(20.0f * sin(m_Direction)));
+	const float cosDir = cos(m_Direction);
+	const float sinDir = sin(m_Direction);
 
-	const sf::Vector2f posOffset = sf::Vector2f(cos(m_Direction) * 22.0f, sin(m_Direction) * 22.0f);
+	const float screenJoltAmount = 12.0f;
+	m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
+
+	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
 	const sf::Vector2f playerVel = m_Level->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
 	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsRemaining;

@@ -10,7 +10,7 @@ class StateManager;
 class BaseState : public ApexKeyListener
 {
 public:
-	BaseState(StateManager* manager, StateType stateType);
+	BaseState(StateType stateType);
 	virtual ~BaseState();
 
 	BaseState(const BaseState&) = delete;
@@ -26,6 +26,5 @@ public:
 
 protected:
 	StateType m_StateType;
-	StateManager* m_StateManager = nullptr;
 
 };

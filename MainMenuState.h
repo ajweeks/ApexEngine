@@ -9,7 +9,7 @@
 class MainMenuState : public BaseState
 {
 public:
-	MainMenuState(StateManager* manager);
+	MainMenuState();
 	virtual ~MainMenuState();
 
 	MainMenuState(const MainMenuState&) = delete;

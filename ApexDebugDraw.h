@@ -3,6 +3,8 @@
 #include <Box2D\Common\b2Draw.h>
 
 #include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\ConvexShape.hpp>
+#include <SFML\Graphics\CircleShape.hpp>
 
 struct b2AABB;
 
@@ -16,7 +18,8 @@ public:
 	void Destroy();
 
 	static sf::Vector2f b2Vec2ToSFVec2f(b2Vec2 vec);
-	static sf::Color b2ColorToSFColor(b2Color col, float percentage = 1.0f);
+	static sf::Color b2ColorToSFColor(b2Color col);
+	static sf::Color b2ColorToSFColor(b2Color col, float percentage);
 
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
 	void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override;
@@ -29,6 +32,12 @@ public:
 	void DrawAABB(b2AABB* aabb, const b2Color& color);
 
 private:
+	static const sf::Color m_SFRed;
+	static const sf::Color m_SFGreen;
+
 	sf::RenderTarget& m_Target;
+	sf::ConvexShape m_Polygon;
+	sf::CircleShape m_Circle;
+
 
 };

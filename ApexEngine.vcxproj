@@ -160,6 +160,14 @@
     </ClCompile>
     <ClCompile Include="ApexDebugDraw.cpp" />
     <ClCompile Include="ApexMouseListener.cpp" />
+    <ClCompile Include="ApexPauseScreen.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="ApexSlider.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <SubType>
       </SubType>
@@ -193,7 +201,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="ParticleEmitter.cpp" />
-    <ClCompile Include="ApexCursor.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -205,6 +212,14 @@
     </ClInclude>
     <ClInclude Include="ApexDebugDraw.h" />
     <ClInclude Include="ApexMouseListener.h" />
+    <ClInclude Include="ApexPauseScreen.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="ApexSlider.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Camera.h">
       <SubType>
       </SubType>
@@ -240,7 +255,6 @@
     <ClInclude Include="logo.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="ParticleEmitter.h" />
-    <ClInclude Include="ApexCursor.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="StateManager.h" />
