@@ -58,6 +58,8 @@ public:
 	void ToggleWindowFullscreen();
 	void SetWindowFullscreen(bool fullscreen);
 
+	sf::Time GetTimeElapsed() const;
+
 private:
 	void CreateApexWindow(bool fullscreen);
 	void Tick(double& accumulator);

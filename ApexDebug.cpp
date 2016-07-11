@@ -8,6 +8,8 @@
 #include "PhysicsActor.h"
 #include "Gun.h"
 
+#include <stdexcept>
+
 ApexDebug::ApexDebug()
 {
 	m_PlayerElementStack = CreateCollapsibleElementStack("Player", sf::Vector2f(35, 35));
@@ -15,6 +17,17 @@ ApexDebug::ApexDebug()
 	m_PlayerVelElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "vel");
 	m_PlayerGunDirectionElement = AddCollapsibleElementChild(m_PlayerElementStack->m_CollapsibleElement, "gun dir", 2);
 	UpdateBackgroundRect(m_PlayerElementStack);
+
+	if (!m_BackgroundRectangleShader.loadFromFile("resources/shaders/round_rectangle.frag", sf::Shader::Fragment))
+	{
+		ApexOutputDebugString("\n\n\t--Either couldn't find or couldn't compile round_rectangle.frag--\n\n\n");
+	}
+	else
+	{
+		// TODO: Call this every time the window size changes
+		m_BackgroundRectangleShader.setParameter("u_resolution", static_cast<sf::Vector2f>(APEX->GetWindowSize()));
+		m_BackgroundRectangleShader.setParameter("u_pos", m_PlayerElementStack->m_BackgroundRect.getPosition());
+	}
 }
 
 ApexDebug::~ApexDebug()
@@ -25,7 +38,8 @@ ApexDebug::~ApexDebug()
 
 void ApexDebug::Tick(sf::Time elapsed)
 {
-	if (m_PlayerElementStack->m_CollapsibleElement->m_Collapsed == false)
+	m_Elapsed += elapsed;
+	if (!m_PlayerElementStack->m_CollapsibleElement->m_Collapsed)
 	{
 		BaseState* currentState = APEX->GetStateManager()->CurrentState();
 		if (currentState->GetType() == StateType::GAME)
@@ -53,14 +67,16 @@ void ApexDebug::Tick(sf::Time elapsed)
 
 	APEX->SetCursor(ApexCursor::NORMAL);
 	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, this)) UpdateBackgroundRect(m_PlayerElementStack);
+
+	m_BackgroundRectangleShader.setParameter("u_size", m_PlayerElementStack->m_BackgroundRect.getSize());
 }
 
 void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
 {
 	CollapsibleElement* parentElement = stack->m_CollapsibleElement;
-	const sf::Vector2f pos = parentElement->GetPosition() + sf::Vector2f(-25, -12);
-	const float stackHeight = parentElement->GetStackHeight() + 12;
-	const float stackWidth = parentElement->GetStackWidth() + 20;
+	const sf::Vector2f pos = parentElement->GetPosition() + sf::Vector2f(-26, -14);
+	const float stackWidth = parentElement->GetStackWidth() + 32;
+	const float stackHeight = parentElement->GetStackHeight() + 20;
 	stack->m_BackgroundRect = sf::RectangleShape(sf::Vector2f(stackWidth, stackHeight));
 	stack->m_BackgroundRect.setPosition(pos);
 	stack->m_BackgroundRect.setFillColor(sf::Color(50, 55, 60, 135));
@@ -68,8 +84,19 @@ void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
 
 void ApexDebug::Draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(m_PlayerElementStack->m_BackgroundRect);
+	DrawBackgroundRect(target, states);
 	m_PlayerElementStack->m_CollapsibleElement->Draw(target, states);
+}
+
+void ApexDebug::ClearAllInput()
+{
+	m_PlayerElementStack->m_CollapsibleElement->ClearAllInput();
+}
+
+void ApexDebug::DrawBackgroundRect(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	states.shader = &m_BackgroundRectangleShader;
+	target.draw(m_PlayerElementStack->m_BackgroundRect, states);
 }
 
 ApexDebug::CollapsibleElementStack* ApexDebug::CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position, int numOfStringValues)

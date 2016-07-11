@@ -33,6 +33,10 @@ void ApexOutputDebugString(const std::string& string)
 
 ApexMain::ApexMain()
 {
+	if (!sf::Shader::isAvailable())
+	{
+		throw std::exception("Sorry, your graphics card doesn't support shaders :(");
+	}
 }
 
 ApexMain::~ApexMain()
@@ -86,6 +90,7 @@ void ApexMain::Run()
 
 		// Calculate FPS
 		m_ElapsedThisFrame += elapsed;
+		m_TotalElapsed += elapsed;
 		if (m_ElapsedThisFrame.asSeconds() >= 1.0f)
 		{
 			m_ElapsedThisFrame -= sf::seconds(1.0f);
@@ -412,6 +417,11 @@ void ApexMain::SetWindowFullscreen(bool fullscreen)
 		m_WindowFullscreen = fullscreen;
 		CreateApexWindow(m_WindowFullscreen);
 	}
+}
+
+sf::Time ApexMain::GetTimeElapsed() const
+{
+	return m_TotalElapsed;
 }
 
 void ApexMain::DEBUGToggleGamePaused()

@@ -3,8 +3,8 @@
 #include "BaseState.h"
 #include "ApexMain.h"
 #include "ApexButton.h"
-#include <SFML\Graphics\Sprite.hpp>
-#include <SFML\Graphics\Texture.hpp>
+
+#include <SFML\Graphics\Shader.hpp>
 
 class MainMenuState : public BaseState
 {
@@ -25,8 +25,7 @@ private:
 	ApexButton* m_PlayButton = nullptr;
 	ApexButton* m_QuitButton = nullptr;
 
-	sf::Sprite m_VignetteSprite;
-	sf::Texture m_VignetteTexture;
+	sf::Shader m_VignetteShader;
 
 };
 
