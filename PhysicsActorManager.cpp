@@ -15,6 +15,7 @@ const float PhysicsActorManager::TIMESTEP = 1.0f / 60.0f;
 PhysicsActorManager::PhysicsActorManager(sf::RenderTarget& target)
 {
 	m_World = new b2World(b2Vec2(0.0f, 0.0f));
+	m_World->SetContactListener(APEX);
 
 	m_DebugDraw = new ApexDebugDraw(target);
 	m_DebugDraw->AppendFlags(b2Draw::e_shapeBit | b2Draw::e_centerOfMassBit);

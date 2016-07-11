@@ -1,10 +1,13 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include "ApexContactListener.h"
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderStates.hpp>
+
+#include <string>
+#include <vector>
 
 class Layer;
 class Level;
@@ -13,10 +16,10 @@ class Map
 {
 public:
 	Map();
-	Map(Level* level, std::string filePath);
+	Map(Level* level, std::string filePath, ApexContactListener* contactListener);
 	virtual ~Map();
 
-	void Create(Level* level, std::string filePath);
+	void Create(Level* level, std::string filePath, ApexContactListener* contactListener);
 
 	Map(const Map&) = delete;
 	Map& operator=(const Map&) = delete;

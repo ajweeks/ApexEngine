@@ -1,6 +1,7 @@
 
 #include "PhysicsActor.h"
 #include "ApexMain.h"
+#include "ApexContactListener.h"
 
 #include <Box2D\Dynamics\b2Body.h>
 #include <Box2D\Dynamics\b2world.h>
@@ -248,7 +249,7 @@ b2Filter PhysicsActor::GetCollisionFilter() const
 	return m_CollisionFilter;
 }
 
-void PhysicsActor::AddContactListener(ContactListener *listenerPtr)
+void PhysicsActor::AddContactListener(ApexContactListener *listenerPtr)
 {
 	m_Body->SetUserData(listenerPtr);
 }
@@ -258,9 +259,9 @@ void PhysicsActor::RemoveContactListener()
 	m_Body->SetUserData(nullptr);
 }
 
-ContactListener *PhysicsActor::GetContactListener() const
+ApexContactListener *PhysicsActor::GetContactListener() const
 {
-	return reinterpret_cast <ContactListener *>(m_Body->GetUserData());
+	return reinterpret_cast<ApexContactListener *>(m_Body->GetUserData());
 }
 
 

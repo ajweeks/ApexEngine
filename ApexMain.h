@@ -6,6 +6,8 @@
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 
+#include <Box2D\Dynamics\b2WorldCallbacks.h>
+
 #define APEX (ApexMain::GetSingleton())
 
 class ApexDebug;
@@ -17,7 +19,7 @@ class b2World;
 
 void ApexOutputDebugString(const std::string &string);
 
-class ApexMain
+class ApexMain : public b2ContactListener
 {
 public:
 	ApexMain();
@@ -60,6 +62,12 @@ public:
 	void SetWindowFullscreen(bool fullscreen);
 
 	sf::Time GetTimeElapsed() const;
+
+	// Box2D overriden methods
+	virtual void BeginContact(b2Contact* contact);
+	virtual void EndContact(b2Contact* contact);
+	virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+	virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 private:
 	void CreateApexWindow(bool fullscreen);

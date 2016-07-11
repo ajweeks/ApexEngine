@@ -12,10 +12,9 @@ struct TransitionData
 	sf::Color color;
 };
 
-class Transition
+class ApexTransition
 {
 public:
-	// TODO: Add custom curve editor?!?!
 	enum class EaseType
 	{
 		LINEAR,
@@ -30,9 +29,9 @@ public:
 		EXPONENTIAL_IN_OUT
 	};
 
-	Transition();
-	Transition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
-	virtual ~Transition();
+	ApexTransition();
+	ApexTransition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
+	virtual ~ApexTransition();
 
 	void Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
 
@@ -42,6 +41,7 @@ public:
 	void Restart();
 	void Swap(); // Swap start and end data, and reset
 	void SetEaseType(EaseType easeType);
+	void SetFinished();
 
 private:
 	sf::Vector2f Lerp(sf::Vector2f start, sf::Vector2f delta, float t);
@@ -54,6 +54,5 @@ private:
 	TransitionData m_EndData;
 
 	EaseType m_EaseType;
-	//bool m_IsActive; // True while we are still transitioning
 
 };

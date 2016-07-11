@@ -1,11 +1,12 @@
 #pragma once
 
+
 #include <Box2D\Dynamics\b2Fixture.h>
 
 #include <SFML\System\Vector2.hpp>
 
 class b2Body;
-class ContactListener;
+class ApexContactListener;
 
 class PhysicsActor
 {
@@ -67,9 +68,9 @@ public:
 	void SetCollisionFilter(const b2Filter& collisionFilter);
 	b2Filter GetCollisionFilter() const;
 
-	void AddContactListener(ContactListener* listener);
+	void AddContactListener(ApexContactListener* listener);
 	void RemoveContactListener();
-	ContactListener* GetContactListener() const;
+	ApexContactListener* GetContactListener() const;
 
 	void ApplyForce(sf::Vector2f force, sf::Vector2f offsetPoint);
 	void ApplyTorque(float torque);

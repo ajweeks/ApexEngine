@@ -27,6 +27,10 @@ public:
 	sf::Vector2f GetPosition() const;
 	Gun& GetGun();
 
+	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
+
 private:
 	void ClampPosition();
 	void HandleMovement(sf::Time elapsed);

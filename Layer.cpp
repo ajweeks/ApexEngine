@@ -2,8 +2,10 @@
 #include "Layer.h"
 #include "PhysicsActor.h"
 #include "Level.h"
+#include "LevelTile.h"
 
-Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, std::string name, bool visible, float opacity, Type type, int width, int height) :
+Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs,
+	std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener) :
 	m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
 {
 	const float tileSize = float(m_TileSet->m_TileSize);
@@ -32,9 +34,10 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 
 			if (solidTileIDs[tileSrc])
 			{
-				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), b2BodyType::b2_staticBody, 0.0f);
-				newActor->AddBoxFixture(float(tileSet->m_TileSize), float(tileSet->m_TileSize));
-				m_Actors.push_back(newActor);
+				LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), Entity::ActorID::WALL);
+				newTile->GetPhysicsActor()->AddBoxFixture(tileSize, tileSize);
+				newTile->GetPhysicsActor()->AddContactListener(contactListener);
+				m_Entities.push_back(newTile);
 			}
 		}
 	}
@@ -44,11 +47,11 @@ Layer::~Layer()
 {
 	delete m_TileSet;
 
-	for (size_t i = 0; i < m_Actors.size(); i++)
+	for (size_t i = 0; i < m_Entities.size(); i++)
 	{
-		if (m_Actors[i] != nullptr)
+		if (m_Entities[i] != nullptr)
 		{
-			delete m_Actors[i];
+			delete m_Entities[i];
 		}
 	}
 }

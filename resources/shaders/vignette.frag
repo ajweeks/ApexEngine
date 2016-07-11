@@ -10,7 +10,7 @@ const float OPACITY = 0.5;
 
 void main()
 {
-	vec2 uv = abs(gl_FragCoord.xy / u_resolution.xy); // 4-way symmetry
+	vec2 uv = gl_FragCoord.xy / u_resolution.xy;
 	
 	vec4 rect = u_bounds / vec4(u_resolution.x, u_resolution.y, u_resolution.x, u_resolution.y);
 	vec2 pos = (uv - rect.xy) / rect.zw;

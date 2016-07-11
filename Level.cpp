@@ -6,6 +6,10 @@
 #include "Camera.h"
 #include "ApexAudio.h"
 #include "ApexPauseScreen.h"
+#include "Mob.h"
+#include "Sheep.h"
+#include "PhysicsActor.h"
+#include "Entity.h"
 
 Level::Level()
 {
@@ -13,11 +17,13 @@ Level::Level()
 	m_ShowingDebugOverlay = true;
 
 	m_BulletManager = new BulletManager();
-	m_Map = new Map(this, "resources/level/00/tiles_small.json");
+	m_Map = new Map(this, "resources/level/00/tiles_small.json", this);
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
 	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
 	m_Player = new Player(this);
-	m_Camera = new Camera(sf::Vector2f(float(APEX->GetWindowSize().x), float(APEX->GetWindowSize().y)));
+	const sf::Vector2u windowSize = APEX->GetWindowSize();
+	const float aspectRatio = float(windowSize.x / windowSize.y);
+	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)));
 	m_Camera->SetZoom(2.0f);
 	m_PauseScreen = new ApexPauseScreen(this);
 	Reset();
@@ -31,12 +37,27 @@ Level::~Level()
 	delete m_DebugOverlay;
 	delete m_BulletManager;
 	delete m_PauseScreen;
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		delete m_Mobs[i];
+	}
+	m_Mobs.clear();
 }
 
 void Level::Reset()
 {
 	m_Player->Reset();
 	m_BulletManager->Reset();
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		delete m_Mobs[i];
+	}
+	m_Mobs.clear();
+	m_Mobs.push_back(new Sheep(this, sf::Vector2f(400, 50)));
+	m_Mobs.push_back(new Sheep(this, sf::Vector2f(430, 510)));
+	m_Mobs.push_back(new Sheep(this, sf::Vector2f(690, 240)));
+	m_Mobs.push_back(new Sheep(this, sf::Vector2f(910, 580)));
 }
 
 void Level::Tick(sf::Time elapsed)
@@ -51,21 +72,40 @@ void Level::Tick(sf::Time elapsed)
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		if (m_Mobs[i] != nullptr)
+		{
+			m_Mobs[i]->Tick(elapsed);
+		}
+	}
+
 	m_DebugOverlay->Tick(elapsed);
 }
 
 void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	const sf::View currentView = m_Camera->GetCurrentView();
-	target.setView(currentView);
+	sf::View cameraView = m_Camera->GetCurrentView();
+	target.setView(cameraView);
 	
-	m_Map->Draw(target, states);
+	DrawMap(target, states);
 	m_Player->Draw(target, states);
 	m_BulletManager->Draw(target, states);
 
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		if (m_Mobs[i] != nullptr)
+		{
+			m_Mobs[i]->Draw(target, states);
+		}
+	}
+
+	// Static elements
+
+	target.setView(target.getDefaultView());
 	if (m_ShowingDebugOverlay)
 	{
-		target.setView(target.getDefaultView());
 		m_DebugOverlay->Draw(target, states);
 	}
 
@@ -74,7 +114,12 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		m_PauseScreen->Draw(target, sf::RenderStates::Default);
 	}
 
-	target.setView(currentView);
+	target.setView(cameraView);
+}
+
+void Level::DrawMap(sf::RenderTarget& target, sf::RenderStates states)
+{
+	m_Map->Draw(target, states);
 }
 
 void Level::TogglePaused(bool pauseSounds)
@@ -94,6 +139,34 @@ void Level::TogglePaused(bool pauseSounds)
 bool Level::IsPaused() const
 {
 	return m_Paused;
+}
+
+void Level::RemoveMob(Mob* mob)
+{
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		if (m_Mobs[i] == mob)
+		{
+			delete m_Mobs[i];
+			m_Mobs[i] = nullptr;
+			return;
+		}
+	}
+}
+
+void Level::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+{
+	//switch (otherActor->GetUserData())
+	//{
+	//}
+}
+
+void Level::EndContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+{
+}
+
+void Level::PreSolve(PhysicsActor * thisActor, PhysicsActor * otherActor, bool & enableContact)
+{
 }
 
 unsigned int Level::GetWidth() const

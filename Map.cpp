@@ -1,9 +1,11 @@
 
 #include "Map.h"
-#include <fstream>
-#include <JSON\json.hpp>
 #include "Layer.h"
 #include "TileSet.h"
+
+#include <JSON\json.hpp>
+
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -11,12 +13,12 @@ Map::Map()
 {
 }
 
-Map::Map(Level* level, std::string filePath)
+Map::Map(Level* level, std::string filePath, ApexContactListener* contactListener)
 {
-	Create(level, filePath);
+	Create(level, filePath, contactListener);
 }
 
-void Map::Create(Level* level, std::string filePath)
+void Map::Create(Level* level, std::string filePath, ApexContactListener* contactListener)
 {
 	std::ifstream fileInStream;
 
@@ -91,7 +93,8 @@ void Map::Create(Level* level, std::string filePath)
 		int layerWidth = currentLayer["width"];
 		int layerHeight = currentLayer["height"];
 
-		Layer* newLayer = new Layer(level, layerData, tileSet, solidTileIDs, layerName, layerVisible, layerOpacity, layerType, layerWidth, layerHeight);
+		Layer* newLayer = new Layer(level, layerData, tileSet, solidTileIDs, layerName, layerVisible, 
+			layerOpacity, layerType, layerWidth, layerHeight, contactListener);
 		m_Layers.push_back(newLayer);
 	}
 	std::string orientation = tileMap["orientation"];

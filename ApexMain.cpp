@@ -13,10 +13,14 @@
 #include "StateManager.h"
 #include "logo.h"
 #include "PhysicsActorManager.h"
+#include "ApexContactListener.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
 #include <iomanip>
+#include <filesystem>
+
+#include <Box2D\Dynamics\Contacts\b2Contact.h>
 
 const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
 const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
@@ -322,6 +326,10 @@ void ApexMain::TakeScreenshot()
 	const std::string path = "screenshots/" + dateString + "_";
 	const std::string filetype = ".png";
 
+	if (!std::experimental::filesystem::exists("screenshots")) {
+		std::experimental::filesystem::create_directory("screenshots");
+	}
+
 	// Keep opening files until one doesn't exist
 	sf::FileInputStream fileInStream;
 	int index = 0;
@@ -460,4 +468,99 @@ ApexMain* ApexMain::GetSingleton()
 		m_Singleton->Init();
 	}
 	return m_Singleton;
+}
+
+void ApexMain::BeginContact(b2Contact* contact)
+{
+	b2Fixture* fixtureA = contact->GetFixtureA();
+	b2Fixture* fixtureB = contact->GetFixtureB();
+
+	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	{
+		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		{
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
+			contactListener->BeginContact(
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()));
+		}
+	}
+
+	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
+	{
+		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
+		{
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
+			contactListener->BeginContact(
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()));
+		}
+	}
+}
+
+void ApexMain::EndContact(b2Contact* contact)
+{
+	b2Fixture* fixtureA = contact->GetFixtureA();
+	b2Fixture* fixtureB = contact->GetFixtureB();
+
+	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	{
+		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		{
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
+			contactListener->EndContact(
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()));
+		}
+	}
+
+	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
+	{
+		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
+		{
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
+			contactListener->EndContact(
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()));
+		}
+	}
+}
+
+void ApexMain::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
+{
+	b2Fixture* fixtureA = contact->GetFixtureA();
+	b2Fixture* fixtureB = contact->GetFixtureB();
+
+	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	{
+		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		{
+			bool enableContact = true;
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
+			contactListener->PreSolve(
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
+				enableContact);
+			contact->SetEnabled(enableContact);
+		}
+	}
+
+	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
+	{
+		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
+		{
+			bool enableContact = true;
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
+			contactListener->PreSolve(
+				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
+				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
+				enableContact);
+			contact->SetEnabled(enableContact);
+		}
+	}
+}
+
+void ApexMain::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse)
+{
+	// TODO: Implement (?)
 }

@@ -1,17 +1,19 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <map>
+#include "TileSet.h"
+#include "ApexContactListener.h"
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\VertexArray.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderStates.hpp>
 
-#include "TileSet.h"
+#include <vector>
+#include <string>
+#include <map>
 
 class Level;
-class PhysicsActor;
+class LevelTile;
 
 class Layer : public sf::Drawable
 {
@@ -21,7 +23,8 @@ public:
 		TILE, OBJECT, IMAGE, NONE
 	};
 
-	Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, std::string name, bool visible, float opacity, Type type, int width, int height);
+	Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, 
+		std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener);
 	virtual ~Layer();
 
 	Layer(const Layer&) = delete;
@@ -36,7 +39,7 @@ public:
 
 private:
 	std::vector<int> m_Tiles;
-	std::vector<PhysicsActor*> m_Actors;
+	std::vector<LevelTile*> m_Entities;
 	sf::VertexArray m_Verticies;
 
 	std::string m_Name;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ApexContactListener.h"
+
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Rect.hpp>
@@ -7,18 +9,23 @@
 #include <SFML\Graphics\RenderStates.hpp>
 #include <SFML\System\Time.hpp>
 
+#include <Box2D\Dynamics\b2Body.h>
+
 class PhysicsActor;
 class Level;
 
-class Entity
+class Entity : public ApexContactListener
 {
 public:
 	enum class ActorID
 	{
-		PLAYER, BG_TILE, BULLET, GUN
+		WALL,
+		PLAYER,
+		BULLET, GUN, 
+		SHEEP
 	};
 
-	Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer = nullptr);
+	Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer = nullptr, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
 	virtual ~Entity();
 
 	Entity& operator=(const Entity&) = delete;
@@ -27,15 +34,19 @@ public:
 	virtual void Tick(sf::Time elapsed) = 0;
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) = 0;
 
+	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override {};
+	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)  override {};
+	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override {};
+
 	PhysicsActor* GetPhysicsActor() const;
 
 protected:
-	PhysicsActor* m_Actor;
+	Level* m_Level = nullptr;
+	PhysicsActor* m_Actor = nullptr;
 	static sf::Sprite* m_ShadowSprite;
 	static sf::Texture* m_ShadowTexture;
 
 private:
-	sf::FloatRect m_BoundingBox;
 	static unsigned int m_InstanceCount;
 
 };

@@ -4,6 +4,7 @@
 #include "PhysicsActor.h"
 #include "Level.h"
 #include "enumerations.h"
+#include "ApexMain.h"
 
 const float Player::VEL = 1000000.0f;
 
@@ -15,7 +16,8 @@ Player::Player(Level* level) :
 	m_Gun(level, m_IntialPos)
 {
 	m_Actor->AddCircleFixture(7.0f);
-	
+	m_Actor->AddContactListener(this);
+
 	m_GlowTexture.loadFromFile("resources/glow_white.png");
 	m_GlowSprite.setTexture(m_GlowTexture);
 
@@ -54,6 +56,18 @@ sf::Vector2f Player::GetPosition() const
 Gun& Player::GetGun()
 {
 	return m_Gun;
+}
+
+void Player::BeginContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+{
+}
+
+void Player::EndContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+{
+}
+
+void Player::PreSolve(PhysicsActor * thisActor, PhysicsActor * otherActor, bool & enableContact)
+{
 }
 
 void Player::Tick(sf::Time elapsed)

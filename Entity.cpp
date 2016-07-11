@@ -2,11 +2,14 @@
 #include "Entity.h"
 #include "PhysicsActor.h"
 
+#include <Box2D\Dynamics\Contacts\b2Contact.h>
+
 sf::Sprite* Entity::m_ShadowSprite = nullptr;
 sf::Texture* Entity::m_ShadowTexture = nullptr;
 unsigned int Entity::m_InstanceCount = 0;
 
-Entity::Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer)
+Entity::Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
+	m_Level(level)
 {
 	if (++m_InstanceCount == 1)
 	{
@@ -17,7 +20,7 @@ Entity::Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointe
 		}
 	}
 
-	m_Actor = new PhysicsActor(position, b2BodyType::b2_dynamicBody, 0.0f);
+	m_Actor = new PhysicsActor(position, bodyType, 0.0f);
 	m_Actor->SetUserData(int(id));
 	m_Actor->SetUserPointer(userPointer);
 }

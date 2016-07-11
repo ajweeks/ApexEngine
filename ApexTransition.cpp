@@ -1,23 +1,24 @@
 
-#include "Transition.h"
+#include "ApexTransition.h"
+
 #include <assert.h>
 #include <stdexcept>
 
-Transition::Transition()
+ApexTransition::ApexTransition()
 {
 }
 
-Transition::Transition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType) :
+ApexTransition::ApexTransition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType) :
 	m_StartData(start), m_EndData(end), m_TotalTime(totalTime), m_EaseType(easeType)
 {
 	assert(totalTime.asSeconds() > 0.0f);
 }
 
-Transition::~Transition()
+ApexTransition::~ApexTransition()
 {
 }
 
-void Transition::Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType)
+void ApexTransition::Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType)
 {
 	m_StartData = start;
 	m_EndData = end;
@@ -25,17 +26,16 @@ void Transition::Create(TransitionData start, TransitionData end, sf::Time total
 	m_EaseType = easeType;
 }
 
-void Transition::Tick(sf::Time elapsed)
+void ApexTransition::Tick(sf::Time elapsed)
 {
 	m_TimeElapsed += elapsed;
 	if (m_TimeElapsed > m_TotalTime)
 	{
-		//m_IsActive = false;
 		return;
 	}
 }
 
-TransitionData Transition::GetCurrentTransitionData()
+TransitionData ApexTransition::GetCurrentTransitionData()
 {
 	TransitionData result(m_StartData);
 
@@ -74,12 +74,12 @@ TransitionData Transition::GetCurrentTransitionData()
 	return result;
 }
 
-sf::Vector2f Transition::Lerp(sf::Vector2f start, sf::Vector2f delta, float t)
+sf::Vector2f ApexTransition::Lerp(sf::Vector2f start, sf::Vector2f delta, float t)
 {
 	return sf::Vector2f(Lerp(start.x, delta.x, t), Lerp(start.y, delta.y, t));
 }
 
-float Transition::Lerp(float start, float delta, float t)
+float ApexTransition::Lerp(float start, float delta, float t)
 {
 	assert(t >= 0.0f && t <= 1.0f);
 
@@ -143,13 +143,12 @@ float Transition::Lerp(float start, float delta, float t)
 	}
 }
 
-void Transition::Restart()
+void ApexTransition::Restart()
 {
-	//m_IsActive = true;
 	m_TimeElapsed = sf::Time::Zero;
 }
 
-void Transition::Swap()
+void ApexTransition::Swap()
 {
 	TransitionData tempData = m_StartData;
 	m_StartData = m_EndData;
@@ -157,7 +156,12 @@ void Transition::Swap()
 	m_TimeElapsed = sf::Time::Zero;
 }
 
-void Transition::SetEaseType(EaseType easeType)
+void ApexTransition::SetEaseType(EaseType easeType)
 {
 	m_EaseType = easeType;
+}
+
+void ApexTransition::SetFinished()
+{
+	m_TimeElapsed = m_TotalTime;
 }

@@ -1,0 +1,34 @@
+#pragma once
+
+#include "Mob.h"
+#include "ApexTransition.h"
+
+#include <SFML\Graphics\RectangleShape.hpp>
+
+class Sheep : public Mob
+{
+public:
+	Sheep(Level* level, sf::Vector2f position);
+	virtual ~Sheep();
+
+	Sheep(const Sheep&) = delete;
+	Sheep& operator=(const Sheep&) = delete;
+
+	virtual void Tick(sf::Time elapsed);
+	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
+
+	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
+
+private:
+	sf::RectangleShape m_BgRect;
+	bool m_NeedToPickNewTarget = false;
+	sf::Vector2f m_Vel;
+	float m_ForwardVel = 3500.0f;
+
+	int m_HitPoints = 5;
+	bool m_IsDead = false;
+	ApexTransition m_HurtTransition;
+
+};
