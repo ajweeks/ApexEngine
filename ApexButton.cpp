@@ -2,6 +2,7 @@
 #include "ApexButton.h"
 #include "ApexMain.h"
 #include "ApexMouse.h"
+#include <SFML\Graphics\Shader.hpp>
 
 ApexButton::ApexButton(float left, float top, float width, float height, std::string text) :
 	ApexMouseListener()
@@ -29,13 +30,15 @@ ApexButton::~ApexButton()
 void ApexButton::Tick(sf::Time elapsed)
 {
 	sf::FloatRect rect = m_BoundingRect.getGlobalBounds();
-	SetHovering(rect.contains(static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace())));
+	const sf::Vector2i mousePos = APEX->GetMouseCoordsScreenSpace();
+	SetHovering(rect.contains(static_cast<sf::Vector2f>(mousePos)));
 }
 
 void ApexButton::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	target.draw(m_BoundingRect, states);
-	target.draw(m_Text, states);
+
+	target.draw(m_Text);
 }
 
 void ApexButton::SetFillColour(sf::Color fillColour)
@@ -73,6 +76,11 @@ void ApexButton::ClearInputs()
 	SetHovering(false);
 	m_IsDown = false;
 	m_IsPressed = false;
+}
+
+sf::RectangleShape ApexButton::GetRectangle() const
+{
+	return m_BoundingRect;
 }
 
 bool ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)

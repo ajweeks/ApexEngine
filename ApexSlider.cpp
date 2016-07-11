@@ -31,6 +31,7 @@ void ApexSlider::Tick(sf::Time elapsed)
 {
 	const bool wasHoveredOver = m_HoveredOver;
 	const sf::Vector2i mousePosScreenSpace = APEX->GetMouseCoordsScreenSpace();
+
 	m_HoveredOver = m_BackgroundRectangle.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosScreenSpace));
 	if (wasHoveredOver != m_HoveredOver)
 	{

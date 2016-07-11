@@ -68,13 +68,13 @@ void Gun::Tick(sf::Time elapsed)
 	if (m_Level->GetPlayer() != nullptr)
 	{
 		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
-		const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
-		m_Direction = atan2(dPos.y, dPos.x);
+		if (mousePos.x != -1.0f && mousePos.y != -1.0f) // only update our rotation when the mouse is inside the window
+		{
+			const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
+			m_Direction = atan2(dPos.y, dPos.x);
+		}
 		
 		m_Actor->SetPosition(m_Level->GetPlayer()->GetPosition());
-
-		//const bool mouseInBounds = mousePos.x > 0 && mousePos.x < 2080 &&
-		//	mousePos.y > 0 && mousePos.y < 1216;
 	}
 }
 

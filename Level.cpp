@@ -81,6 +81,7 @@ void Level::TogglePaused(bool pauseSounds)
 {
 	m_Paused = !m_Paused;
 	APEX->SetPhysicsPaused(m_Paused);
+	m_DebugOverlay->ClearAllInput();
 
 	if (m_Paused)
 	{
@@ -118,6 +119,7 @@ BulletManager* Level::GetBulletManager()
 void Level::ToggleDebugOverlay()
 {
 	m_ShowingDebugOverlay = !m_ShowingDebugOverlay;
+	m_DebugOverlay->ClearAllInput();
 }
 
 bool Level::IsShowingDebugOverlay() const

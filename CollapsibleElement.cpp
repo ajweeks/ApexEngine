@@ -3,6 +3,7 @@
 #include "ApexMain.h"
 #include "ApexMouse.h"
 #include "ApexDebug.h"
+
 #include <SFML\Graphics\CircleShape.hpp>
 
 const float CollapsibleElement::INDENTATION = 35.0f;
@@ -27,12 +28,12 @@ bool CollapsibleElement::Tick(sf::Time elapsed, ApexDebug* debug)
 {
 	bool rectNeedsResizing = m_NeedsBackgroundResize;
 	sf::Vector2i mousePos = APEX->GetMouseCoordsScreenSpace();
+
 	sf::FloatRect globalBounds = GetBounds(m_Text);
 
 	const bool wasHovering = m_Hover;
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
-	if (m_Hover && !wasHovering) APEX->SetCursor(ApexCursor::POINT);
-	else if (!m_Hover && wasHovering) APEX->SetCursor(ApexCursor::NORMAL);
+	if (m_Hover) APEX->SetCursor(ApexCursor::POINT);
 
 	if (m_Collapsed == false)
 	{
@@ -183,6 +184,15 @@ void CollapsibleElement::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent
 
 void CollapsibleElement::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 {
+}
+
+void CollapsibleElement::ClearAllInput()
+{
+	m_Hover = false;
+	for (size_t i = 0; i < m_Children.size(); i++)
+	{
+		m_Children[i]->ClearAllInput();
+	}
 }
 
 void CollapsibleElement::SetCollapsed(bool collapsed)

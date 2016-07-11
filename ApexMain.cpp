@@ -48,8 +48,8 @@ ApexMain::~ApexMain()
 
 void ApexMain::Init()
 {
-	m_WindowFullscreen = false;
-	CreateApexWindow(m_WindowFullscreen);
+	m_WindowIsFullscreen = false;
+	CreateApexWindow(m_WindowIsFullscreen);
 	LoadCursorTextures();
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
@@ -106,10 +106,18 @@ void ApexMain::Run()
 		}
 
 		bool stepOneFrame = false;
+
 		// Process events
 		sf::Event event;
 		while (m_Window->pollEvent(event))
 		{
+			if (event.type == sf::Event::LostFocus)
+			{
+				ApexAudio::SetAllPaused(true);
+				ApexKeyboard::Clear();
+				ApexMouse::Clear();
+			}
+
 			if (m_Window->hasFocus())
 			{
 				switch (event.type)
@@ -117,20 +125,11 @@ void ApexMain::Run()
 				case sf::Event::Closed:
 				{
 					m_IsRunning = false;
-					break;
-				}
-				case sf::Event::LostFocus:
-				{
-					ApexAudio::SetAllPaused(true);
-					ApexKeyboard::Clear();
-					ApexMouse::Clear();
-					break;
-				}
+				} break;
 				case sf::Event::GainedFocus:
 				{
 					ApexAudio::SetAllPaused(false);
-					break;
-				}
+				} break;
 				case sf::Event::KeyPressed:
 				{
 					const bool keyPressed = ApexKeyboard::IsKeyPressed(event.key.code);
@@ -215,16 +214,18 @@ void ApexMain::Run()
 			}
 		}
 
-		// Step physics
-		if (!m_DEBUG_GamePaused || stepOneFrame)
+		if (m_Window->hasFocus())
 		{
-			if (stepOneFrame) accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
-			else accumulator += elapsed.asSeconds();
+			if (!m_DEBUG_GamePaused || stepOneFrame)
+			{
+				if (stepOneFrame) accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
+				else accumulator += elapsed.asSeconds();
 
-			Tick(accumulator);
+				Tick(accumulator);
+			}
+
+			Draw();
 		}
-
-		Draw();
 	}
 }
 
@@ -269,6 +270,12 @@ sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
 sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 {
 	sf::Vector2i mouseCoords = sf::Mouse::getPosition(*m_Window);
+
+	const sf::Vector2u windowSize = m_Window->getSize();
+	if (mouseCoords.x < 0 || mouseCoords.x > int(windowSize.x) ||
+		mouseCoords.y < 0 || mouseCoords.y > int(windowSize.y))
+		return sf::Vector2i(-1, -1);
+
 	if (currentView.getSize() != sf::Vector2f())
 	{
 		if (m_Window->getSize() != static_cast<sf::Vector2u>(currentView.getSize()))
@@ -407,15 +414,15 @@ bool ApexMain::DEBUGIsGamePaused() const
 
 void ApexMain::ToggleWindowFullscreen()
 {
-	SetWindowFullscreen(!m_WindowFullscreen);
+	SetWindowFullscreen(!m_WindowIsFullscreen);
 }
 
 void ApexMain::SetWindowFullscreen(bool fullscreen)
 {
-	if (fullscreen != m_WindowFullscreen)
+	if (fullscreen != m_WindowIsFullscreen)
 	{
-		m_WindowFullscreen = fullscreen;
-		CreateApexWindow(m_WindowFullscreen);
+		m_WindowIsFullscreen = fullscreen;
+		CreateApexWindow(m_WindowIsFullscreen);
 	}
 }
 

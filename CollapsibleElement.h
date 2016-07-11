@@ -37,6 +37,8 @@ public:
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
 
+	void ClearAllInput();
+
 private:
 	static const float INDENTATION;
 	static const float LINE_HEIGHT;

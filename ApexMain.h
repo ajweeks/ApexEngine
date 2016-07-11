@@ -33,6 +33,7 @@ public:
 	void Run();
 	void Quit();
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
+	// Returns the mouse coords relative to the game window, or (-1, -1) if mouse is outside of window
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
 
 	void SetCursor(ApexCursor cursorType);
@@ -76,7 +77,6 @@ private:
 
 	static ApexMain* m_Singleton;
 
-	bool m_WindowFullscreen;
 	sf::RenderWindow* m_Window = nullptr;
 	sf::Time m_TotalElapsed;
 	sf::Time m_ElapsedThisFrame;
@@ -84,6 +84,7 @@ private:
 	int m_FPS;
 	bool m_IsRunning;
 
+	bool m_WindowIsFullscreen;
 	// True when the world should be frozen
 	bool m_PhysicsPaused = false;
 	// True when the state manager shouldn't be Ticked (no animations, etc.)

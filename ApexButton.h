@@ -28,6 +28,7 @@ public:
 	sf::String GetCurrentString() const;
 
 	void ClearInputs();
+	sf::RectangleShape GetRectangle() const;
 	
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
