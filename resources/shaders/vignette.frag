@@ -18,6 +18,5 @@ void main()
 	float len = length(pos - u_center);
 	float vignette = smoothstep(RADIUS, RADIUS - SOFTNESS, len);
 	
-	gl_FragColor = vec4(mix(gl_Color.rgb, vec3(gl_Color.rgb * vignette), OPACITY), 1.0);
-	
+	gl_FragColor = vec4(mix(gl_Color.rgb, vec3(gl_Color.rgb * vignette), OPACITY), 1.0);	
 }

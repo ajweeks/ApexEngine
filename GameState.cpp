@@ -66,6 +66,10 @@ bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 	{
 		if (!m_Level->IsPaused()) Reset();
 	} break;
+	case sf::Keyboard::T:
+	{
+		m_Level->LoadShaders();
+	} break;
 	}
 	return false;
 }

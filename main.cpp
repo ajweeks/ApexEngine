@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	IDXGIDebug* pDXGIDebug;
 	DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&pDXGIDebug);
-	//_CrtSetBreakAlloc(31453);
+	//_CrtSetBreakAlloc(109314);
 #endif
 
 	APEX->Run();

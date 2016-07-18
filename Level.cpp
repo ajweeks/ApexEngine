@@ -10,8 +10,10 @@
 #include "Sheep.h"
 #include "PhysicsActor.h"
 #include "Entity.h"
+#include "Minimap.h"
 
-Level::Level()
+Level::Level() :
+	ApexWindowListener()
 {
 	m_DebugOverlay = new ApexDebug();
 	m_ShowingDebugOverlay = true;
@@ -26,7 +28,28 @@ Level::Level()
 	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)));
 	m_Camera->SetZoom(2.0f);
 	m_PauseScreen = new ApexPauseScreen(this);
+	const float minimapWidth = 200.0f;
+	m_Minimap = new Minimap(this, sf::Vector2f(minimapWidth, minimapWidth / aspectRatio));
+
+	LoadShaders();
+
+	m_Lights.push_back({ sf::Vector2f(250.0f, 100.0f), sf::Color(240, 240, 180), 30.0f, 25.0f, 1.0f });
+	m_Lights.push_back({ sf::Vector2f(50.0f, 20.0f), sf::Color(140, 240, 200), 30.0f, 5.0f, 0.8f });
+
+	m_LightmapTexture.create(windowSize.x, windowSize.y);
+	m_LightmapSprite.setTexture(m_LightmapTexture.getTexture());
+
 	Reset();
+}
+
+void Level::LoadShaders()
+{
+	if (!m_LightingShader.loadFromFile("resources/shaders/lighting.frag", sf::Shader::Fragment))
+	{
+		ApexOutputDebugString("\n\n\nCould not compile lighting shader\n\n\n\n");
+	}
+	const sf::Vector2u windowSize = APEX->GetWindowSize();
+	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
 Level::~Level()
@@ -37,6 +60,8 @@ Level::~Level()
 	delete m_DebugOverlay;
 	delete m_BulletManager;
 	delete m_PauseScreen;
+	delete m_Minimap;
+
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
 		delete m_Mobs[i];
@@ -69,6 +94,7 @@ void Level::Tick(sf::Time elapsed)
 	}
 
 	m_Map->Tick(elapsed);
+	m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
@@ -81,7 +107,12 @@ void Level::Tick(sf::Time elapsed)
 		}
 	}
 
+
 	m_DebugOverlay->Tick(elapsed);
+
+	const float time = APEX->GetTimeElapsed().asSeconds();
+	m_Lights[0].opacity = ((sin(time) + 1.0f) / 8.0f + 0.75f);
+	m_LightingShader.setParameter("u_opacity", m_Lights[0].opacity);
 }
 
 void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
@@ -89,9 +120,11 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	sf::View cameraView = m_Camera->GetCurrentView();
 	target.setView(cameraView);
 	
+	// Elements in world
 	DrawMap(target, states);
-	m_Player->Draw(target, states);
+
 	m_BulletManager->Draw(target, states);
+	m_Player->Draw(target, states);
 
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
@@ -101,9 +134,14 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		}
 	}
 
-	// Static elements
 
+	DrawLighting(target, states);
+
+	// Static elements
 	target.setView(target.getDefaultView());
+
+	m_Minimap->Draw(target, states);
+
 	if (m_ShowingDebugOverlay)
 	{
 		m_DebugOverlay->Draw(target, states);
@@ -115,6 +153,35 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	}
 
 	target.setView(cameraView);
+}
+
+void Level::DrawLighting(sf::RenderTarget& target, sf::RenderStates states)
+{
+	m_LightmapTexture.clear();
+
+	const sf::Color ambientColor = sf::Color(195, 210, 222, 50);
+	sf::Transform prevTransform = states.transform;
+
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+	sf::RectangleShape screen(windowSize);
+	screen.setFillColor(ambientColor);
+	m_LightmapTexture.draw(screen);
+
+	screen.setFillColor(sf::Color::Black);
+	for (size_t i = 0; i < m_Lights.size(); i++)
+	{
+		m_LightingShader.setParameter("u_color", m_Lights[i].color);
+		m_LightingShader.setParameter("u_radius", m_Lights[i].radius);
+		m_LightingShader.setParameter("u_position", m_Lights[i].position);
+		m_LightingShader.setParameter("u_opacity", m_Lights[i].opacity);
+		m_LightingShader.setParameter("u_blur", m_Lights[i].blur);
+
+		m_LightmapTexture.draw(screen, &m_LightingShader);
+	}
+
+	m_LightmapTexture.display();
+	m_LightmapSprite.setTexture(m_LightmapTexture.getTexture());
+	target.draw(m_LightmapSprite, sf::BlendMultiply);
 }
 
 void Level::DrawMap(sf::RenderTarget& target, sf::RenderStates states)
@@ -156,17 +223,19 @@ void Level::RemoveMob(Mob* mob)
 
 void Level::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
-	//switch (otherActor->GetUserData())
-	//{
-	//}
 }
 
-void Level::EndContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+void Level::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 }
 
-void Level::PreSolve(PhysicsActor * thisActor, PhysicsActor * otherActor, bool & enableContact)
+void Level::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & enableContact)
 {
+}
+
+void Level::OnWindowResize(sf::Vector2u windowSize)
+{
+	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
 unsigned int Level::GetWidth() const
