@@ -21,13 +21,13 @@ Player::Player(Level* level) :
 	m_GlowTexture.loadFromFile("resources/glow_white.png");
 	m_GlowSprite.setTexture(m_GlowTexture);
 
-	SpriteSheet::Sequence walkingSequence;
+	ApexSpriteSheet::Sequence walkingSequence;
 	walkingSequence.framesLong = 2;
 	walkingSequence.msPerFrame = 150;
 	walkingSequence.startFrameIndex = sf::Vector2i(2, 0);
 	m_SpriteSheet.AddSequence(int(AnimationSequence::WALKING), walkingSequence);
 	
-	SpriteSheet::Sequence standingSequence;
+	ApexSpriteSheet::Sequence standingSequence;
 	standingSequence.framesLong = 1;
 	standingSequence.startFrameIndex = sf::Vector2i(2, 0);
 	m_SpriteSheet.AddSequence(int(AnimationSequence::STANDING), standingSequence);

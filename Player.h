@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-#include "SpriteSheet.h"
+#include "ApexSpriteSheet.h"
 #include "Gun.h"
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Sprite.hpp>
@@ -51,6 +51,6 @@ private:
 	sf::Sprite m_GlowSprite;
 
 	Gun m_Gun;
-	SpriteSheet m_SpriteSheet;
+	ApexSpriteSheet m_SpriteSheet;
 
 };

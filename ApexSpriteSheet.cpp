@@ -1,12 +1,25 @@
 
-#include "SpriteSheet.h"
+#include "ApexSpriteSheet.h"
+
 #include <SFML\Graphics\RenderTarget.hpp>
+
 #include <assert.h>
 
-SpriteSheet::SpriteSheet(std::string filePath, int frameWidth, int frameHeight) :
-	m_FrameWidth(frameWidth), m_FrameHeight(frameHeight)
+ApexSpriteSheet::ApexSpriteSheet()
+{
+}
+
+ApexSpriteSheet::ApexSpriteSheet(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
+{
+	Create(filePath, frameWidth, frameHeight);
+}
+
+void ApexSpriteSheet::Create(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
 {
 	assert(filePath != "" && frameWidth != 0 && frameHeight != 0);
+
+	m_FrameWidth = frameWidth;
+	m_FrameHeight = frameHeight;
 
 	if (!m_Texture.loadFromFile(filePath))
 	{
@@ -19,11 +32,11 @@ SpriteSheet::SpriteSheet(std::string filePath, int frameWidth, int frameHeight) 
 	m_FramesHigh = m_Texture.getSize().y / m_FrameHeight;
 }
 
-SpriteSheet::~SpriteSheet()
+ApexSpriteSheet::~ApexSpriteSheet()
 {
 }
 
-void SpriteSheet::Tick(sf::Time elapsed)
+void ApexSpriteSheet::Tick(sf::Time elapsed)
 {
 	if (m_CurrentSequenceIndex < m_Sequences.size())
 	{
@@ -33,12 +46,16 @@ void SpriteSheet::Tick(sf::Time elapsed)
 		{
 			currentSequence.timeElapsedThisFrame = sf::milliseconds(
 				currentSequence.timeElapsedThisFrame.asMilliseconds() - currentSequence.msPerFrame);
-			if (++currentSequence.currentFrame == currentSequence.framesLong) currentSequence.currentFrame = 0;
+			if (++currentSequence.currentFrame == currentSequence.framesLong) 
+			{
+				currentSequence.currentFrame = 0;
+				m_HasRestarted = true;
+			}
 		}
 	}
 }
 
-void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, int col, int row)
+void ApexSpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, sf::Uint8 col, sf::Uint8 row)
 {
 	const sf::IntRect srcRect(col * m_FrameWidth, row * m_FrameHeight, m_FrameWidth, m_FrameHeight);
 	m_Sprite.setTextureRect(srcRect);
@@ -46,7 +63,7 @@ void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, int co
 	target.draw(m_Sprite, states);
 }
 
-void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states)
+void ApexSpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	if (m_CurrentSequenceIndex >= m_Sequences.size())
 	{
@@ -70,7 +87,12 @@ void SpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.draw(m_Sprite, states);
 }
 
-void SpriteSheet::AddSequence(unsigned int sequenceIndex, Sequence sequence)
+sf::Uint8 ApexSpriteSheet::GetCurrentFrame() const
+{
+	return m_Sequences[m_CurrentSequenceIndex].currentFrame;
+}
+
+void ApexSpriteSheet::AddSequence(sf::Uint8 sequenceIndex, Sequence sequence)
 {
 	if (sequenceIndex == m_Sequences.size()) 
 	{
@@ -86,7 +108,7 @@ void SpriteSheet::AddSequence(unsigned int sequenceIndex, Sequence sequence)
 	}
 }
 
-void SpriteSheet::SetCurrentSequence(int sequenceIndex, bool restartAnimation)
+void ApexSpriteSheet::SetCurrentSequence(sf::Uint8 sequenceIndex, bool restartAnimation)
 {
 	if (m_CurrentSequenceIndex >= m_Sequences.size())
 	{
@@ -100,4 +122,21 @@ void SpriteSheet::SetCurrentSequence(int sequenceIndex, bool restartAnimation)
 		m_Sequences[m_CurrentSequenceIndex].currentFrame = 0;
 		m_Sequences[m_CurrentSequenceIndex].timeElapsedThisFrame = sf::Time::Zero;
 	}
+}
+
+bool ApexSpriteSheet::HasRestarted() const
+{
+	return m_HasRestarted;
+}
+
+void ApexSpriteSheet::SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame)
+{
+	m_Sequences.clear();
+
+	Sequence s;
+	s.framesLong = m_FramesHigh * m_FramesWide;
+	s.startFrameIndex = sf::Vector2i(0, 0);
+	s.msPerFrame = msPerFrame;
+	AddSequence(0, s);
+	m_CurrentSequenceIndex = 0;
 }
