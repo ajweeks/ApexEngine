@@ -22,6 +22,9 @@ public:
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
 
 private:
+	static const float WIDTH;
+	static const float HEIGHT;
+
 	sf::RectangleShape m_BgRect;
 	bool m_NeedToPickNewTarget = false;
 	sf::Vector2f m_Vel;
@@ -30,5 +33,7 @@ private:
 	int m_HitPoints = 5;
 	bool m_IsDead = false;
 	ApexTransition m_HurtTransition;
+	ApexTransition m_BlinkTransition;
+	float m_SecondsUntilNextBlink;
 
 };
