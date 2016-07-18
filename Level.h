@@ -50,6 +50,8 @@ public:
 	void TogglePaused(bool pauseSounds);
 	bool IsPaused() const;
 
+	void AddParticle(ApexParticle* spriteSheet);
+
 	void RemoveMob(Mob* mob);
 
 	void LoadShaders();
@@ -93,4 +95,6 @@ private:
 	ApexDebug* m_DebugOverlay = nullptr;
 	bool m_ShowingDebugOverlay = false;
 	bool m_Paused = false;
+
+	ApexParticleManager m_ParticleManager;
 };

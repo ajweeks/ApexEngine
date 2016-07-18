@@ -107,6 +107,7 @@ void Level::Tick(sf::Time elapsed)
 		}
 	}
 
+	m_ParticleManager.Tick(elapsed);
 
 	m_DebugOverlay->Tick(elapsed);
 
@@ -134,6 +135,7 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		}
 	}
 
+	m_ParticleManager.Draw(target, states);
 
 	DrawLighting(target, states);
 
@@ -206,6 +208,11 @@ void Level::TogglePaused(bool pauseSounds)
 bool Level::IsPaused() const
 {
 	return m_Paused;
+}
+
+void Level::AddParticle(ApexParticle* spriteSheet)
+{
+	m_ParticleManager.AddParticle(spriteSheet);
 }
 
 void Level::RemoveMob(Mob* mob)
