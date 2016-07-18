@@ -18,8 +18,8 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target);
 
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed);
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
 
 private:
 	ApexButton* m_PlayButton = nullptr;

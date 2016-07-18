@@ -11,6 +11,12 @@ Bullet::Bullet(Level* level, sf::Vector2f position, float direction, sf::Vector2
 	m_Direction(direction)
 {
 	m_Actor->AddCircleFixture(RADIUS);
+	m_Actor->AddContactListener(this);
+
+	b2Filter collisionFilter;
+	collisionFilter.categoryBits = ActorID::BULLET;
+	collisionFilter.maskBits = ActorID::WALL | ActorID::SHEEP | ActorID::PLAYER;
+	m_Actor->SetCollisionFilter(collisionFilter);
 
 	m_BulletManager = level->GetBulletManager();
 	m_BulletManager->AddBullet(this);
@@ -27,7 +33,7 @@ Bullet::~Bullet()
 void Bullet::Tick(sf::Time elapsed)
 {
 	sf::Vector2f pos = m_Actor->GetPosition();
-	if (pos.x < 0 || pos.x > 2080 || pos.y < 0 || pos.y > 1216)
+	if (pos.x < 0 || pos.x > m_Level->GetWidth() || pos.y < 0 || pos.y > m_Level->GetHeight())
 	{
 		m_BulletManager->RemoveBullet(this);
 		return;
@@ -38,4 +44,9 @@ void Bullet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	states.transform.translate(m_Actor->GetPosition()).translate(-RADIUS, -RADIUS);
 	target.draw(m_Circle, states);
+}
+
+void Bullet::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+{
+	m_BulletManager->AddBulletToBeRemoved(this);
 }

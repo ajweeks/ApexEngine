@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Projectile.h"
+
 #include <SFML\Graphics\CircleShape.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 
 class BulletManager;
@@ -19,11 +19,12 @@ public:
 	virtual void Tick(sf::Time elapsed);
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
+	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+
 private:
 	static const float RADIUS;
 
 	BulletManager* m_BulletManager = nullptr;
 	float m_Direction; // Angle in radians
 	sf::CircleShape m_Circle;
-
 };

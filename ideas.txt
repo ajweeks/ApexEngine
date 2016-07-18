@@ -20,7 +20,13 @@ THEME
 
 -
 
-	
+
+-Medicine? 
+  -Pill Boy
+  -You need to find your medicine scattered around the world
+  -
+  
+  
 ***
 -Alien
   -You crash landed on a planet, and developed amnesia

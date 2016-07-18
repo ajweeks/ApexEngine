@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseState.h"
+
 #include <SFML\Graphics\ConvexShape.hpp>
 
 class Level;
@@ -20,8 +21,8 @@ public:
 	Level* GetLevel();
 	bool IsLevelPaused() const;
 
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed);
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent);
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
 
 	void Reset();
 

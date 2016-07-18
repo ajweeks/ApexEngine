@@ -3,7 +3,6 @@
 #include "ApexMouseListener.h"
 
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
 

@@ -3,6 +3,9 @@
 #include <SFML\System\Vector2.hpp>
 #include <cmath>
 
+#define PI 3.14159265359f
+#define PI_2 (3.14159265359f / 2.0f)
+
 class ApexMath
 {
 public:

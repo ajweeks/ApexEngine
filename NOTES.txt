@@ -12,3 +12,7 @@ __ NOTES __
   4. (?) Defocusing pause?
 
   
+TODO:
+
+	Move all Apex-prefixed classes to namespace apex instead?
+	eg. ApexSpriteSheet -> apex::SpriteSheet

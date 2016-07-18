@@ -110,7 +110,6 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 
 void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	target.setView(target.getDefaultView());
 	sf::RectangleShape bgRect(static_cast<sf::Vector2f>(target.getSize()));
 	bgRect.setFillColor(sf::Color(25, 25, 40, 140));
 	target.draw(bgRect);

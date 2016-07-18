@@ -7,6 +7,8 @@ const float Camera::DEFAULT_ZOOM = 2.0f;
 const float Camera::ACCELERATION = 4.0f;
 
 Camera::Camera(sf::Vector2f windowSize) :
+	ApexWindowListener(),
+	m_CurrentZoom(DEFAULT_ZOOM),
 	m_View(sf::FloatRect(0, 0, windowSize.x / DEFAULT_ZOOM, windowSize.y / DEFAULT_ZOOM))
 {
 }
@@ -60,6 +62,7 @@ sf::View Camera::GetCurrentView() const
 
 void Camera::SetZoom(float zoom)
 {
+	m_CurrentZoom = zoom;
 	const sf::Vector2f prevSize = m_View.getSize();
 	m_View.setSize(prevSize.x / zoom, prevSize.y / zoom);
 }
@@ -74,6 +77,11 @@ void Camera::Shake(float xScale, float yScale)
 {
 	m_ShakeRadius.x += xScale;
 	m_ShakeRadius.y += yScale;
+}
+
+void Camera::OnWindowResize(sf::Vector2u windowSize)
+{
+	m_View.setSize(windowSize.x / m_CurrentZoom, windowSize.y / m_CurrentZoom);
 }
 
 void Camera::BoundsCheck(sf::View& view, Level* level)

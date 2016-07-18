@@ -34,9 +34,16 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 
 			if (solidTileIDs[tileSrc])
 			{
-				LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), Entity::ActorID::WALL);
-				newTile->GetPhysicsActor()->AddBoxFixture(tileSize, tileSize);
-				newTile->GetPhysicsActor()->AddContactListener(contactListener);
+				LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), ActorID::WALL);
+				PhysicsActor* newActor = newTile->GetPhysicsActor();
+				newActor->AddBoxFixture(tileSize, tileSize);
+				newActor->AddContactListener(contactListener);
+
+				b2Filter collisionFilter;
+				collisionFilter.categoryBits = ActorID::WALL;
+				collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
+				newActor->SetCollisionFilter(collisionFilter);
+
 				m_Entities.push_back(newTile);
 			}
 		}

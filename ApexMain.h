@@ -13,6 +13,7 @@
 class ApexDebug;
 class ApexKeyListener;
 class ApexMouseListener;
+class ApexWindowListener;
 class PhysicsActorManager;
 
 class b2World;
@@ -54,6 +55,9 @@ public:
 	void AddMouseListener(ApexMouseListener* mouseListener);
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
 
+	void AddWindowListener(ApexWindowListener* windowListener);
+	void RemoveWindowListener(ApexWindowListener* windowListener);
+
 	b2World* GetPhysicsWorld() const;
 	void SetPhysicsPaused(bool physicsPaused);
 	bool DEBUGIsGamePaused() const;
@@ -62,6 +66,8 @@ public:
 	void SetWindowFullscreen(bool fullscreen);
 
 	sf::Time GetTimeElapsed() const;
+
+	sf::RenderWindow* GetWindow();
 
 	// Box2D overriden methods
 	virtual void BeginContact(b2Contact* contact);
@@ -110,4 +116,5 @@ private:
 
 	std::vector<ApexKeyListener*> m_KeyListeners;
 	std::vector<ApexMouseListener*> m_MouseListeners;
+	std::vector<ApexWindowListener*> m_WindowListeners;
 };

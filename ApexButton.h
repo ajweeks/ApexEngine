@@ -4,7 +4,6 @@
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 #include <SFML\Graphics\Text.hpp>
 
 class ApexButton : public ApexMouseListener

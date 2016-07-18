@@ -5,7 +5,6 @@
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 
 class ApexDebugDraw;
 

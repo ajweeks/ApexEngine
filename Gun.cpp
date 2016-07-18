@@ -104,7 +104,7 @@ void Gun::Shoot()
 	const float cosDir = cos(m_Direction);
 	const float sinDir = sin(m_Direction);
 
-	const float screenJoltAmount = 12.0f;
+	const float screenJoltAmount = 2.0f + (std::rand() % 8);
 	m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);

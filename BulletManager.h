@@ -20,8 +20,10 @@ public:
 
 	void AddBullet(Bullet* bullet);
 	void RemoveBullet(Bullet* bullet);
+	void AddBulletToBeRemoved(Bullet* bullet); // Call this when Box2D is locked, these bullets will be deleted next tick
 
 private:
 	std::vector<Bullet*> m_Bullets;
+	std::vector<Bullet*> m_BulletsToBeRemoved;
 
 };

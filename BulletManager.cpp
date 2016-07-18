@@ -31,6 +31,12 @@ void BulletManager::Reset()
 
 void BulletManager::Tick(sf::Time elapsed)
 {
+	for (size_t i = 0; i < m_BulletsToBeRemoved.size(); i++)
+	{
+		delete m_BulletsToBeRemoved[i];
+	}
+	m_BulletsToBeRemoved.clear();
+
 	for (size_t i = 0; i < m_Bullets.size(); ++i)
 	{
 		if (m_Bullets[i] != nullptr)
@@ -72,6 +78,25 @@ void BulletManager::RemoveBullet(Bullet* bullet)
 		if (m_Bullets[i] == bullet)
 		{
 			delete m_Bullets[i];
+			m_Bullets[i] = nullptr;
+			break;
+		}
+	}
+}
+
+void BulletManager::AddBulletToBeRemoved(Bullet* bullet)
+{
+	for (size_t i = 0; i < m_BulletsToBeRemoved.size(); ++i)
+	{
+		if (m_BulletsToBeRemoved[i] == bullet) return; // We're already going to delete this bullet
+	}
+
+	m_BulletsToBeRemoved.push_back(bullet);
+
+	for (size_t i = 0; i < m_Bullets.size(); ++i)
+	{
+		if (m_Bullets[i] == bullet)
+		{
 			m_Bullets[i] = nullptr;
 			break;
 		}

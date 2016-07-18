@@ -56,7 +56,8 @@ void MainMenuState::Tick(sf::Time elapsed)
 
 void MainMenuState::Draw(sf::RenderTarget& target)
 {
-	sf::RectangleShape bgRect(static_cast<sf::Vector2f>(sf::Vector2u(APEX->GetWindowSize().x, APEX->GetWindowSize().y)));
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+	sf::RectangleShape bgRect(windowSize);
 	bgRect.setFillColor(sf::Color(150, 55, 60));
 	target.draw(bgRect, &m_VignetteShader);
 	m_PlayButton->Draw(target, &m_VignetteShader);

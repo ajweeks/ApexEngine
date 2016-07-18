@@ -6,7 +6,6 @@
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\VertexArray.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 
 #include <vector>
 #include <string>

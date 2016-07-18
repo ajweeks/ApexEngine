@@ -1,11 +1,13 @@
 #pragma once
 
+#include "ApexWindowListener.h"
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\View.hpp>
 
 class Level;
 
-class Camera
+class Camera : public ApexWindowListener
 {
 public:
 	Camera(sf::Vector2f windowSize);
@@ -23,6 +25,8 @@ public:
 	void Jolt(float xScale, float yScale);
 	void Shake(float xScale, float yScale);
 
+	virtual void OnWindowResize(sf::Vector2u windowSize) override;
+
 private:
 	void BoundsCheck(sf::View& view, Level* level);
 
@@ -32,5 +36,6 @@ private:
 	sf::View m_View;
 	sf::Vector2f m_ShakeRadius;
 	sf::Vector2f m_ShakeOffset;
+	float m_CurrentZoom;
 
 };

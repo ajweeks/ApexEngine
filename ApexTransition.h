@@ -3,7 +3,6 @@
 #include <SFML\System\Vector2.hpp>
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <SFML\Graphics\RenderStates.hpp>
 #include <SFML\Graphics\Transformable.hpp>
 
 struct TransitionData

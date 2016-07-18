@@ -1,7 +1,8 @@
 #pragma once
 
-#include <SFML\System\Time.hpp>
 #include "Entity.h"
+
+#include <SFML\System\Time.hpp>
 
 class Projectile : public Entity
 {

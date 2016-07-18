@@ -18,6 +18,11 @@ Player::Player(Level* level) :
 	m_Actor->AddCircleFixture(7.0f);
 	m_Actor->AddContactListener(this);
 
+	b2Filter collisionFilter;
+	collisionFilter.categoryBits = ActorID::PLAYER;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::SHEEP;
+	m_Actor->SetCollisionFilter(collisionFilter);
+
 	m_GlowTexture.loadFromFile("resources/glow_white.png");
 	m_GlowSprite.setTexture(m_GlowTexture);
 
@@ -155,8 +160,8 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	states.transform.translate(centerX, centerY);
 
-	DrawGlow(target, states);
 	DrawShadow(target, states);
+	DrawGlow(target, states);
 
 	m_SpriteSheet.Draw(target, states);
 

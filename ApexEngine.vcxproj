@@ -158,8 +158,20 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ApexContactListener.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ApexDebugDraw.cpp" />
     <ClCompile Include="ApexMouseListener.cpp" />
+    <ClCompile Include="ApexParticle.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="ApexParticleManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ApexPauseScreen.cpp">
       <SubType>
       </SubType>
@@ -168,11 +180,31 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ApexWindowListener.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="DustParticle.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="LevelTile.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="Minimap.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Mob.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PhysicsActor.cpp">
       <SubType>
       </SubType>
@@ -181,8 +213,12 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="SpriteSheet.cpp" />
-    <ClCompile Include="Transition.cpp" />
+    <ClCompile Include="Sheep.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="ApexSpriteSheet.cpp" />
+    <ClCompile Include="ApexTransition.cpp" />
     <ClCompile Include="ApexDebug.cpp" />
     <ClCompile Include="ApexKeyboard.cpp" />
     <ClCompile Include="ApexMouse.cpp" />
@@ -200,7 +236,6 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="ParticleEmitter.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="StateManager.cpp" />
@@ -210,8 +245,20 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="ApexContactListener.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="ApexDebugDraw.h" />
     <ClInclude Include="ApexMouseListener.h" />
+    <ClInclude Include="ApexParticle.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="ApexParticleManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="ApexPauseScreen.h">
       <SubType>
       </SubType>
@@ -220,11 +267,31 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="ApexWindowListener.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Camera.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="DustParticle.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="LevelTile.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="Minimap.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Mob.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PhysicsActor.h">
       <SubType>
       </SubType>
@@ -233,8 +300,12 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="SpriteSheet.h" />
-    <ClInclude Include="Transition.h" />
+    <ClInclude Include="Sheep.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="ApexSpriteSheet.h" />
+    <ClInclude Include="ApexTransition.h" />
     <ClInclude Include="ApexDebug.h" />
     <ClInclude Include="ApexKeyboard.h" />
     <ClInclude Include="ApexMath.h" />
@@ -254,7 +325,6 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="logo.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="StateManager.h" />

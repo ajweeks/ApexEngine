@@ -1,12 +1,14 @@
 
 #include "ApexMain.h"
 #include "GameState.h"
+#include "GameState.h"
 #include "MainMenuState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "ApexKeyListener.h"
 #include "ApexMouse.h"
 #include "ApexMouseListener.h"
+#include "ApexWindowListener.h"
 #include "ApexDebug.h"
 #include "ApexAudio.h"
 #include "Entity.h"
@@ -58,7 +60,7 @@ void ApexMain::Init()
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
 
-	m_StateManager = new StateManager(new MainMenuState());
+	m_StateManager = new StateManager(new GameState());
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
@@ -120,6 +122,14 @@ void ApexMain::Run()
 				ApexAudio::SetAllPaused(true);
 				ApexKeyboard::Clear();
 				ApexMouse::Clear();
+
+				for (size_t i = 0; i < m_WindowListeners.size(); i++)
+				{
+					if (m_WindowListeners[i] != nullptr)
+					{
+						m_WindowListeners[i]->OnWindowDefocus();
+					}
+				}
 			}
 
 			if (m_Window->hasFocus())
@@ -133,6 +143,14 @@ void ApexMain::Run()
 				case sf::Event::GainedFocus:
 				{
 					ApexAudio::SetAllPaused(false);
+
+					for (size_t i = 0; i < m_WindowListeners.size(); i++)
+					{
+						if (m_WindowListeners[i] != nullptr)
+						{
+							m_WindowListeners[i]->OnWindowFocus();
+						}
+					}
 				} break;
 				case sf::Event::KeyPressed:
 				{
@@ -228,8 +246,8 @@ void ApexMain::Run()
 				Tick(accumulator);
 			}
 
-			Draw();
 		}
+		Draw();
 	}
 }
 
@@ -402,6 +420,27 @@ void ApexMain::RemoveMouseListener(ApexMouseListener* mouseListener)
 	}
 }
 
+void ApexMain::AddWindowListener(ApexWindowListener* windowListener)
+{
+	for (size_t i = 0; i < m_WindowListeners.size(); ++i)
+	{
+		if (m_WindowListeners[i] == nullptr)
+		{
+			m_WindowListeners[i] = windowListener;
+			return;
+		}
+	}
+	m_WindowListeners.push_back(windowListener);
+}
+
+void ApexMain::RemoveWindowListener(ApexWindowListener* windowListener)
+{
+	for (size_t i = 0; i < m_WindowListeners.size(); ++i)
+	{
+		if (m_WindowListeners[i] == windowListener) m_WindowListeners[i] = nullptr;
+	}
+}
+
 b2World* ApexMain::GetPhysicsWorld() const
 {
 	return m_PhysicsActorManager->GetWorld();
@@ -431,12 +470,25 @@ void ApexMain::SetWindowFullscreen(bool fullscreen)
 	{
 		m_WindowIsFullscreen = fullscreen;
 		CreateApexWindow(m_WindowIsFullscreen);
+
+		for (size_t i = 0; i < m_WindowListeners.size(); i++)
+		{
+			if (m_WindowListeners[i] != nullptr)
+			{
+				m_WindowListeners[i]->OnWindowResize(m_Window->getSize());
+			}
+		}
 	}
 }
 
 sf::Time ApexMain::GetTimeElapsed() const
 {
 	return m_TotalElapsed;
+}
+
+sf::RenderWindow* ApexMain::GetWindow()
+{
+	return m_Window;
 }
 
 void ApexMain::DEBUGToggleGamePaused()

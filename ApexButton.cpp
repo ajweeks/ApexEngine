@@ -38,7 +38,8 @@ void ApexButton::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	target.draw(m_BoundingRect, states);
 
-	target.draw(m_Text);
+	// The vignette shaders messes up with text, either have to reset states.shader or just don't pass states in
+	target.draw(m_Text); 
 }
 
 void ApexButton::SetFillColour(sf::Color fillColour)
