@@ -1,0 +1,21 @@
+{
+  "ambient": "rgba(195, 210, 222, 55)",
+  "lights": [
+    {
+      "blur": 3.5,
+      "color": "rgb(240,235,244)",
+      "flickers": false,
+      "opacity": 0.5,
+      "position": "500, 125",
+      "radius": 35
+    },
+    {
+      "blur": 50.0,
+      "color": "rgb(200,205,154)",
+      "flickers": true,
+      "opacity": 0.8,
+      "position": "95, 675",
+      "radius": 10
+    }
+  ]
+}

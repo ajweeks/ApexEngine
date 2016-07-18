@@ -9,6 +9,7 @@
 #include "ApexContactListener.h"
 #include "ApexWindowListener.h"
 #include "ApexParticleManager.h"
+#include "LightManager.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
@@ -24,7 +25,7 @@ class Minimap;
 class Level : public ApexContactListener, public ApexWindowListener
 {
 public:
-	Level();
+	Level(int levelIndex);
 	virtual ~Level();
 
 	void Tick(sf::Time elapsed);
@@ -55,6 +56,7 @@ public:
 	void RemoveMob(Mob* mob);
 
 	void LoadShaders();
+	void LoadLights();
 
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
@@ -63,29 +65,17 @@ public:
 	virtual void OnWindowResize(sf::Vector2u windowSize) override;
 
 private:
-	void DrawLighting(sf::RenderTarget& target, sf::RenderStates states);
-
 	int m_Width;
 	int m_Height;
+
+	int m_LevelIndex;
 
 	Map* m_Map = nullptr;
 	Player* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
 	Minimap* m_Minimap = nullptr;
 
-	sf::Shader m_LightingShader;
-
-	struct ApexLight
-	{
-		sf::Vector2f position;
-		sf::Color color;
-		float radius;
-		float blur;
-		float opacity;
-	};
-	std::vector<ApexLight> m_Lights;
-	sf::RenderTexture m_LightmapTexture;
-	sf::Sprite m_LightmapSprite;
+	LightManager m_LightManager;
 
 	BulletManager* m_BulletManager = nullptr;
 	std::vector<Mob*> m_Mobs;

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <SFML\System\Vector2.hpp>
+
 #include <cmath>
+#include <random>
 
 #define PI 3.14159265359f
 #define PI_2 (3.14159265359f / 2.0f)
@@ -49,5 +51,17 @@ public:
 	static sf::Vector2f PerpendicularVector(const sf::Vector2f& vector)
 	{
 		return sf::Vector2f(-vector.y, vector.x);
+	}
+
+	static float Random(float min, float max)
+	{
+		assert(max > min);
+
+		std::default_random_engine generator;
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(generator);
+
+		// Pre-C++11:
+		//return (max - min) * ((float)std::rand() / (float)RAND_MAX) + min;
 	}
 };

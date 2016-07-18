@@ -121,15 +121,6 @@ void Map::Tick(sf::Time elapsed)
 void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	m_Layers[0]->draw(target, states);
-
-	/*sf::Sprite gradMult;
-	sf::Texture multTex;
-	multTex.loadFromFile("resources/level/00/tiles-multi.png");
-	gradMult.setTexture(multTex);
-
-	states.blendMode = sf::BlendAlpha;
-
-	target.draw(gradMult, states);*/
 }
 
 int Map::GetTileSize() const

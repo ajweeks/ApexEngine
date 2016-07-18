@@ -36,4 +36,3 @@ private:
 	std::vector<Layer*> m_Layers;
 
 };
-

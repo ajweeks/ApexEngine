@@ -196,6 +196,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="Minimap.cpp">
       <SubType>
@@ -280,6 +284,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="LevelTile.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
       <SubType>
       </SubType>
     </ClInclude>

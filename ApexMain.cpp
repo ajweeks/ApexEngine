@@ -37,12 +37,59 @@ void ApexOutputDebugString(const std::string& string)
 	OutputDebugStringA(string.c_str());
 }
 
+std::vector<std::string> ApexSplit(const std::string& str)
+{
+	std::vector<std::string> result;
+	size_t i = 0;
+
+	while (i != str.size())
+	{
+		while (i != str.size() && isspace(str[i]))
+			++i;
+
+		size_t j = i;
+		while (j != str.size() && !isspace(str[j]))
+			++j;
+
+		if (i != j)
+		{
+			result.push_back(str.substr(i, j - i));
+			i = j;
+		}
+	}
+	return result;
+}
+
+std::vector<std::string> ApexSplit(const std::string& str, const char& delim)
+{
+	std::vector<std::string> result;
+	size_t i = 0;
+
+	while (i != str.size())
+	{
+		while (i != str.size() && str[i] == delim)
+			++i;
+
+		size_t j = i;
+		while (j != str.size() && str[j] != delim)
+			++j;
+
+		if (i != j)
+		{
+			result.push_back(str.substr(i, j - i));
+			i = j;
+		}
+	}
+	return result;
+}
+
 ApexMain::ApexMain()
 {
 	if (!sf::Shader::isAvailable())
 	{
-		throw std::exception("Sorry, your graphics card doesn't support shaders :(");
+		throw std::exception("Sorry, your graphics card doesn't support shaders");
 	}
+	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 }
 
 ApexMain::~ApexMain()

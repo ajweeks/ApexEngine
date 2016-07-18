@@ -161,6 +161,9 @@
     <ClCompile Include="DustParticle.cpp">
       <Filter>Source Files\Graphics\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -291,6 +294,9 @@
     </ClInclude>
     <ClInclude Include="DustParticle.h">
       <Filter>Source Files\Graphics\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Source Files\Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

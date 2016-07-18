@@ -9,7 +9,7 @@
 GameState::GameState() :
 	BaseState(StateType::GAME)
 {
-	m_Level = new Level();
+	m_Level = new Level(0);
 	APEX->SetPhysicsPaused(false);
 
 	Reset();
@@ -69,6 +69,10 @@ bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 	case sf::Keyboard::T:
 	{
 		m_Level->LoadShaders();
+	} break;
+	case sf::Keyboard::L:
+	{
+		m_Level->LoadLights();
 	} break;
 	}
 	return false;

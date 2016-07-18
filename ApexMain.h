@@ -18,7 +18,11 @@ class PhysicsActorManager;
 
 class b2World;
 
+// Global functions
 void ApexOutputDebugString(const std::string &string);
+
+std::vector<std::string> ApexSplit(const std::string& str);
+std::vector<std::string> ApexSplit(const std::string& str, const char& delim);
 
 class ApexMain : public b2ContactListener
 {
