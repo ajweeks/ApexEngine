@@ -64,4 +64,9 @@ public:
 		// Pre-C++11:
 		//return (max - min) * ((float)std::rand() / (float)RAND_MAX) + min;
 	}
+
+	static double GetFloatPrecision(float value, float precision)
+	{
+		return (floor((value * pow(10, precision) + 0.5)) / pow(10, precision));
+	}
 };

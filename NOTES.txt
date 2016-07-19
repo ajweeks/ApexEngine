@@ -28,6 +28,7 @@ TODO:
 |	R				Restart level									|
 |	LMB				Shoot											|
 |	RMB				Cancel current operation (in light editor)		|
+|	MMB				Create / Delete light (in light editor)			|
 |	P				Toggle Physics Debug Display					|
 |																	|
 |	F8				Toggle Light Editor								|

@@ -37,8 +37,10 @@ public:
 	static Type StringToType(std::string string);
 
 private:
+	//void CreatePhysicsActors();
+
 	std::vector<int> m_Tiles;
-	std::vector<LevelTile*> m_Entities;
+	std::vector<LevelTile*> m_LevelTiles;
 	sf::VertexArray m_Verticies;
 
 	std::string m_Name;

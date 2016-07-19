@@ -43,7 +43,7 @@ void Level::LoadShaders()
 
 void Level::LoadLights()
 {
-	m_LightManager.LoadLights();
+	m_LightManager.LoadLightData();
 }
 
 void Level::ToggleLightingEditor()

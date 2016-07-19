@@ -105,7 +105,7 @@ void Gun::Shoot()
 	const float sinDir = sin(m_Direction);
 
 	const float screenJoltAmount = 2.0f + (std::rand() % 8);
-	m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
+	//m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
 	const sf::Vector2f playerVel = m_Level->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();

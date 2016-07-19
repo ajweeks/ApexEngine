@@ -44,7 +44,7 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 				collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
 				newActor->SetCollisionFilter(collisionFilter);
 
-				m_Entities.push_back(newTile);
+				m_LevelTiles.push_back(newTile);
 			}
 		}
 	}
@@ -54,14 +54,80 @@ Layer::~Layer()
 {
 	delete m_TileSet;
 
-	for (size_t i = 0; i < m_Entities.size(); i++)
+	for (size_t i = 0; i < m_LevelTiles.size(); i++)
 	{
-		if (m_Entities[i] != nullptr)
+		if (m_LevelTiles[i] != nullptr)
 		{
-			delete m_Entities[i];
+			delete m_LevelTiles[i];
 		}
 	}
 }
+
+// TODO: Finish implementing this
+//void Layer::CreatePhysicsActors()
+//{
+//	/* -1 if we haven't merged this actor yet, 0 if no actor, else the index of the actor
+//	eg.
+//		1, 1, 1, 0, 2, 2,-1
+//		1, 1, 1, 0, 0,-1,-1
+//		1, 1, 1, 3, 3, 3,-1
+//		0, 4, 4, 3, 3, 3, 0
+//	*/
+//
+//	/*
+//	The basic idea of this algorithm is to take a solid tile and see what the largest rectangle with a top left
+//	corner of the current tile
+//	*/
+//	std::vector<int> m_ActorIndicies(m_Tiles.size(), -1);
+//	for (size_t y = 0; y < m_TileSet->m_TilesHigh; ++y)
+//	{
+//		for (size_t x = 0; x < m_TileSet->m_TilesWide; ++x)
+//		{
+//			const int index = y * m_TileSet->m_TilesWide + x;
+//
+//			if (m_ActorIndicies[index] == -1)
+//			{
+//				int largestRectSize = 1;
+//				sf::FloatRect largestRectBounds(x, y, 1, 1);
+//
+//				sf::FloatRect currentRectBounds(x, y, 1, 1);
+//				for (size_t yy = y; yy < m_TileSet->m_TilesHigh; ++yy)
+//				{
+//					for (size_t xx = x; xx < m_TileSet->m_TilesWide; ++xx)
+//					{
+//						const int innerIndex = yy * m_TileSet->m_TilesWide + xx;
+//						const int newWidth = xx - x + 1;
+//						if (m_Tiles[innerIndex] != 0)
+//						{
+//							currentRectBounds.height = yy - y + 1;
+//						}
+//						else
+//						{
+//							if (newWidth - 1 < currentRectBounds.width) 
+//							{
+//								currentRectBounds.width = newWidth - 1;
+//								yy = m_TileSet->m_TilesHigh;
+//							}
+//							else if (yy == y)
+//							{
+//								yy = m_TileSet->m_TilesHigh;
+//							}
+//							break;
+//						}
+//
+//						int currentRectSize = currentRectBounds.width * currentRectBounds.height;
+//						if (currentRectSize > largestRectSize)
+//						{
+//							largestRectSize = currentRectSize;
+//							largestRectBounds = currentRectBounds;
+//						}
+//					}
+//				}
+//
+//			}
+//		}
+//	}
+//}
 
 void Layer::Tick(sf::Time elapsed)
 {
