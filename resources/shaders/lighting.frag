@@ -13,7 +13,7 @@ void main()
 	float distFromCenter = distance(gl_FragCoord, pos) / length(u_resolution.xy);
 	float radius = u_radius / length(u_resolution.xy);
 	
-	float dist = length(smoothstep(radius, radius + radius * u_blur, distFromCenter));
+	float dist = length(smoothstep(radius, radius + u_blur, distFromCenter));
 
 	vec4 color = mix(vec4(u_color.rgb, u_opacity), vec4(0.0), dist);
 	

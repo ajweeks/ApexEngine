@@ -15,7 +15,7 @@
 Level::Level(int levelIndex) :
 	ApexWindowListener(),
 	m_LevelIndex(levelIndex),
-	m_LightManager(levelIndex)
+	m_LightManager(levelIndex, this)
 {
 	m_DebugOverlay = new ApexDebug();
 	m_ShowingDebugOverlay = true;
@@ -44,6 +44,11 @@ void Level::LoadShaders()
 void Level::LoadLights()
 {
 	m_LightManager.LoadLights();
+}
+
+void Level::ToggleLightingEditor()
+{
+	m_LightManager.ToggleShowingEditor();
 }
 
 Level::~Level()

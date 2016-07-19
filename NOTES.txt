@@ -16,3 +16,22 @@ TODO:
 
 	Move all Apex-prefixed classes to namespace apex instead?
 	eg. ApexSpriteSheet -> apex::SpriteSheet
+	
+	
+	
+|																	|
+|			 ==== CONTROLS ====										|
+|																	|
+|	WASD/ARROWS		Move											|
+|	ESC				Show pause screen								|
+|	SPACE			Pause game loop									|
+|	R				Restart level									|
+|	LMB				Shoot											|
+|	RMB				Cancel current operation (in light editor)		|
+|	P				Toggle Physics Debug Display					|
+|																	|
+|	F8				Toggle Light Editor								|
+|	F9				Toggle Debug Info								|
+|	F10				Take Screenshot (saved in /screenshots/)		|
+|																	|
+|																	|

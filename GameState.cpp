@@ -74,6 +74,10 @@ bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 	{
 		m_Level->LoadLights();
 	} break;
+	case sf::Keyboard::F8:
+	{
+		m_Level->ToggleLightingEditor();
+	} break;
 	}
 	return false;
 }

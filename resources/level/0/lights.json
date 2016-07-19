@@ -2,15 +2,40 @@
   "ambient": "rgba(195, 210, 222, 55)",
   "lights": [
     {
-      "blur": 3.5,
+      "blur": 0.20,
       "color": "rgb(240,235,244)",
       "flickers": false,
-      "opacity": 0.5,
-      "position": "500, 125",
-      "radius": 35
+      "opacity": 0.9,
+      "position": "230, 90",
+      "radius": 80
     },
     {
-      "blur": 50.0,
+      "blur": 0.25,
+      "color": "rgb(200,200,200)",
+      "flickers": false,
+      "opacity": 0.8,
+      "position": "470, 125",
+      "radius": 50
+    },
+    {
+      "blur": 0.25,
+      "color": "rgb(200,200,200)",
+      "flickers": false,
+      "opacity": 0.9,
+      "position": "690, 75",
+      "radius": 60
+    },
+    
+    {
+      "blur": 0.25,
+      "color": "rgb(200,200,200)",
+      "flickers": false,
+      "opacity": 0.76,
+      "position": "820, 355",
+      "radius": 100
+    },
+    {
+      "blur": 0.25,
       "color": "rgb(200,205,154)",
       "flickers": true,
       "opacity": 0.8,

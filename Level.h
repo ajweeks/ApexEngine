@@ -57,6 +57,7 @@ public:
 
 	void LoadShaders();
 	void LoadLights();
+	void ToggleLightingEditor();
 
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
