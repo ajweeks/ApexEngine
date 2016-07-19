@@ -4,6 +4,7 @@
 #include "ApexMath.h"
 #include "ApexMouse.h"
 #include "Level.h"
+#include "ApexKeyboard.h"
 
 #include "JSON\json.hpp"
 
@@ -27,7 +28,7 @@ LightManager::LightManager(int levelIndex, Level* level) :
 	m_LightmapTexture.create(windowSize.x, windowSize.y);
 	m_LightmapSprite.setTexture(m_LightmapTexture.getTexture());
 
-	LoadLights();
+	LoadLightData();
 	LoadShader();
 }
 
@@ -81,13 +82,17 @@ void LightManager::Tick(sf::Time elapsed)
 				
 			}
 		}
+
+		if (ApexKeyboard::IsKeyPressed(sf::Keyboard::Num9))
+		{
+			SaveLightData();
+		}
 	}
 }
 
 void LightManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	// TODO: Bake this render on startup and only update & redraw dynamic lights
-	m_LightmapTexture.clear();
 
 	sf::Transform prevTransform = states.transform;
 
@@ -154,7 +159,7 @@ void LightManager::OnWindowResize(sf::Vector2u windowSize)
 	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
-void LightManager::LoadLights()
+void LightManager::LoadLightData()
 {
 	std::ifstream fileStream;
 
@@ -203,6 +208,45 @@ void LightManager::LoadLights()
 	fileStream.close();
 }
 
+void LightManager::SaveLightData()
+{
+	const std::string directory = "resources/level/" + std::to_string(m_LevelIndex) + "/";
+	if (!std::experimental::filesystem::exists(directory)) {
+		std::experimental::filesystem::create_directory(directory);
+	}
+
+	const std::string fileName = "lights.json";
+	std::ofstream fileStream;
+	fileStream.open(directory + fileName);
+	if (!fileStream.is_open())
+	{
+		ApexOutputDebugString("Could not open " + directory + fileName + "\n");
+		fileStream.close();
+		return;
+	}
+
+	json lights;
+	lights["ambient"] = ColorToString(m_AmbientColor);
+	for (size_t i = 0; i < m_Lights.size(); ++i)
+	{
+		json light;
+
+		light["blur"] = ApexMath::GetFloatPrecision(m_Lights[i].blur, 2);
+		light["color"] = ColorToString(m_Lights[i].color);
+		light["flickers"] = m_Lights[i].flickers;
+		light["opacity"] = ApexMath::GetFloatPrecision(m_Lights[i].opacity, 2);
+		std::string pos = Vector2fToString(m_Lights[i].position);
+		light["position"] = Vector2fToString(m_Lights[i].position);
+		light["radius"] = ApexMath::GetFloatPrecision(m_Lights[i].radius, 2);
+
+		lights["lights"].push_back(light);
+	}
+
+	fileStream << std::setw(2) << std::setprecision(1) << lights;
+
+	fileStream.close();
+}
+
 sf::Vector2f LightManager::StringToVector2f(std::string string)
 {
 	sf::Vector2f result;
@@ -215,6 +259,15 @@ sf::Vector2f LightManager::StringToVector2f(std::string string)
 	}
 
 	return result;
+}
+
+std::string LightManager::Vector2fToString(sf::Vector2f vector)
+{
+	std::stringstream s;
+	
+	s << vector.x << ", " << vector.y;
+
+	return s.str();
 }
 
 // Accepts strings in form "rgb(255, 255, 255)" and "rgba(255, 255, 255, 255)"
@@ -250,6 +303,12 @@ sf::Color LightManager::StringToColor(std::string string)
 	return result;
 }
 
+std::string LightManager::ColorToString(sf::Color color)
+{
+	if (color.a == 255)	return "rgb(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ")";
+	return "rgba(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ", " + std::to_string(color.a) + ")";
+}
+
 void LightManager::LoadShader()
 {
 	if (!m_LightingShader.loadFromFile("resources/shaders/lighting.frag", sf::Shader::Fragment))
@@ -263,12 +322,13 @@ void LightManager::LoadShader()
 void LightManager::SetLevelIndex(int levelIndex)
 {
 	m_LevelIndex = levelIndex;
-	LoadLights();
+	LoadLightData();
 }
 
 void LightManager::SetShowingEditor(bool showingEditor)
 {
 	m_IsShowingEditor = showingEditor;
+	if (!showingEditor) SaveLightData();
 	m_CurrentLightDraggingIndex = -1;
 }
 
@@ -286,7 +346,9 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
 	if (m_IsShowingEditor)
 	{
-		if (buttonEvent.button == sf::Mouse::Left)
+		switch (buttonEvent.button)
+		{
+		case  sf::Mouse::Left:
 		{
 			sf::Vector2f mouseWorldSpace = APEX->GetMouseCoordsWorldSpace(m_Level->GetCurrentView());
 				m_MouseDragStart = mouseWorldSpace;
@@ -318,8 +380,8 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 					return false;
 				}
 			}
-		}
-		else if (buttonEvent.button == sf::Mouse::Right)
+		} break;
+		case sf::Mouse::Right:
 		{
 			if (m_CurrentLightDraggingIndex != -1)
 			{
@@ -336,6 +398,41 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 				m_Lights[m_CurrentLightBlurIndex].blur = m_BlurDragStart;
 				m_CurrentLightBlurIndex = -1;
 			}
+		} break;
+		case sf::Mouse::Middle: // Create/destroy lights
+		{
+			if (m_CurrentLightDraggingIndex== -1 &&
+				m_CurrentLightBlurIndex == -1 &&
+				m_CurrentLightRadiusIndex == -1)
+			{
+				sf::Vector2f mousePosWorldSpace = APEX->GetMouseCoordsWorldSpace(m_Level->GetCurrentView());
+
+				bool deletedLight = false;
+				for (size_t i = 0; i < m_Lights.size(); ++i)
+				{
+					if (ApexMath::Length(mousePosWorldSpace - m_Lights[i].position) < m_Lights[i].radius / 2.0f)
+					{
+						m_Lights.erase(m_Lights.begin() + i);
+						deletedLight = true;
+						break;
+					}
+				}
+
+				if (!deletedLight)
+				{
+					ApexLight light;
+
+					light.blur = 0.2f;
+					light.color = sf::Color::White;
+					light.flickers = false;
+					light.opacity = 0.8f;
+					light.position = mousePosWorldSpace;
+					light.radius = 50.0f;
+
+					m_Lights.push_back(light);
+				}
+			}
+		} break;
 		}
 	}
 	return true;

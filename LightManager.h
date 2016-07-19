@@ -27,7 +27,8 @@ public:
 	void OnWindowResize(sf::Vector2u windowSize);
 
 	void LoadShader();
-	void LoadLights();
+	void LoadLightData();
+	void SaveLightData();
 
 	void SetLevelIndex(int levelIndex);
 
@@ -41,7 +42,9 @@ public:
 
 private:
 	static sf::Color StringToColor(std::string string);
+	static std::string ColorToString(sf::Color color);
 	static sf::Vector2f StringToVector2f(std::string string);
+	static std::string Vector2fToString(sf::Vector2f vector);
 
 	void DrawEditor(sf::RenderTarget& target, sf::RenderStates states);
 
