@@ -48,5 +48,5 @@ void Bullet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 void Bullet::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
-	m_BulletManager->AddBulletToBeRemoved(this);
+	if (!otherActor->IsSensor()) m_BulletManager->AddBulletToBeRemoved(this);
 }

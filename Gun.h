@@ -11,6 +11,7 @@ class Player;
 class Level;
 class BulletManager;
 class Game;
+class AmmoDrop;
 
 class Gun : public Entity, public ApexMouseListener
 {
@@ -27,6 +28,14 @@ public:
 	void Shoot();
 	void Reset();
 
+	bool Empty() const;
+
+	void AddAmmo(AmmoDrop* ammoDrop);
+
+	int GetBulletsRemaining() const;
+	int GetClipSize() const;
+	int GetClipsRemaining() const;
+
 	// Apex Mouse Listener overrides
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
@@ -35,6 +44,8 @@ public:
 	float GetDirection() const;
 
 private:
+	void Reload();
+
 	bool m_BeingHeld;
 	Level* m_Level = nullptr;
 	BulletManager* m_BulletManager = nullptr;

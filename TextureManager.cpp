@@ -24,6 +24,8 @@ void TextureManager::Initialize()
 	LoadTexture(Texture::CURSOR_NORMAL, "resources/cursor-normal-x2.png");
 	LoadTexture(Texture::CURSOR_POINTER, "resources/cursor-point-x2.png");
 
+	LoadTexture(Texture::AMMO, "resources/ammo.png");
+
 	s_initialized = true;
 }
 

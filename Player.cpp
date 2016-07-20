@@ -6,6 +6,8 @@
 #include "enumerations.h"
 #include "ApexMain.h"
 #include "TextureManager.h"
+#include "AmmoDrop.h"
+#include "ApexAudio.h"
 
 const float Player::VEL = 1000000.0f;
 
@@ -61,16 +63,32 @@ Gun& Player::GetGun()
 	return m_Gun;
 }
 
-void Player::BeginContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+{
+	switch (otherActor->GetUserData())
+	{
+	case ActorID::AMMO:
+	{
+		AmmoDrop* ammoDrop = static_cast<AmmoDrop*>(otherActor->GetUserPointer());
+		m_Gun.AddAmmo(ammoDrop);
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_RELOAD);
+	} break;
+	}
+}
+
+void Player::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 }
 
-void Player::EndContact(PhysicsActor * thisActor, PhysicsActor * otherActor)
+void Player::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact)
 {
-}
-
-void Player::PreSolve(PhysicsActor * thisActor, PhysicsActor * otherActor, bool & enableContact)
-{
+	switch (otherActor->GetUserData())
+	{
+	case ActorID::WALL:
+	{
+		
+	} break;
+	}
 }
 
 void Player::Tick(sf::Time elapsed)
@@ -116,7 +134,7 @@ void Player::HandleMovement(sf::Time elapsed)
 	 m_IsCrouching = (ApexKeyboard::IsKeyDown(sf::Keyboard::C) || ApexKeyboard::IsKeyDown(sf::Keyboard::RControl));
 
 	m_Actor->SetLinearVelocity(newVel);
-	ClampPosition();
+	//ClampPosition();
 }
 
 // Bounds check against the edges of the level (in theory shouldn't be neccessary, the levels
@@ -152,7 +170,7 @@ void Player::ClampPosition()
 void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	const float centerX = m_Actor->GetPosition().x;
-	const float centerY = m_Actor->GetPosition().y;
+	const float centerY = m_Actor->GetPosition().y - 8.0f;
 
 	states.transform.translate(centerX, centerY);
 
@@ -166,5 +184,5 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)
 {
 	states.transform.translate(-13, 0);
-	target.draw(*m_ShadowSprite, states);
+	target.draw(m_ShadowSprite, states);
 }

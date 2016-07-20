@@ -6,11 +6,14 @@
 #include "Camera.h"
 #include "ApexAudio.h"
 #include "ApexPauseScreen.h"
+#include "PhysicsActor.h"
+#include "Minimap.h"
 #include "Mob.h"
 #include "Sheep.h"
-#include "PhysicsActor.h"
 #include "Entity.h"
-#include "Minimap.h"
+#include "Item.h"
+#include "AmmoDrop.h"
+#include "HUD.h"
 
 Level::Level(int levelIndex) :
 	ApexWindowListener(),
@@ -18,21 +21,26 @@ Level::Level(int levelIndex) :
 	m_LightManager(levelIndex, this)
 {
 	m_DebugOverlay = new ApexDebug();
-	m_ShowingDebugOverlay = true;
+	m_ShowingDebugOverlay = false;
 
 	m_BulletManager = new BulletManager();
 	m_Map = new Map(this, "resources/level/" + std::to_string(levelIndex) + "/tiles_small.json", this);
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
 	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
+	
 	m_Player = new Player(this);
+	
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float aspectRatio = float(windowSize.x / windowSize.y);
 	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)));
 	m_Camera->SetZoom(2.0f);
 	m_PauseScreen = new ApexPauseScreen(this);
+	
 	const float minimapWidth = 200.0f;
 	m_Minimap = new Minimap(this, sf::Vector2f(minimapWidth, minimapWidth / aspectRatio));
 
+	m_HUD = new HUD(this);
+	
 	Reset();
 }
 
@@ -60,12 +68,31 @@ Level::~Level()
 	delete m_BulletManager;
 	delete m_PauseScreen;
 	delete m_Minimap;
+	delete m_HUD;
 
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
-		delete m_Mobs[i];
+		if (m_Mobs[i] != nullptr)
+		{
+			delete m_Mobs[i];
+		}
 	}
 	m_Mobs.clear();
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr)
+		{
+			delete m_Items[i];
+		}
+	}
+	m_Items.clear();
+
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
+	{
+		delete m_ItemsToBeRemoved[i];
+	}
+	m_ItemsToBeRemoved.clear();
 }
 
 void Level::Reset()
@@ -82,6 +109,15 @@ void Level::Reset()
 	m_Mobs.push_back(new Sheep(this, sf::Vector2f(430, 510)));
 	m_Mobs.push_back(new Sheep(this, sf::Vector2f(690, 240)));
 	m_Mobs.push_back(new Sheep(this, sf::Vector2f(910, 580)));
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		delete m_Items[i];
+	}
+	m_Items.clear();
+	m_Items.push_back(new AmmoDrop(this, sf::Vector2f(250, 80), 100));
+	m_Items.push_back(new AmmoDrop(this, sf::Vector2f(550, 110), 100));
+	m_Items.push_back(new AmmoDrop(this, sf::Vector2f(150, 610), 100));
 }
 
 void Level::Tick(sf::Time elapsed)
@@ -92,17 +128,32 @@ void Level::Tick(sf::Time elapsed)
 		return;
 	}
 
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
+	{
+		delete m_ItemsToBeRemoved[i];
+	}
+	m_ItemsToBeRemoved.clear();
+
 	m_Map->Tick(elapsed);
 	m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
+	m_HUD->Tick(elapsed);
 
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
 		if (m_Mobs[i] != nullptr)
 		{
 			m_Mobs[i]->Tick(elapsed);
+		}
+	}
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr)
+		{
+			m_Items[i]->Tick(elapsed);
 		}
 	}
 
@@ -130,6 +181,14 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		}
 	}
 
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr)
+		{
+			m_Items[i]->Draw(target, states);
+		}
+	}
+
 	m_ParticleManager.Draw(target, states);
 
 	m_LightManager.Draw(target, states);
@@ -138,6 +197,8 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.setView(target.getDefaultView());
 
 	m_Minimap->Draw(target, states);
+
+	m_HUD->Draw(target, states);
 
 	if (m_ShowingDebugOverlay)
 	{
@@ -181,6 +242,11 @@ void Level::AddParticle(ApexParticle* spriteSheet)
 	m_ParticleManager.AddParticle(spriteSheet);
 }
 
+void Level::AddMob(Mob* mob)
+{
+	m_Mobs.push_back(mob);
+}
+
 void Level::RemoveMob(Mob* mob)
 {
 	for (size_t i = 0; i < m_Mobs.size(); i++)
@@ -190,6 +256,42 @@ void Level::RemoveMob(Mob* mob)
 			delete m_Mobs[i];
 			m_Mobs[i] = nullptr;
 			return;
+		}
+	}
+}
+
+void Level::AddItem(Item* item)
+{
+	m_Items.push_back(item);
+}
+
+void Level::RemoveItem(Item* item)
+{
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] == item)
+		{
+			delete m_Items[i];
+			m_Items[i] = nullptr;
+			return;
+		}
+	}
+}
+
+void Level::AddItemToBeRemoved(Item* item)
+{
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
+	{
+		if (m_ItemsToBeRemoved[i] == item) return;
+	}
+	m_ItemsToBeRemoved.push_back(item);
+
+	for (size_t i = 0; i < m_Items.size(); ++i)
+	{
+		if (m_Items[i] == item)
+		{
+			m_Items[i] = nullptr;
+			break;
 		}
 	}
 }

@@ -69,7 +69,7 @@ private:
 	Level* m_Level = nullptr;
 
 	// Editor variables:
-	bool m_IsShowingEditor = true;
+	bool m_IsShowingEditor;
 	int m_CurrentLightDraggingIndex = -1;
 	int m_CurrentLightRadiusIndex = -1;
 	int m_CurrentLightBlurIndex = -1;

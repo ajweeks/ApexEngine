@@ -7,6 +7,7 @@
 #include "ApexMouse.h"
 #include "ApexAudio.h"
 #include "Player.h"
+#include "AmmoDrop.h"
 
 Gun::Gun(Level* level, sf::Vector2f position) :
 	Entity(level, position, ActorID::GUN, this),
@@ -29,8 +30,33 @@ Gun::~Gun()
 void Gun::Reset()
 {
 	m_ClipSize = 25;
-	m_ClipsRemaining = 3;
+	m_ClipsRemaining = 1;
 	m_BulletsRemaining = m_ClipSize;
+}
+
+bool Gun::Empty() const
+{
+	return m_BulletsRemaining == 0 && m_ClipsRemaining == 0;
+}
+
+void Gun::AddAmmo(AmmoDrop* ammoDrop)
+{
+	m_ClipsRemaining += int(ammoDrop->GetBulletCount() / m_ClipSize);
+}
+
+int Gun::GetBulletsRemaining() const
+{
+	return m_BulletsRemaining;
+}
+
+int Gun::GetClipSize() const
+{
+	return m_ClipSize;
+}
+
+int Gun::GetClipsRemaining() const
+{
+	return m_ClipsRemaining;
 }
 
 bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
@@ -88,23 +114,14 @@ void Gun::Shoot()
 {
 	if (m_BulletsRemaining == 0)
 	{
-		if (m_ClipsRemaining == 0)
-		{
-			ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE_EMPTY);
-			return;
-		}
-		else
-		{
-			ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_RELOAD);
-			m_BulletsRemaining = m_ClipSize;
-			--m_ClipsRemaining;
-		}
+		Reload();
+		if (Empty()) return;
 	}
 
 	const float cosDir = cos(m_Direction);
 	const float sinDir = sin(m_Direction);
 
-	const float screenJoltAmount = 2.0f + (std::rand() % 8);
+	//const float screenJoltAmount = 2.0f + (std::rand() % 8);
 	//m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
@@ -112,4 +129,21 @@ void Gun::Shoot()
 	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsRemaining;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
+
+	if (m_BulletsRemaining == 0) Reload();
+}
+
+void Gun::Reload()
+{
+	if (m_ClipsRemaining == 0)
+	{
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE_EMPTY);
+		return;
+	}
+	else
+	{
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_RELOAD);
+		m_BulletsRemaining = m_ClipSize;
+		--m_ClipsRemaining;
+	}
 }

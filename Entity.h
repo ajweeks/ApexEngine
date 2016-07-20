@@ -3,11 +3,9 @@
 #include "ApexContactListener.h"
 #include "enumerations.h"
 
-#include <SFML\Graphics\Sprite.hpp>
-#include <SFML\Graphics\Texture.hpp>
-#include <SFML\Graphics\Rect.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\System\Time.hpp>
+#include <SFML\Graphics\Sprite.hpp>
 
 #include <Box2D\Dynamics\b2Body.h>
 
@@ -35,7 +33,7 @@ public:
 protected:
 	Level* m_Level = nullptr;
 	PhysicsActor* m_Actor = nullptr;
-	sf::Sprite* m_ShadowSprite;
+	sf::Sprite m_ShadowSprite;
 
 private:
 

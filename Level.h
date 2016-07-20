@@ -21,6 +21,8 @@ class Game;
 class ApexPauseScreen;
 class Mob;
 class Minimap;
+class Item;
+class HUD;
 
 class Level : public ApexContactListener, public ApexWindowListener
 {
@@ -53,7 +55,12 @@ public:
 
 	void AddParticle(ApexParticle* spriteSheet);
 
+	void AddMob(Mob* mob);
 	void RemoveMob(Mob* mob);
+
+	void AddItem(Item* item);
+	void RemoveItem(Item* item);
+	void AddItemToBeRemoved(Item* item); // Call this when Box2D is locked, these items will be deleted next Tick
 
 	void LoadShaders();
 	void LoadLights();
@@ -75,11 +82,14 @@ private:
 	Player* m_Player = nullptr;
 	Camera* m_Camera = nullptr;
 	Minimap* m_Minimap = nullptr;
+	HUD* m_HUD = nullptr;
 
 	LightManager m_LightManager;
 
 	BulletManager* m_BulletManager = nullptr;
 	std::vector<Mob*> m_Mobs;
+	std::vector<Item*> m_Items;
+	std::vector<Item*> m_ItemsToBeRemoved;
 
 	ApexPauseScreen* m_PauseScreen = nullptr;
 

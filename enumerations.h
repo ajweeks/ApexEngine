@@ -18,5 +18,6 @@ enum ActorID
 	PLAYER		= (1 << 1),
 	BULLET		= (1 << 2),
 	GUN			= (1 << 3),
-	SHEEP		= (1 << 4)
+	SHEEP		= (1 << 4),
+	AMMO		= (1 << 5)
 };
