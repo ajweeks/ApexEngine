@@ -5,12 +5,6 @@
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\Transformable.hpp>
 
-struct TransitionData
-{
-	sf::Transformable transformable;
-	sf::Color color;
-};
-
 class ApexTransition
 {
 public:
@@ -29,28 +23,28 @@ public:
 	};
 
 	ApexTransition();
-	ApexTransition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
+	ApexTransition(sf::Time totalTime, EaseType easeType);
 	virtual ~ApexTransition();
 
-	void Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
+	virtual void Create(sf::Time totalTime, EaseType easeType);
 
-	void Tick(sf::Time elapsed);
-	TransitionData GetCurrentTransitionData();
+	virtual void Tick(sf::Time elapsed);
+	//virtual void* GetCurrentTransitionData() = 0;
 
-	void Restart();
-	void Swap(); // Swap start and end data, and reset
-	void SetEaseType(EaseType easeType);
-	void SetFinished();
+	virtual void Swap() = 0; // Swap start and end data, then reset
+	virtual void Restart();
+	virtual void SetEaseType(EaseType easeType);
+	virtual void SetDuration(sf::Time duration);
+	virtual void SetFinished();
 
-private:
+	float GetPercentComplete() const;
+
+protected:
 	sf::Vector2f Lerp(sf::Vector2f start, sf::Vector2f delta, float t);
 	float Lerp(float start, float delta, float t); // t must be in range [0.0f, 1.0f]
 
 	sf::Time m_TotalTime;
 	sf::Time m_TimeElapsed;
-
-	TransitionData m_StartData;
-	TransitionData m_EndData;
 
 	EaseType m_EaseType;
 

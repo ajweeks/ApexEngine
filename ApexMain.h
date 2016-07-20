@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StateManager.h"
+#include "FloatTransition.h"
 
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\Font.hpp>
@@ -39,6 +40,7 @@ public:
 
 	void Run();
 	void Quit();
+
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
 	// Returns the mouse coords relative to the game window, or (-1, -1) if mouse is outside of window
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
@@ -70,8 +72,9 @@ public:
 	void SetWindowFullscreen(bool fullscreen);
 
 	sf::Time GetTimeElapsed() const;
-
 	sf::RenderWindow* GetWindow();
+
+	void SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType); // Call this with the amount of time to be in slow mo for
 
 	// Box2D overriden methods
 	virtual void BeginContact(b2Contact* contact);
@@ -84,13 +87,11 @@ private:
 	void Tick(double& accumulator);
 	void Draw();
 	void LoadCursorTextures();
-
 	void DEBUGToggleGamePaused();
 
 	static const int INITAL_WINDOW_WIDTH;
 	static const int INITAL_WINDOW_HEIGHT;
 	static const bool USE_V_SYNC;
-
 	static const std::string WINDOW_TITLE;
 
 	static ApexMain* m_Singleton;
@@ -100,9 +101,10 @@ private:
 	sf::Time m_ElapsedThisFrame;
 	int m_Frames;
 	int m_FPS;
-
 	int m_Updates;
 	int m_UPS;
+
+	FloatTransition m_SlowMoData; // A bit janky, use the rotation field to store physics speed
 
 	bool m_IsRunning;
 

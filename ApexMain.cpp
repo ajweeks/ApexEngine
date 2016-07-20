@@ -1,7 +1,6 @@
 
 #include "ApexMain.h"
 #include "GameState.h"
-#include "GameState.h"
 #include "MainMenuState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
@@ -13,10 +12,10 @@
 #include "ApexAudio.h"
 #include "Entity.h"
 #include "StateManager.h"
-#include "logo.h"
 #include "PhysicsActorManager.h"
 #include "ApexContactListener.h"
 #include "TextureManager.h"
+#include "logo.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -92,6 +91,9 @@ ApexMain::ApexMain()
 	}
 
 	TextureManager::Initialize();
+
+	m_SlowMoData.Create(0.01f, 1.0f, sf::seconds(0.1f), ApexTransition::EaseType::QUADRATIC_IN_OUT);
+	m_SlowMoData.SetFinished();
 
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 }
@@ -308,7 +310,16 @@ void ApexMain::Tick(double& accumulator)
 {
 	while (accumulator >= PhysicsActorManager::TIMESTEP)
 	{
-		const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
+		m_SlowMoData.Tick(sf::seconds(PhysicsActorManager::TIMESTEP));
+
+		float time = PhysicsActorManager::TIMESTEP;
+
+		if (m_SlowMoData.GetPercentComplete() != 1.0f)
+		{
+			time *= m_SlowMoData.GetCurrentTransitionData();
+		}
+
+		const sf::Time dt = sf::seconds(time);
 
 		m_StateManager->Tick(dt);
 		if (!m_PhysicsPaused) 
@@ -546,6 +557,13 @@ sf::Time ApexMain::GetTimeElapsed() const
 sf::RenderWindow* ApexMain::GetWindow()
 {
 	return m_Window;
+}
+
+void ApexMain::SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType)
+{
+	m_SlowMoData.SetDuration(duration);
+	m_SlowMoData.SetEaseType(easeType);
+	m_SlowMoData.Restart();
 }
 
 void ApexMain::DEBUGToggleGamePaused()

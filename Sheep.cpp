@@ -30,13 +30,13 @@ Sheep::Sheep(Level* level, sf::Vector2f position) :
 	hurtTransitionStart.color = sf::Color(200, 110, 80);
 	TransitionData hurtTransitionEnd;
 	hurtTransitionEnd.color = sf::Color(235, 240, 250);
-	m_HurtTransition = ApexTransition(hurtTransitionStart, hurtTransitionEnd, sf::milliseconds(450), ApexTransition::EaseType::LINEAR);
+	m_HurtTransition = TransformationTransition(hurtTransitionStart, hurtTransitionEnd, sf::milliseconds(450), ApexTransition::EaseType::LINEAR);
 	m_HurtTransition.SetFinished();
 
 	TransitionData blinkTransitionStart;
 	blinkTransitionStart.transformable.scale(1.0f, 0.1f);
 	TransitionData blinkTransitionEnd;
-	m_BlinkTransition = ApexTransition(blinkTransitionStart, blinkTransitionEnd, sf::milliseconds(80), ApexTransition::EaseType::LINEAR);
+	m_BlinkTransition = TransformationTransition(blinkTransitionStart, blinkTransitionEnd, sf::milliseconds(80), ApexTransition::EaseType::LINEAR);
 	m_SecondsUntilNextBlink = 2.0f + rand() % 3;
 }
 

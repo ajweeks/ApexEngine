@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Mob.h"
-#include "ApexTransition.h"
+#include "TransformationTransition.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 
@@ -32,8 +32,8 @@ private:
 
 	int m_HitPoints = 5;
 	bool m_IsDead = false;
-	ApexTransition m_HurtTransition;
-	ApexTransition m_BlinkTransition;
+	TransformationTransition m_HurtTransition;
+	TransformationTransition m_BlinkTransition;
 	float m_SecondsUntilNextBlink;
 
 };
