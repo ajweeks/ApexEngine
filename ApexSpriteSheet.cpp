@@ -9,27 +9,22 @@ ApexSpriteSheet::ApexSpriteSheet()
 {
 }
 
-ApexSpriteSheet::ApexSpriteSheet(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
+ApexSpriteSheet::ApexSpriteSheet(sf::Texture* texture, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
 {
-	Create(filePath, frameWidth, frameHeight);
+	Create(texture, frameWidth, frameHeight);
 }
 
-void ApexSpriteSheet::Create(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
+void ApexSpriteSheet::Create(sf::Texture* texture, sf::Uint8 frameWidth, sf::Uint8 frameHeight)
 {
-	assert(filePath != "" && frameWidth != 0 && frameHeight != 0);
+	assert(texture != nullptr && frameWidth != 0 && frameHeight != 0);
 
 	m_FrameWidth = frameWidth;
 	m_FrameHeight = frameHeight;
 
-	if (!m_Texture.loadFromFile(filePath))
-	{
-		throw std::invalid_argument("Could not find file: \"" + filePath + "\"");
-		return;
-	}
-	m_Sprite.setTexture(m_Texture);
+	m_Sprite.setTexture(*texture);
 
-	m_FramesWide = m_Texture.getSize().x / m_FrameWidth;
-	m_FramesHigh = m_Texture.getSize().y / m_FrameHeight;
+	m_FramesWide = texture->getSize().x / m_FrameWidth;
+	m_FramesHigh = texture->getSize().y / m_FrameHeight;
 }
 
 ApexSpriteSheet::~ApexSpriteSheet()

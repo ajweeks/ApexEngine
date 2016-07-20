@@ -84,8 +84,8 @@ private:
 	ApexPauseScreen* m_PauseScreen = nullptr;
 
 	ApexDebug* m_DebugOverlay = nullptr;
-	bool m_ShowingDebugOverlay = false;
-	bool m_Paused = false;
+	bool m_ShowingDebugOverlay;
+	bool m_Paused;
 
 	ApexParticleManager m_ParticleManager;
 };

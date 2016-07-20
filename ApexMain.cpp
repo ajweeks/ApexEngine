@@ -16,6 +16,7 @@
 #include "logo.h"
 #include "PhysicsActorManager.h"
 #include "ApexContactListener.h"
+#include "TextureManager.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -89,6 +90,9 @@ ApexMain::ApexMain()
 	{
 		throw std::exception("Sorry, your graphics card doesn't support shaders");
 	}
+
+	TextureManager::Initialize();
+
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 }
 
@@ -97,6 +101,8 @@ ApexMain::~ApexMain()
 	delete m_StateManager;
 	delete m_PhysicsActorManager;
 	delete m_Window;
+
+	TextureManager::Destroy();
 }
 
 void ApexMain::Init()
@@ -119,7 +125,7 @@ void ApexMain::Init()
 
 void ApexMain::CreateApexWindow(bool fullscreen)
 {
-	delete m_Window;
+	if (m_Window != nullptr) delete m_Window;
 	m_Window = new sf::RenderWindow(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE, (fullscreen ? sf::Style::Fullscreen : sf::Style::Close));
 	m_Window->setVerticalSyncEnabled(USE_V_SYNC);
 	m_Window->setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
@@ -141,15 +147,16 @@ void ApexMain::Run()
 	{
 		sf::Time elapsed = clock.restart();
 
-		// Calculate FPS
 		m_ElapsedThisFrame += elapsed;
 		m_TotalElapsed += elapsed;
 		if (m_ElapsedThisFrame.asSeconds() >= 1.0f)
 		{
 			m_ElapsedThisFrame -= sf::seconds(1.0f);
 			m_FPS = m_Frames;
-			m_Window->setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " fps");
 			m_Frames = 0;
+			m_UPS = m_Updates;
+			m_Updates = 0;
+			m_Window->setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " FPS - " + std::to_string(m_UPS) + " UPS");
 		}
 		
 		if (m_Window->hasFocus())
@@ -292,7 +299,6 @@ void ApexMain::Run()
 
 				Tick(accumulator);
 			}
-
 		}
 		Draw();
 	}
@@ -305,7 +311,11 @@ void ApexMain::Tick(double& accumulator)
 		const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
 
 		m_StateManager->Tick(dt);
-		if (!m_PhysicsPaused) m_PhysicsActorManager->Tick(dt);
+		if (!m_PhysicsPaused) 
+		{
+			m_PhysicsActorManager->Tick(dt);
+			++m_Updates;
+		}
 
 		accumulator -= PhysicsActorManager::TIMESTEP;
 	}
@@ -363,17 +373,17 @@ sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 
 void ApexMain::LoadCursorTextures()
 {
-	m_CursorTextures.resize(int(ApexCursor::_LAST_ELEMENT));
-	m_CursorTextures[int(ApexCursor::NORMAL)].loadFromFile("resources/cursor-normal-x2.png");
-	m_CursorTextures[int(ApexCursor::POINT)].loadFromFile("resources/cursor-point-x2.png");
+	m_CursorTextures.resize(int(ApexCursor::_LAST_ELEMENT), nullptr);
+	m_CursorTextures[int(ApexCursor::NORMAL)] = TextureManager::GetTexture(TextureManager::CURSOR_NORMAL);
+	m_CursorTextures[int(ApexCursor::POINT)] = TextureManager::GetTexture(TextureManager::CURSOR_POINTER);
 
-	m_CursorSprite.setTexture(m_CursorTextures[int(ApexCursor::NORMAL)]);
+	m_CursorSprite.setTexture(*m_CursorTextures[int(ApexCursor::NORMAL)]);
 }
 
 void ApexMain::SetCursor(ApexCursor cursorType)
 {
 	m_CursorType = cursorType;
-	m_CursorSprite.setTexture(m_CursorTextures[int(m_CursorType)]);
+	m_CursorSprite.setTexture(*m_CursorTextures[int(m_CursorType)]);
 }
 
 void ApexMain::TakeScreenshot()

@@ -5,13 +5,14 @@
 #include "Level.h"
 #include "enumerations.h"
 #include "ApexMain.h"
+#include "TextureManager.h"
 
 const float Player::VEL = 1000000.0f;
 
 Player::Player(Level* level) :
 	Entity(level, sf::Vector2f(), ActorID::PLAYER, this),
-	m_Level(level), 
-	m_SpriteSheet("resources/small-mario.png", 18, 32),
+	m_Level(level),
+	m_SpriteSheet(TextureManager::GetTexture(TextureManager::SMALL_MARIO), 18, 32),
 	m_IntialPos(200.0f, 75.0f),
 	m_Gun(level, m_IntialPos)
 {
@@ -23,19 +24,16 @@ Player::Player(Level* level) :
 	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::SHEEP;
 	m_Actor->SetCollisionFilter(collisionFilter);
 
-	m_GlowTexture.loadFromFile("resources/glow_white.png");
-	m_GlowSprite.setTexture(m_GlowTexture);
-
 	ApexSpriteSheet::Sequence walkingSequence;
 	walkingSequence.framesLong = 2;
 	walkingSequence.msPerFrame = 150;
 	walkingSequence.startFrameIndex = sf::Vector2i(2, 0);
-	m_SpriteSheet.AddSequence(int(AnimationSequence::WALKING), walkingSequence);
+	m_SpriteSheet.AddSequence(AnimationSequence::WALKING, walkingSequence);
 	
 	ApexSpriteSheet::Sequence standingSequence;
 	standingSequence.framesLong = 1;
 	standingSequence.startFrameIndex = sf::Vector2i(2, 0);
-	m_SpriteSheet.AddSequence(int(AnimationSequence::STANDING), standingSequence);
+	m_SpriteSheet.AddSequence(AnimationSequence::STANDING, standingSequence);
 
 	Reset();
 }
@@ -48,7 +46,7 @@ void Player::Reset()
 {
 	m_Actor->SetPosition(m_IntialPos);
 	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
-	m_SpriteSheet.SetCurrentSequence(int(AnimationSequence::STANDING));
+	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
 	m_Gun.Reset();
 	m_IsCrouching = false;
 }
@@ -79,9 +77,7 @@ void Player::Tick(sf::Time elapsed)
 {
 	HandleMovement(elapsed);
 
-	m_GlowSprite.setColor(sf::Color(255, 255, 255, 55 + int(sin(m_SecondsElapsed * 7.0f) * 45) + 45));
 	m_SpriteSheet.Tick(elapsed);
-
 	m_Gun.Tick(elapsed);
 }
 
@@ -96,9 +92,9 @@ void Player::HandleMovement(sf::Time elapsed)
 		ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left) ||
 		ApexKeyboard::IsKeyDown(sf::Keyboard::S) || ApexKeyboard::IsKeyDown(sf::Keyboard::Down) ||
 		ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
-		m_SpriteSheet.SetCurrentSequence(int(AnimationSequence::WALKING), false);
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
 	else 
-		m_SpriteSheet.SetCurrentSequence(int(AnimationSequence::STANDING), false);
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING, false);
 
 	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
 	{
@@ -161,7 +157,6 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	states.transform.translate(centerX, centerY);
 
 	DrawShadow(target, states);
-	DrawGlow(target, states);
 
 	m_SpriteSheet.Draw(target, states);
 
@@ -170,13 +165,6 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)
 {
-	states.transform.translate(sf::Vector2f(-13, 0));
+	states.transform.translate(-13, 0);
 	target.draw(*m_ShadowSprite, states);
-}
-
-void Player::DrawGlow(sf::RenderTarget& target, sf::RenderStates states)
-{
-	states.blendMode = sf::BlendAdd;
-	states.transform.translate(sf::Vector2f(-60, -50));
-	target.draw(m_GlowSprite, states);
 }

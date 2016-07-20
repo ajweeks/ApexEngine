@@ -243,6 +243,10 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="StateManager.cpp" />
+    <ClCompile Include="TextureManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApexButton.h">
@@ -336,6 +340,10 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="StateManager.h" />
+    <ClInclude Include="TextureManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="TileSet.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TextureManager.h"
+
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Image.hpp>
 #include <SFML\Graphics\Sprite.hpp>
@@ -18,10 +20,10 @@ public:
 	};
 
 	ApexSpriteSheet();
-	ApexSpriteSheet(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight);
+	ApexSpriteSheet(sf::Texture* texture, sf::Uint8 frameWidth, sf::Uint8 frameHeight);
 	virtual ~ApexSpriteSheet();
 
-	void Create(std::string filePath, sf::Uint8 frameWidth, sf::Uint8 frameHeight);
+	void Create(sf::Texture* texture, sf::Uint8 frameWidth, sf::Uint8 frameHeight);
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states, sf::Uint8 col, sf::Uint8 row); // Draws specific frame
@@ -38,7 +40,6 @@ public:
 	void SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame);
 
 private:
-	sf::Texture m_Texture;
 	sf::Sprite m_Sprite;
 	sf::Uint8 m_FramesWide;
 	sf::Uint8 m_FramesHigh;

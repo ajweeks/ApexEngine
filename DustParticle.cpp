@@ -1,28 +1,18 @@
 
 #include "DustParticle.h"
 #include "ApexSpriteSheet.h"
-
-ApexSpriteSheet* DustParticle::m_SpriteSheet = nullptr;
-int DustParticle::m_InstaceCount = 0;
+#include "TextureManager.h"
 
 DustParticle::DustParticle(sf::Vector2f position) :
 	ApexParticle(position, sf::Vector2f())
 {
-	++m_InstaceCount;
-	if (m_SpriteSheet == nullptr)
-	{
-		m_SpriteSheet = new ApexSpriteSheet("resources/dust-explosion.png", 36, 36);
-		m_SpriteSheet->SetEntireSpriteAsOneSequence(85);
-	}
+	m_SpriteSheet = new ApexSpriteSheet(TextureManager::GetTexture(TextureManager::DUST_PARTICLE), 36, 36);
+	m_SpriteSheet->SetEntireSpriteAsOneSequence(85);
 }
 
 DustParticle::~DustParticle()
 {
-	if (--m_InstaceCount == 0)
-	{
-		delete m_SpriteSheet;
-		m_SpriteSheet = nullptr;
-	}
+	delete m_SpriteSheet;
 }
 
 void DustParticle::Tick(sf::Time elapsed)

@@ -17,7 +17,5 @@ public:
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 private:
-	static ApexSpriteSheet* m_SpriteSheet;
-	static int m_InstaceCount;
-
+	ApexSpriteSheet* m_SpriteSheet;
 };

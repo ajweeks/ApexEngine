@@ -35,10 +35,8 @@ public:
 protected:
 	Level* m_Level = nullptr;
 	PhysicsActor* m_Actor = nullptr;
-	static sf::Sprite* m_ShadowSprite;
-	static sf::Texture* m_ShadowTexture;
+	sf::Sprite* m_ShadowSprite;
 
 private:
-	static unsigned int m_InstanceCount;
 
 };

@@ -9,11 +9,9 @@ ApexParticleManager::ApexParticleManager()
 
 ApexParticleManager::~ApexParticleManager()
 {
-	ParticleIterator iter = m_Particles.begin();
-	while (iter != m_Particles.end())
+	for (size_t i = 0; i < m_Particles.size(); ++i)
 	{
-		delete *iter;
-		++iter;
+		delete (*m_Particles.begin() + i);
 	}
 	m_Particles.clear();
 }
@@ -27,6 +25,7 @@ void ApexParticleManager::Tick(sf::Time elapsed)
 
 		if (!(*iter)->IsAlive())
 		{
+			delete (*iter);
 			iter = m_Particles.erase(iter);
 		}
 		else

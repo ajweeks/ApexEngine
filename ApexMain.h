@@ -100,9 +100,14 @@ private:
 	sf::Time m_ElapsedThisFrame;
 	int m_Frames;
 	int m_FPS;
+
+	int m_Updates;
+	int m_UPS;
+
 	bool m_IsRunning;
 
 	bool m_WindowIsFullscreen;
+
 	// True when the world should be frozen
 	bool m_PhysicsPaused = false;
 	// True when the state manager shouldn't be Ticked (no animations, etc.)
@@ -116,7 +121,7 @@ private:
 
 	ApexCursor m_CursorType;
 	sf::Sprite m_CursorSprite;
-	std::vector<sf::Texture> m_CursorTextures;
+	std::vector<sf::Texture*> m_CursorTextures;
 
 	std::vector<ApexKeyListener*> m_KeyListeners;
 	std::vector<ApexMouseListener*> m_MouseListeners;

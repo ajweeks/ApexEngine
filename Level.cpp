@@ -107,9 +107,7 @@ void Level::Tick(sf::Time elapsed)
 	}
 
 	m_ParticleManager.Tick(elapsed);
-
-	m_DebugOverlay->Tick(elapsed);
-
+	if (m_ShowingDebugOverlay) m_DebugOverlay->Tick(elapsed);
 	m_LightManager.Tick(elapsed);
 }
 
@@ -237,6 +235,7 @@ void Level::ToggleDebugOverlay()
 {
 	m_ShowingDebugOverlay = !m_ShowingDebugOverlay;
 	m_DebugOverlay->ClearAllInput();
+	APEX->SetCursor(ApexCursor::NORMAL);
 }
 
 bool Level::IsShowingDebugOverlay() const
