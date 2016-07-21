@@ -9,28 +9,18 @@ HUD::HUD(Level* level) :
 	m_Level(level)
 {
 	Gun& gun = m_Level->GetPlayer()->GetGun();
-	m_ClipSize.setString(std::to_string(gun.GetClipSize()));
-
-	const sf::Vector2u windowSize = APEX->GetWindowSize();
-	m_BulletsRemaining.setPosition(sf::Vector2f(windowSize - sf::Vector2u(120, 100)));
-	m_ClipSize.setPosition(sf::Vector2f(windowSize - sf::Vector2u(80, 100)));
-	m_ClipsRemaining.setPosition(sf::Vector2f(windowSize - sf::Vector2u(120, 50)));
 
 	const sf::Font& font = APEX->FontOpenSans;
+	m_BulletsInClip.setFont(font);
 	m_BulletsRemaining.setFont(font);
-	m_ClipsRemaining.setFont(font);
-	m_ClipSize.setFont(font);
 
-	const unsigned int characterSize = 35;
+	const unsigned int characterSize = 38;
+	m_BulletsInClip.setCharacterSize(characterSize);
 	m_BulletsRemaining.setCharacterSize(characterSize);
-	m_ClipsRemaining.setCharacterSize(characterSize);
-	m_ClipSize.setCharacterSize(characterSize);
 
 	const sf::Color fontColor = sf::Color(210, 210, 215);
+	m_BulletsInClip.setColor(fontColor);
 	m_BulletsRemaining.setColor(fontColor);
-	m_ClipsRemaining.setColor(fontColor);
-	m_ClipSize.setColor(fontColor);
-
 }
 
 HUD::~HUD()
@@ -40,14 +30,19 @@ HUD::~HUD()
 void HUD::Tick(sf::Time elapsed)
 {
 	Gun& gun = m_Level->GetPlayer()->GetGun();
-	m_BulletsRemaining.setString(std::to_string(gun.GetBulletsRemaining()));
-	m_ClipsRemaining.setString(std::to_string(gun.GetClipsRemaining()));
-	m_ClipSize.setString("/" + std::to_string(gun.GetClipSize()));
+	m_BulletsInClip.setString(std::to_string(gun.GetBulletsInClip()));
+	m_BulletsRemaining.setString(" / " + std::to_string(gun.GetBulletsRemaining()));
+
+	const sf::Vector2u windowSize = APEX->GetWindowSize();
+	const float padding = 18.0f;
+	const sf::FloatRect brBounds = m_BulletsRemaining.getLocalBounds();
+	m_BulletsRemaining.setPosition(sf::Vector2f(windowSize.x - (brBounds.width + padding), windowSize.y - (brBounds.height + padding)));
+	const sf::FloatRect bicBounds = m_BulletsInClip.getLocalBounds();
+	m_BulletsInClip.setPosition(sf::Vector2f(windowSize.x - (brBounds.width + bicBounds.width + padding), windowSize.y - (bicBounds.height + padding)));
 }
 
 void HUD::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
+	target.draw(m_BulletsInClip, states);
 	target.draw(m_BulletsRemaining, states);
-	target.draw(m_ClipsRemaining, states);
-	target.draw(m_ClipSize, states);
 }

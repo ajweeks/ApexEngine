@@ -33,7 +33,7 @@ void AmmoDrop::Tick(sf::Time elapsed)
 	m_Sprite.setPosition(m_Actor->GetPosition() - sf::Vector2f(WIDTH / 2.0f, HEIGHT / 2.0f));
 	m_ShadowSprite.setPosition(m_Actor->GetPosition() - sf::Vector2f(WIDTH / 2.0f, 0.0f));
 	const float secondsElapsed = APEX->GetTimeElapsed().asSeconds();
-	const float height = sin(secondsElapsed * 2.0f);
+	const float height = sin(secondsElapsed * 2.0f + m_Actor->GetPosition().x);
 	m_Sprite.move(0.0f, height * 5.0f);
 
 	const sf::Uint8 shadowAlpha = sf::Uint8((height + 1.0f) / 2.0f * 127 + 127);

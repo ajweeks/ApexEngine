@@ -35,10 +35,13 @@ private:
 
 	// Options screen:
 	ApexButton* m_FullscreenButton = nullptr;
+
 	sf::Text m_MusicVolumeText;
 	ApexSlider* m_MusicVolumeSlider = nullptr;
 	sf::Text m_SoundVolumeText;
 	ApexSlider* m_SoundVolumeSlider = nullptr;
+	bool m_SoundVolumeSliderWasBeingDragged;
+
 	// Brightness?
 	// Resolution
 	// ...

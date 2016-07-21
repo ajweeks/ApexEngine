@@ -23,6 +23,7 @@ public:
 
 private:
 	static const float RADIUS;
+	static const sf::Color FILL_COLOR;
 
 	BulletManager* m_BulletManager = nullptr;
 	float m_Direction; // Angle in radians

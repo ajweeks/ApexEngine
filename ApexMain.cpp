@@ -83,6 +83,11 @@ std::vector<std::string> ApexSplit(const std::string& str, const char& delim)
 	return result;
 }
 
+sf::Color SetAlpha(sf::Color color, sf::Uint8 alpha)
+{
+	return sf::Color(color.r, color.g, color.b, alpha);
+}
+
 ApexMain::ApexMain()
 {
 	if (!sf::Shader::isAvailable())
@@ -608,8 +613,8 @@ void ApexMain::BeginContact(b2Contact* contact)
 		{
 			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
 			contactListener->BeginContact(
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()));
+				reinterpret_cast<PhysicsActor*>(fixtureA->GetUserData()),
+				reinterpret_cast<PhysicsActor*>(fixtureB->GetUserData()));
 		}
 	}
 
@@ -619,8 +624,8 @@ void ApexMain::BeginContact(b2Contact* contact)
 		{
 			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
 			contactListener->BeginContact(
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()));
+				reinterpret_cast<PhysicsActor*>(fixtureB->GetUserData()),
+				reinterpret_cast<PhysicsActor*>(fixtureA->GetUserData()));
 		}
 	}
 }

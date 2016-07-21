@@ -104,6 +104,12 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 
 		m_SoundVolumeSlider->Tick(elapsed);
 		ApexAudio::SetAllSoundsVolume(m_SoundVolumeSlider->GetValue());
+		const bool soundVolumeSliderBeingBragged = m_SoundVolumeSlider->BeingDragged();
+		if (m_SoundVolumeSliderWasBeingDragged && !soundVolumeSliderBeingBragged)
+		{
+			ApexAudio::PlaySoundEffect(ApexAudio::Sound::BOOP);
+		}
+		m_SoundVolumeSliderWasBeingDragged = soundVolumeSliderBeingBragged;
 	} break;
 	}
 }

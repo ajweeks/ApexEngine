@@ -72,6 +72,11 @@ float ApexSlider::GetValue() const
 	return (m_GripRectangle.getPosition().x - m_BackgroundRectangle.getPosition().x) / m_BackgroundRectangle.getSize().x;
 }
 
+bool ApexSlider::BeingDragged() const
+{
+	return m_BeingDragged;
+}
+
 bool ApexSlider::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
 	if (m_HoveredOver && buttonEvent.button == sf::Mouse::Button::Left)

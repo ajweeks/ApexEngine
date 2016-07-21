@@ -32,9 +32,9 @@ public:
 
 	void AddAmmo(AmmoDrop* ammoDrop);
 
+	int GetBulletsInClip() const;
 	int GetBulletsRemaining() const;
 	int GetClipSize() const;
-	int GetClipsRemaining() const;
 
 	// Apex Mouse Listener overrides
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
@@ -54,8 +54,11 @@ private:
 
 	sf::RectangleShape m_RectShape;
 
-	int m_ClipSize;
+	int m_BulletsInClip;
 	int m_BulletsRemaining;
-	int m_ClipsRemaining;
+	int m_ClipSize;
+
+	static const float RELOAD_SECONDS;
+	sf::Time m_ReloadingTimeRemaining;
 
 };

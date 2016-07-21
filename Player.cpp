@@ -51,6 +51,7 @@ void Player::Reset()
 	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
 	m_Gun.Reset();
 	m_IsCrouching = false;
+	m_DirFacing = DirectionFacing::RIGHT;
 }
 
 sf::Vector2f Player::GetPosition() const
@@ -82,13 +83,6 @@ void Player::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 
 void Player::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact)
 {
-	switch (otherActor->GetUserData())
-	{
-	case ActorID::WALL:
-	{
-		
-	} break;
-	}
 }
 
 void Player::Tick(sf::Time elapsed)
@@ -117,10 +111,12 @@ void Player::HandleMovement(sf::Time elapsed)
 	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
 	{
 		newVel.x += dVel;
+		m_DirFacing = DirectionFacing::RIGHT;
 	}
 	if (ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left))
 	{
 		newVel.x -= dVel;
+		m_DirFacing = DirectionFacing::LEFT;
 	}
 	if (ApexKeyboard::IsKeyDown(sf::Keyboard::W) || ApexKeyboard::IsKeyDown(sf::Keyboard::Up))
 	{
@@ -175,9 +171,7 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	states.transform.translate(centerX, centerY);
 
 	DrawShadow(target, states);
-
-	m_SpriteSheet.Draw(target, states);
-
+	DrawBody(target, states);
 	m_Gun.Draw(target, states);
 }
 
@@ -185,4 +179,13 @@ void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)
 {
 	states.transform.translate(-13, 0);
 	target.draw(m_ShadowSprite, states);
+}
+
+void Player::DrawBody(sf::RenderTarget& target, sf::RenderStates states)
+{
+	if (m_DirFacing == DirectionFacing::LEFT)
+	{
+		states.transform.scale(-1, 1);
+	}
+	m_SpriteSheet.Draw(target, states);
 }

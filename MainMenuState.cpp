@@ -5,6 +5,7 @@
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
 #include "GameState.h"
+#include "TextureManager.h"
 
 MainMenuState::MainMenuState()
 	: BaseState(StateType::MAIN_MENU)
@@ -24,6 +25,14 @@ MainMenuState::MainMenuState()
 	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
 	m_VignetteShader.setParameter("u_resolution", windowSize);
 	m_VignetteShader.setParameter("u_bounds", 0.0f, 0.0f, windowSize.x, windowSize.y);
+
+	m_TitleColorSprite.setTexture(*TextureManager::GetTexture(TextureManager::TITLE_COLOR));
+	m_TitleShadowSprite.setTexture(*TextureManager::GetTexture(TextureManager::TITLE_SHADOW));
+	const sf::Vector2u titleSize = m_TitleColorSprite.getTexture()->getSize();
+	sf::Vector2f titlePos(windowSize.x / 2.0f - titleSize.x / 2.0f, 150.0f);
+	m_TitleColorSprite.setPosition(titlePos);
+	titlePos.y += 1.5f;
+	m_TitleShadowSprite.setPosition(titlePos);
 }
 
 MainMenuState::~MainMenuState()
@@ -52,6 +61,9 @@ void MainMenuState::Tick(sf::Time elapsed)
 		APEX->Quit();
 		return;
 	}
+
+	const float secondsElapsed = APEX->GetTimeElapsed().asSeconds();
+	m_TitleShadowSprite.move(0.0f, sin(secondsElapsed * 0.8f) * 0.065f);
 }
 
 void MainMenuState::Draw(sf::RenderTarget& target)
@@ -62,6 +74,9 @@ void MainMenuState::Draw(sf::RenderTarget& target)
 	target.draw(bgRect, &m_VignetteShader);
 	m_PlayButton->Draw(target, &m_VignetteShader);
 	m_QuitButton->Draw(target, &m_VignetteShader);
+
+	target.draw(m_TitleShadowSprite);
+	target.draw(m_TitleColorSprite);
 }
 
 bool MainMenuState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)

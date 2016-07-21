@@ -26,6 +26,8 @@ private:
 	ApexButton* m_QuitButton = nullptr;
 
 	sf::Shader m_VignetteShader;
+	sf::Sprite m_TitleColorSprite;
+	sf::Sprite m_TitleShadowSprite;
 
 };
 

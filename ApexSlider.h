@@ -19,6 +19,7 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 	float GetValue() const;
+	bool BeingDragged() const;
 
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);

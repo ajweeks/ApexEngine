@@ -21,8 +21,7 @@ public:
 private:
 	Level* m_Level = nullptr;
 
+	sf::Text m_BulletsInClip;
 	sf::Text m_BulletsRemaining;
-	sf::Text m_ClipsRemaining;
-	sf::Text m_ClipSize;
 
 };

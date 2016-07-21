@@ -9,6 +9,8 @@
 #include "Player.h"
 #include "AmmoDrop.h"
 
+const float Gun::RELOAD_SECONDS = 0.8f;
+
 Gun::Gun(Level* level, sf::Vector2f position) :
 	Entity(level, position, ActorID::GUN, this),
 	m_Level(level)
@@ -30,18 +32,24 @@ Gun::~Gun()
 void Gun::Reset()
 {
 	m_ClipSize = 25;
-	m_ClipsRemaining = 1;
-	m_BulletsRemaining = m_ClipSize;
+	m_BulletsInClip = m_ClipSize;
+	m_BulletsRemaining = m_ClipSize * 2;
+	m_ReloadingTimeRemaining = sf::Time::Zero;
 }
 
 bool Gun::Empty() const
 {
-	return m_BulletsRemaining == 0 && m_ClipsRemaining == 0;
+	return m_BulletsRemaining == 0 && m_BulletsInClip == 0;
 }
 
 void Gun::AddAmmo(AmmoDrop* ammoDrop)
 {
-	m_ClipsRemaining += int(ammoDrop->GetBulletCount() / m_ClipSize);
+	m_BulletsRemaining += ammoDrop->GetBulletCount();
+}
+
+int Gun::GetBulletsInClip() const
+{
+	return m_BulletsInClip;
 }
 
 int Gun::GetBulletsRemaining() const
@@ -54,21 +62,24 @@ int Gun::GetClipSize() const
 	return m_ClipSize;
 }
 
-int Gun::GetClipsRemaining() const
-{
-	return m_ClipsRemaining;
-}
-
 bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
 	if (m_Level->IsPaused()) return true;
 	if (APEX->DEBUGIsGamePaused()) return true;
 
-	if (buttonEvent.button == sf::Mouse::Button::Left)
+	switch (buttonEvent.button)
+	{
+	case sf::Mouse::Button::Left:
 	{
 		Shoot();
 		return false;
+	} break;
+	case sf::Mouse::Button::XButton1:
+	{
+		Reload();
+	} break;
 	}
+
 	return true;
 }
 
@@ -93,6 +104,13 @@ void Gun::Tick(sf::Time elapsed)
 {
 	if (m_Level->GetPlayer() != nullptr)
 	{
+		if (m_ReloadingTimeRemaining != sf::Time::Zero)
+		{
+			m_ReloadingTimeRemaining -= elapsed;
+			if (m_ReloadingTimeRemaining < sf::Time::Zero)
+				m_ReloadingTimeRemaining = sf::Time::Zero;
+		}
+
 		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
 		if (mousePos.x != -1.0f && mousePos.y != -1.0f) // only update our rotation when the mouse is inside the window
 		{
@@ -112,7 +130,9 @@ void Gun::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 void Gun::Shoot()
 {
-	if (m_BulletsRemaining == 0)
+	if (m_ReloadingTimeRemaining != sf::Time::Zero) return;
+
+	if (m_BulletsInClip == 0)
 	{
 		Reload();
 		if (Empty()) return;
@@ -127,15 +147,17 @@ void Gun::Shoot()
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
 	const sf::Vector2f playerVel = m_Level->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
 	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
-	--m_BulletsRemaining;
+	--m_BulletsInClip;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
 
-	if (m_BulletsRemaining == 0) Reload();
+	if (m_BulletsInClip == 0) Reload();
 }
 
 void Gun::Reload()
 {
-	if (m_ClipsRemaining == 0)
+	if (m_BulletsInClip == m_ClipSize) return;
+
+	if (m_BulletsRemaining == 0)
 	{
 		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE_EMPTY);
 		return;
@@ -143,7 +165,10 @@ void Gun::Reload()
 	else
 	{
 		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_RELOAD);
-		m_BulletsRemaining = m_ClipSize;
-		--m_ClipsRemaining;
+		const int diff = m_ClipSize - m_BulletsInClip;
+		m_BulletsRemaining -= diff;
+		m_BulletsInClip = m_ClipSize;
+
+		m_ReloadingTimeRemaining = sf::seconds(RELOAD_SECONDS);
 	}
 }

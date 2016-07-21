@@ -25,6 +25,8 @@ void ApexOutputDebugString(const std::string &string);
 std::vector<std::string> ApexSplit(const std::string& str);
 std::vector<std::string> ApexSplit(const std::string& str, const char& delim);
 
+sf::Color SetAlpha(sf::Color color, sf::Uint8 alpha);
+
 class ApexMain : public b2ContactListener
 {
 public:

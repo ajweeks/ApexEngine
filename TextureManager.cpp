@@ -26,6 +26,9 @@ void TextureManager::Initialize()
 
 	LoadTexture(Texture::AMMO, "resources/ammo.png");
 
+	LoadTexture(Texture::TITLE_COLOR, "resources/title-color.png");
+	LoadTexture(Texture::TITLE_SHADOW, "resources/title-shadow.png");
+
 	s_initialized = true;
 }
 
