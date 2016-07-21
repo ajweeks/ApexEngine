@@ -8,7 +8,7 @@ public:
 	enum class Sound
 	{
 		GUN_FIRE, GUN_FIRE_EMPTY, GUN_RELOAD,
-
+		BOOP,
 		// All values must be above this line
 		_LAST_ELEMENT
 	};
@@ -41,6 +41,9 @@ public:
 
 private:
 	ApexAudio() = delete;
+
+	static void LoadSound(Sound sound, const std::string& filePath);
+	static void LoadMusicTrack(Music track, const std::string& filePath, bool loop);
 
 	static bool m_IsInitialized;
 

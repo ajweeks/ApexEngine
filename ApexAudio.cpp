@@ -1,5 +1,6 @@
 
 #include "ApexAudio.h"
+#include "ApexMain.h"
 
 ApexAudio::ApexSoundEffect ApexAudio::m_SoundEffects[];
 sf::Music ApexAudio::m_MusicTracks[];
@@ -8,23 +9,37 @@ bool ApexAudio::m_IsInitialized = false;
 bool ApexAudio::LoadSounds()
 {
 	// SOUNDS
-	if (!m_SoundEffects[int(Sound::GUN_FIRE)].m_Buffer.loadFromFile("resources/sound/gun-fire.wav")) return false;
-	m_SoundEffects[int(Sound::GUN_FIRE)].m_Sound.setBuffer(m_SoundEffects[int(Sound::GUN_FIRE)].m_Buffer);
-
-	if (!m_SoundEffects[int(Sound::GUN_FIRE_EMPTY)].m_Buffer.loadFromFile("resources/sound/gun-fire-empty.wav")) return false;
-	m_SoundEffects[int(Sound::GUN_FIRE_EMPTY)].m_Sound.setBuffer(m_SoundEffects[int(Sound::GUN_FIRE_EMPTY)].m_Buffer);
-
-	if (!m_SoundEffects[int(Sound::GUN_RELOAD)].m_Buffer.loadFromFile("resources/sound/gun-reload.wav")) return false;
-	m_SoundEffects[int(Sound::GUN_RELOAD)].m_Sound.setBuffer(m_SoundEffects[int(Sound::GUN_RELOAD)].m_Buffer);
+	LoadSound(Sound::GUN_FIRE, "resources/sound/gun-fire.wav");
+	LoadSound(Sound::GUN_FIRE_EMPTY, "resources/sound/gun-fire-empty.wav");
+	LoadSound(Sound::GUN_RELOAD, "resources/sound/gun-reload.wav");
+	LoadSound(Sound::BOOP, "resources/sound/boop.wav");
 
 	// SONGS
-	if (!m_MusicTracks[int(Music::BG_SONG)].openFromFile("resources/sound/music/map-1-yoshis-island.wav")) return false;
-	m_MusicTracks[int(Music::BG_SONG)].setLoop(true);
-	if (!m_MusicTracks[int(Music::OVERWORLD_BGM)].openFromFile("resources/sound/music/overworld-bgm.wav")) return false;
-	m_MusicTracks[int(Music::OVERWORLD_BGM)].setLoop(true);
+	LoadMusicTrack(Music::BG_SONG, "resources/sound/music/map-1-yoshis-island.wav", true);
+	LoadMusicTrack(Music::OVERWORLD_BGM, "resources/sound/music/overworld-bgm.wav", true);
 
 	m_IsInitialized = true;
 	return true;
+}
+
+void ApexAudio::LoadSound(Sound sound, const std::string& filePath)
+{
+	if (!m_SoundEffects[int(sound)].m_Buffer.loadFromFile(filePath))
+	{
+		ApexOutputDebugString("Unable to load sound effect " + filePath + "\n");
+		return;
+	}
+	m_SoundEffects[int(sound)].m_Sound.setBuffer(m_SoundEffects[int(sound)].m_Buffer);
+}
+
+void ApexAudio::LoadMusicTrack(Music track, const std::string& filePath, bool loop)
+{
+	if (!m_MusicTracks[int(track)].openFromFile(filePath))
+	{
+		ApexOutputDebugString("Unable to music track " + filePath + "\n");
+		return;
+	}
+	m_MusicTracks[int(track)].setLoop(loop);
 }
 
 void ApexAudio::PlaySoundEffect(Sound sound)
@@ -118,3 +133,4 @@ void ApexAudio::SetMusicVolume(Music track, float volume)
 {
 	m_MusicTracks[int(track)].setVolume(volume * 100.0f);
 }
+
