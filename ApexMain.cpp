@@ -26,8 +26,10 @@
 
 const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
 const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
-const bool ApexMain::USE_V_SYNC = false;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
+
+const bool ApexMain::USE_V_SYNC = false;
+const bool ApexMain::SKIP_MAIN_MENU = false;
 
 ApexMain* ApexMain::m_Singleton = nullptr;
 sf::Font ApexMain::FontOpenSans;
@@ -120,7 +122,10 @@ void ApexMain::Init()
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
 
-	m_StateManager = new StateManager(new GameState());
+	BaseState* startingState = nullptr;
+	if (SKIP_MAIN_MENU) startingState = new GameState();
+	else startingState = new MainMenuState();
+	m_StateManager = new StateManager(startingState);
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{

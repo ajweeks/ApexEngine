@@ -121,6 +121,9 @@ void ApexButton::SetHovering(bool hovering)
 	{
 		m_Hovering = hovering;
 		m_BoundingRect.setFillColor(m_Hovering ? m_HoverFillColour : m_FillColour);
+		const float yOffset = m_Hovering ? 5.0f : -5.0f;
+		m_BoundingRect.move(0.0f, yOffset);
+		m_Text.move(0.0f, yOffset);
 		APEX->SetCursor(m_Hovering ? ApexCursor::POINT : ApexCursor::NORMAL);
 	}
 }

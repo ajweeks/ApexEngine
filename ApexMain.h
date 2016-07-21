@@ -93,8 +93,10 @@ private:
 
 	static const int INITAL_WINDOW_WIDTH;
 	static const int INITAL_WINDOW_HEIGHT;
-	static const bool USE_V_SYNC;
 	static const std::string WINDOW_TITLE;
+
+	static const bool USE_V_SYNC;
+	static const bool SKIP_MAIN_MENU;
 
 	static ApexMain* m_Singleton;
 
