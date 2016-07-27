@@ -3,12 +3,14 @@
 #include "Entity.h"
 #include "ApexSpriteSheet.h"
 #include "Gun.h"
+#include "ApexKeyListener.h"
+
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 
 class Level;
 
-class Player : public Entity
+class Player : public Entity, public ApexKeyListener
 {
 public:
 	enum AnimationSequence
@@ -34,6 +36,9 @@ public:
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
+
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
 
 private:
 	void ClampPosition();

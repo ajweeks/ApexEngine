@@ -14,6 +14,7 @@
 #include "Item.h"
 #include "AmmoDrop.h"
 #include "HUD.h"
+#include "Interactable.h"
 
 Level::Level(int levelIndex) :
 	ApexWindowListener(),
@@ -53,6 +54,11 @@ void Level::LoadLights()
 {
 	m_LightManager.LoadLightData();
 }
+	if (!m_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
+	{
+		ApexOutputDebugString("Could not either load or compile color-sprite.frag\n");
+	}
+	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
 
 void Level::ToggleLightingEditor()
 {
@@ -160,6 +166,27 @@ void Level::Tick(sf::Time elapsed)
 	m_ParticleManager.Tick(elapsed);
 	if (m_ShowingDebugOverlay) m_DebugOverlay->Tick(elapsed);
 	m_LightManager.Tick(elapsed);
+
+	const float minDist = 28.0f;
+	float distanceToNearestEntity;
+	Entity* nearestEntity = GetNearestEntityTo(m_Player, distanceToNearestEntity);
+	if (distanceToNearestEntity != -1.0f && distanceToNearestEntity <= minDist)
+	{
+		m_HighlightedEntity = nearestEntity;
+	}
+	else
+	{
+		m_HighlightedEntity = nullptr;
+	}
+
+#if 0
+	// Rainbow outline
+	const float time = APEX->GetTimeElapsed().asSeconds();
+	const sf::Uint8 outlineR = sf::Uint8((sin(time * 15.0f + 1.2f) + 1.0f) * 127);
+	const sf::Uint8 outlineG = sf::Uint8((cos(time * 20.5f) + 1.0f) * 127);
+	const sf::Uint8 outlineB = sf::Uint8((sin(time * 12.0f + 0.5f) + 1.0f) * 127);
+	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(outlineR, outlineG, outlineB));
+#endif
 }
 
 void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
@@ -175,7 +202,7 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
-		if (m_Mobs[i] != nullptr)
+		if (m_Mobs[i] != nullptr && m_Mobs[i] != m_HighlightedEntity)
 		{
 			m_Mobs[i]->Draw(target, states);
 		}
@@ -183,10 +210,18 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	for (size_t i = 0; i < m_Items.size(); i++)
 	{
-		if (m_Items[i] != nullptr)
+		if (m_Items[i] != nullptr && m_Items[i] != m_HighlightedEntity)
 		{
 			m_Items[i]->Draw(target, states);
 		}
+	}
+
+	if (m_HighlightedEntity != nullptr)
+	{
+		states.shader = &m_OutlinedSpriteShader;
+		m_HighlightedEntity->Draw(target, states);
+		states.transform = states.Default.transform;
+		states.shader = states.Default.shader;
 	}
 
 	m_ParticleManager.Draw(target, states);
@@ -235,6 +270,50 @@ void Level::TogglePaused(bool pauseSounds)
 bool Level::IsPaused() const
 {
 	return m_Paused;
+}
+
+void Level::InteractWithHighlightedItem()
+{
+	if (m_HighlightedEntity != nullptr)
+	{
+		Interactable* interactable = dynamic_cast<Interactable*>(m_HighlightedEntity);
+		if (interactable) // If this item is interactable
+		{
+			interactable->Interact();
+		}
+	}
+}
+
+Entity* Level::GetNearestEntityTo(Entity* sourceEntity, float& distance)
+{
+	Entity* nearestSoFar = nullptr;
+	distance = -1.0f;
+
+	const sf::Vector2f sourcePos = sourceEntity->GetPhysicsActor()->GetPosition();
+	for (size_t i = 0; i < m_Mobs.size(); ++i)
+	{
+		const sf::Vector2f otherPos = m_Mobs[i]->GetPhysicsActor()->GetPosition();
+		const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+		if (distance == -1.0f || currentDistance < distance)
+		{
+			distance = currentDistance;
+			nearestSoFar = m_Mobs[i];
+		}
+	}
+	for (size_t i = 0; i < m_Items.size(); ++i)
+	{
+		const sf::Vector2f otherPos = m_Items[i]->GetPhysicsActor()->GetPosition();
+		const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+		if (distance == -1.0f || currentDistance < distance)
+		{
+			distance = currentDistance;
+			nearestSoFar = m_Items[i];
+		}
+	}
+
+	return nearestSoFar;
 }
 
 void Level::AddParticle(ApexParticle* spriteSheet)
@@ -311,6 +390,33 @@ void Level::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & e
 void Level::OnWindowResize(sf::Vector2u windowSize)
 {
 	m_LightManager.OnWindowResize(windowSize);
+}
+
+bool Level::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+{
+	if (keyPressed)
+	{
+		switch (keyEvent.code)
+		{
+		case sf::Keyboard::E:
+		{
+			if (!m_CurrentSpeech.empty() &&
+				m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
+			{
+				m_SpeechLetterTransition.SetFinished();
+			}
+			else
+			{
+				InteractWithHighlightedItem();
+			}
+		} break;
+		}
+	}
+	return true;
+}
+
+void Level::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+{
 }
 
 unsigned int Level::GetWidth() const

@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "ApexContactListener.h"
 #include "ApexWindowListener.h"
+#include "ApexKeyListener.h"
 #include "ApexParticleManager.h"
 #include "LightManager.h"
 
@@ -24,7 +25,7 @@ class Minimap;
 class Item;
 class HUD;
 
-class Level : public ApexContactListener, public ApexWindowListener
+class Level : public ApexContactListener, public ApexWindowListener, public ApexKeyListener
 {
 public:
 	Level(int levelIndex);
@@ -66,11 +67,16 @@ public:
 	void LoadLights();
 	void ToggleLightingEditor();
 
+	void InteractWithHighlightedItem();
+
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact);
 
 	virtual void OnWindowResize(sf::Vector2u windowSize) override;
+	
+	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
+	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
 
 private:
 	int m_Width;
@@ -98,4 +104,9 @@ private:
 	bool m_Paused;
 
 	ApexParticleManager m_ParticleManager;
+
+	Entity* m_HighlightedEntity = nullptr;
+	sf::Shader m_OutlinedSpriteShader;
+
+	IntTransition m_SpeechLetterTransition;
 };

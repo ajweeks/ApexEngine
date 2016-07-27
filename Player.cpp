@@ -9,14 +9,15 @@
 #include "AmmoDrop.h"
 #include "ApexAudio.h"
 
-const float Player::VEL = 1000000.0f;
+const float Player::VEL = 550000.0f;
 
 Player::Player(Level* level) :
 	Entity(level, sf::Vector2f(), ActorID::PLAYER, this),
+	ApexKeyListener(),
 	m_Level(level),
 	m_SpriteSheet(TextureManager::GetTexture(TextureManager::SMALL_MARIO), 18, 32),
-	m_IntialPos(200.0f, 75.0f),
 	m_Gun(level, m_IntialPos)
+	m_IntialPos(90.0f, 150.0f)
 {
 	m_Actor->AddCircleFixture(7.0f);
 	m_Actor->AddContactListener(this);
@@ -82,6 +83,35 @@ void Player::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 }
 
 void Player::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact)
+{
+}
+
+bool Player::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+{
+	if (keyPressed)
+	{
+		switch (keyEvent.code) 
+		{
+		case sf::Keyboard::W:
+		case sf::Keyboard::Up:
+		case sf::Keyboard::A:
+		case sf::Keyboard::Left:
+		case sf::Keyboard::S:
+		case sf::Keyboard::Down:
+		case sf::Keyboard::D:
+		case sf::Keyboard::Right:
+		{
+			if (!m_Level->IsShowingSpeechBubble())
+			{
+				m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
+			}
+		} break;
+		}
+	}
+	return true;
+}
+
+void Player::OnKeyRelease(sf::Event::KeyEvent keyEvent)
 {
 }
 
