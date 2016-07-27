@@ -36,7 +36,7 @@ void Minimap::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	states.transform.translate(388, -70)
 		.scale(DEFAULT_SCALE, DEFAULT_SCALE, m_Bounds.left + m_Bounds.width / 2, m_Bounds.top + m_Bounds.height / 2);
-	m_Level->DrawMap(target, states);
+	//m_Level->DrawMap(target, states);
 }
 
 void Minimap::SetSize(sf::Vector2f size)
@@ -47,12 +47,6 @@ void Minimap::SetSize(sf::Vector2f size)
 	// Update location
 	OnWindowResize(APEX->GetWindowSize());
 }
-
-//void Minimap::SetLocation(sf::Vector2f location)
-//{
-//	m_Bounds.left = location.x;
-//	m_Bounds.top = location.y;
-//}
 
 void Minimap::OnWindowResize(sf::Vector2u windowSize)
 {

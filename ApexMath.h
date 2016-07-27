@@ -28,6 +28,17 @@ public:
 		return a.x * b.y - a.y * b.x;
 	}
 
+	static float DistSqr(sf::Vector2f pointA, sf::Vector2f pointB)
+	{
+		sf::Vector2f vecC = pointA - pointB;
+		return Dot(vecC, vecC);
+	}
+
+	static float Distance(sf::Vector2f a, sf::Vector2f b)
+	{
+		return std::sqrt(DistSqr(a, b));
+	}
+
 	static float Length(sf::Vector2f v)
 	{
 		return std::sqrt(LengthSqr(v));
@@ -36,11 +47,6 @@ public:
 	static float LengthSqr(sf::Vector2f v)
 	{
 		return v.x * v.x + v.y * v.y;
-	}
-	static float DistSqr(sf::Vector2f pointA, sf::Vector2f pointB)
-	{
-		sf::Vector2f vecC = pointA - pointB;
-		return Dot(vecC, vecC);
 	}
 
 	static sf::Vector2f Cross(float a, sf::Vector2f v)

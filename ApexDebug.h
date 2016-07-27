@@ -38,7 +38,7 @@ private:
 	CollapsibleElementStack* m_PlayerElementStack;
 	CollapsibleElement* m_PlayerPosElement;
 	CollapsibleElement* m_PlayerVelElement;
-	CollapsibleElement* m_PlayerGunDirectionElement;
+	//CollapsibleElement* m_PlayerGunDirectionElement;
 
 	sf::Shader m_BackgroundRectangleShader;
 	sf::Time m_Elapsed;

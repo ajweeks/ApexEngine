@@ -28,11 +28,12 @@ const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
 const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
 
-const bool ApexMain::USE_V_SYNC = false;
+const bool ApexMain::USE_V_SYNC = true;
 const bool ApexMain::SKIP_MAIN_MENU = false;
 
 ApexMain* ApexMain::m_Singleton = nullptr;
 sf::Font ApexMain::FontOpenSans;
+sf::Font ApexMain::FontPixelFJ8;
 
 void ApexOutputDebugString(const std::string& string)
 {
@@ -130,6 +131,10 @@ void ApexMain::Init()
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
 		ApexOutputDebugString("Couldn't load font OpenSans-Regular.ttf!\n");
+	}
+	if (!FontPixelFJ8.loadFromFile("resources/font/pixelfj8/pixelFJ8.ttf"))
+	{
+		ApexOutputDebugString("Couldn't load font pixelFJ8.ttf!\n");
 	}
 
 	ApexAudio::LoadSounds();
@@ -332,7 +337,7 @@ void ApexMain::Tick(double& accumulator)
 		const sf::Time dt = sf::seconds(time);
 
 		m_StateManager->Tick(dt);
-		if (!m_PhysicsPaused) 
+		if (!m_PhysicsPaused)
 		{
 			m_PhysicsActorManager->Tick(dt);
 			++m_Updates;

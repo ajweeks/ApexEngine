@@ -26,7 +26,6 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 	void SetSize(sf::Vector2f size);
-	//void SetLocation(sf::Vector2f location);
 
 	virtual void OnWindowResize(sf::Vector2u windowSize) override;
 

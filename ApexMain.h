@@ -50,6 +50,8 @@ public:
 	void SetCursor(ApexCursor cursorType);
 
 	static sf::Font FontOpenSans;
+	static sf::Font FontPixelFJ8;
+
 	void TakeScreenshot();
 
 	StateManager* GetStateManager();

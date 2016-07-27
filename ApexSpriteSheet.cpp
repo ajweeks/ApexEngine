@@ -41,10 +41,33 @@ void ApexSpriteSheet::Tick(sf::Time elapsed)
 		{
 			currentSequence.timeElapsedThisFrame = sf::milliseconds(
 				currentSequence.timeElapsedThisFrame.asMilliseconds() - currentSequence.msPerFrame);
-			if (++currentSequence.currentFrame == currentSequence.framesLong) 
+
+			if (currentSequence.pingPongs)
 			{
-				currentSequence.currentFrame = 0;
-				m_HasRestarted = true;
+				if (currentSequence.movingForward)
+				{
+					if (++currentSequence.currentFrame == currentSequence.framesLong)
+					{
+						currentSequence.movingForward = false;
+						--currentSequence.currentFrame;
+					}
+				}
+				else
+				{
+					if (--currentSequence.currentFrame == 0)
+					{
+						currentSequence.movingForward = true;
+						m_HasRestarted = true;
+					}
+				}
+			}
+			else
+			{
+				if (++currentSequence.currentFrame == currentSequence.framesLong) 
+				{
+					currentSequence.currentFrame = 0;
+					m_HasRestarted = true;
+				}
 			}
 		}
 	}
@@ -87,6 +110,16 @@ sf::Uint8 ApexSpriteSheet::GetCurrentFrame() const
 	return m_Sequences[m_CurrentSequenceIndex].currentFrame;
 }
 
+float ApexSpriteSheet::GetFrameWidth() const
+{
+	return m_FrameWidth;
+}
+
+float ApexSpriteSheet::GetFrameHeight() const
+{
+	return m_FrameHeight;
+}
+
 void ApexSpriteSheet::AddSequence(sf::Uint8 sequenceIndex, Sequence sequence)
 {
 	if (sequenceIndex == m_Sequences.size()) 
@@ -101,6 +134,11 @@ void ApexSpriteSheet::AddSequence(sf::Uint8 sequenceIndex, Sequence sequence)
 		}
 		m_Sequences[sequenceIndex] = sequence;
 	}
+}
+
+sf::Uint8 ApexSpriteSheet::GetCurrentSequenceIndex() const
+{
+	return m_CurrentSequenceIndex;
 }
 
 void ApexSpriteSheet::SetCurrentSequence(sf::Uint8 sequenceIndex, bool restartAnimation)
@@ -134,4 +172,19 @@ void ApexSpriteSheet::SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame)
 	s.msPerFrame = msPerFrame;
 	AddSequence(0, s);
 	m_CurrentSequenceIndex = 0;
+}
+
+void ApexSpriteSheet::SetSpriteScale(const sf::Vector2f& scale)
+{
+	m_Sprite.setScale(scale);
+}
+
+void ApexSpriteSheet::SetSpriteScale(float scaleX, float scaleY)
+{
+	m_Sprite.setScale(scaleX, scaleY);
+}
+
+void ApexSpriteSheet::ResetSpriteScale()
+{
+	m_Sprite.setScale(1, 1);
 }

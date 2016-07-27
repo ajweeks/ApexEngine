@@ -31,7 +31,8 @@ public:
 	void Reset();
 
 	sf::Vector2f GetPosition() const;
-	Gun& GetGun();
+
+	void StopMoving();
 
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
@@ -58,7 +59,5 @@ private:
 
 	Level* m_Level = nullptr;
 
-	Gun m_Gun;
 	ApexSpriteSheet m_SpriteSheet;
-
 };

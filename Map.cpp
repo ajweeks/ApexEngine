@@ -74,7 +74,7 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 			solidTileIDs[i] = currentTile["solid"].get<bool>();
 		}
 	}
-	TileSet* tileSet = new TileSet(tileSetImagePath, tileSetTileSize, tileSetMargin, tileSetSpacing);
+	m_TileSet = new TileSet(tileSetImagePath, tileSetTileSize, tileSetMargin, tileSetSpacing);
 
 	json layers = tileMap["layers"];
 	for (json::iterator i = layers.begin(); i != layers.end(); ++i)
@@ -85,6 +85,7 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 			// Skip object layers for now
 			continue;
 		}
+
 		std::vector<int> layerData = currentLayer["data"];
 		std::string layerName = currentLayer["name"];
 		Layer::Type layerType = Layer::StringToType(currentLayer["type"]);
@@ -93,9 +94,11 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 		int layerWidth = currentLayer["width"];
 		int layerHeight = currentLayer["height"];
 
-		Layer* newLayer = new Layer(level, layerData, tileSet, solidTileIDs, layerName, layerVisible, 
+		Layer* newLayer = new Layer(level, layerData, m_TileSet, solidTileIDs, layerName, layerVisible,
 			layerOpacity, layerType, layerWidth, layerHeight, contactListener);
-		m_Layers.push_back(newLayer);
+
+		if (layerName.compare("foreground") == 0) m_ForegroundLayers.push_back(newLayer);
+		else m_BackgroundLayers.push_back(newLayer);
 	}
 	std::string orientation = tileMap["orientation"];
 	if (orientation.compare("orthogonal") != 0)
@@ -107,25 +110,49 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 
 Map::~Map()
 {
-	for (size_t i = 0; i < m_Layers.size(); ++i)
+	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
 	{
-		delete m_Layers[i];
+		delete m_BackgroundLayers[i];
 	}
+	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
+	{
+		delete m_ForegroundLayers[i];
+	}
+
+	delete m_TileSet;
 }
 
 void Map::Tick(sf::Time elapsed)
 {
-	m_Layers[0]->Tick(elapsed);
+	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
+	{
+		m_BackgroundLayers[i]->Tick(elapsed);
+	}
+	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
+	{
+		m_ForegroundLayers[i]->Tick(elapsed);
+	}
 }
 
-void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
+void Map::DrawForeground(sf::RenderTarget& target, sf::RenderStates states)
 {
-	m_Layers[0]->draw(target, states);
+	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
+	{
+		m_ForegroundLayers[i]->draw(target, states);
+	}
+}
+
+void Map::DrawBackground(sf::RenderTarget& target, sf::RenderStates states)
+{
+	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
+	{
+		m_BackgroundLayers[i]->draw(target, states);
+	}
 }
 
 int Map::GetTileSize() const
 {
-	return m_Layers[0]->GetTileSize();
+	return m_TileSet->m_TileSize;
 }
 
 int Map::GetTilesWide() const

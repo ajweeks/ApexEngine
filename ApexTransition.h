@@ -29,7 +29,6 @@ public:
 	virtual void Create(sf::Time totalTime, EaseType easeType);
 
 	virtual void Tick(sf::Time elapsed);
-	//virtual void* GetCurrentTransitionData() = 0;
 
 	virtual void Swap() = 0; // Swap start and end data, then reset
 	virtual void Restart();
@@ -41,6 +40,7 @@ public:
 
 protected:
 	sf::Vector2f Lerp(sf::Vector2f start, sf::Vector2f delta, float t);
+	int Lerp(int start, int delta, float t);
 	float Lerp(float start, float delta, float t); // t must be in range [0.0f, 1.0f]
 
 	sf::Time m_TotalTime;

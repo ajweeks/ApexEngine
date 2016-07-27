@@ -34,6 +34,8 @@ public:
 
 	int GetTileSize() const;
 
+	const std::string& GetName() const;
+
 	static Type StringToType(std::string string);
 
 private:

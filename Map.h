@@ -10,6 +10,7 @@
 
 class Layer;
 class Level;
+struct TileSet;
 
 class Map
 {
@@ -24,7 +25,8 @@ public:
 	Map& operator=(const Map&) = delete;
 
 	void Tick(sf::Time elapsed);
-	void Draw(sf::RenderTarget& target, sf::RenderStates states);
+	void DrawForeground(sf::RenderTarget& target, sf::RenderStates states);
+	void DrawBackground(sf::RenderTarget& target, sf::RenderStates states);
 
 	int GetTilesWide() const;
 	int GetTilesHigh() const;
@@ -33,6 +35,8 @@ public:
 private:
 	int m_TilesWide;
 	int m_TilesHigh;
-	std::vector<Layer*> m_Layers;
+	std::vector<Layer*> m_BackgroundLayers;
+	std::vector<Layer*> m_ForegroundLayers;
+	TileSet* m_TileSet = nullptr;
 
 };

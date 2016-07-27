@@ -185,6 +185,12 @@
     <ClCompile Include="HUD.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
+    <ClCompile Include="ApexNPC.cpp">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
+    </ClCompile>
+    <ClCompile Include="IntTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -336,6 +342,15 @@
     </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexNPC.h">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
+    </ClInclude>
+    <ClInclude Include="Interactable.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="IntTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

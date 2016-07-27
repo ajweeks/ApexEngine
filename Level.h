@@ -11,12 +11,15 @@
 #include "ApexKeyListener.h"
 #include "ApexParticleManager.h"
 #include "LightManager.h"
+#include "IntTransition.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderTexture.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 #include <SFML\Window\Event.hpp>
+
+#include <JSON\json.hpp>
 
 class Game;
 class ApexPauseScreen;
@@ -33,7 +36,6 @@ public:
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
-	void DrawMap(sf::RenderTarget& target, sf::RenderStates states);
 
 	unsigned int GetWidth() const;
 	unsigned int GetHeight() const;
@@ -63,9 +65,11 @@ public:
 	void RemoveItem(Item* item);
 	void AddItemToBeRemoved(Item* item); // Call this when Box2D is locked, these items will be deleted next Tick
 
-	void LoadShaders();
-	void LoadLights();
 	void ToggleLightingEditor();
+
+	bool IsShowingSpeechBubble() const;
+	void SetCurrentSpeechShowing(const std::string& speech);
+	void ClearSpeechShowing();
 
 	void InteractWithHighlightedItem();
 
@@ -79,6 +83,14 @@ public:
 	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
 
 private:
+	nlohmann::json GetSpeechDataFromFile();
+
+	Entity* GetNearestEntityTo(Entity* sourceEntity, float& distance);
+	void LoadLights();
+	void LoadShaders();
+
+	static const sf::Uint32 MILLISECONDS_PER_SPEECH_BUBBLE_LETTER;
+
 	int m_Width;
 	int m_Height;
 
@@ -107,6 +119,9 @@ private:
 
 	Entity* m_HighlightedEntity = nullptr;
 	sf::Shader m_OutlinedSpriteShader;
+
+	ApexSpriteSheet m_SpeechBubbleSpriteSheet;
+	std::string m_CurrentSpeech;
 
 	IntTransition m_SpeechLetterTransition;
 };

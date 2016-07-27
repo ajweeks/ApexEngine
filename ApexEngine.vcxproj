@@ -202,6 +202,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="IntTransition.cpp" />
     <ClCompile Include="Item.cpp">
       <SubType>
       </SubType>
@@ -220,6 +221,10 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Mob.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="ApexNPC.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -314,6 +319,11 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Interactable.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="IntTransition.h" />
     <ClInclude Include="Item.h">
       <SubType>
       </SubType>
@@ -332,6 +342,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Mob.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="ApexNPC.h">
       <SubType>
       </SubType>
     </ClInclude>

@@ -17,6 +17,8 @@ public:
 		sf::Uint32 framesLong = 1;
 		sf::Uint8 currentFrame = 0;
 		sf::Time timeElapsedThisFrame = sf::Time::Zero;
+		bool pingPongs = false; // If this is true the animation goes: [0, 1, 2, 3, 2, 1]
+		bool movingForward = true; // Only used if ping ponging
 	};
 
 	ApexSpriteSheet();
@@ -30,14 +32,21 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states); // Draws the current frame of the current sequence
 
 	sf::Uint8 GetCurrentFrame() const;
+	float GetFrameWidth() const;
+	float GetFrameHeight() const;
 
 	void AddSequence(sf::Uint8 sequenceIndex, Sequence sequence);
+	sf::Uint8 GetCurrentSequenceIndex() const;
 	void SetCurrentSequence(sf::Uint8 sequenceIndex, bool restartAnimation = true);
 	
 	bool HasRestarted() const;
 
 	// Call this if the entire image is only one sequence
 	void SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame);
+
+	void SetSpriteScale(const sf::Vector2f& scale);
+	void SetSpriteScale(float scaleX, float scaleY);
+	void ResetSpriteScale();
 
 private:
 	sf::Sprite m_Sprite;

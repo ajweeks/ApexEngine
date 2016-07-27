@@ -15,8 +15,7 @@ Player::Player(Level* level) :
 	Entity(level, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
 	m_Level(level),
-	m_SpriteSheet(TextureManager::GetTexture(TextureManager::SMALL_MARIO), 18, 32),
-	m_Gun(level, m_IntialPos)
+	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32),
 	m_IntialPos(90.0f, 150.0f)
 {
 	m_Actor->AddCircleFixture(7.0f);
@@ -28,14 +27,15 @@ Player::Player(Level* level) :
 	m_Actor->SetCollisionFilter(collisionFilter);
 
 	ApexSpriteSheet::Sequence walkingSequence;
-	walkingSequence.framesLong = 2;
-	walkingSequence.msPerFrame = 150;
-	walkingSequence.startFrameIndex = sf::Vector2i(2, 0);
+	walkingSequence.pingPongs = true;
+	walkingSequence.framesLong = 3;
+	walkingSequence.msPerFrame = 90;
+	walkingSequence.startFrameIndex = sf::Vector2i(0, 0);
 	m_SpriteSheet.AddSequence(AnimationSequence::WALKING, walkingSequence);
 	
 	ApexSpriteSheet::Sequence standingSequence;
 	standingSequence.framesLong = 1;
-	standingSequence.startFrameIndex = sf::Vector2i(2, 0);
+	standingSequence.startFrameIndex = sf::Vector2i(1, 0);
 	m_SpriteSheet.AddSequence(AnimationSequence::STANDING, standingSequence);
 
 	Reset();
@@ -50,7 +50,6 @@ void Player::Reset()
 	m_Actor->SetPosition(m_IntialPos);
 	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
 	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
-	m_Gun.Reset();
 	m_IsCrouching = false;
 	m_DirFacing = DirectionFacing::RIGHT;
 }
@@ -60,20 +59,18 @@ sf::Vector2f Player::GetPosition() const
 	return m_Actor->GetPosition();
 }
 
-Gun& Player::GetGun()
+void Player::StopMoving()
 {
-	return m_Gun;
+	m_Actor->SetLinearVelocity(sf::Vector2f());
+	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
 }
 
 void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 	switch (otherActor->GetUserData())
 	{
-	case ActorID::AMMO:
+	case ActorID::WALL:
 	{
-		AmmoDrop* ammoDrop = static_cast<AmmoDrop*>(otherActor->GetUserPointer());
-		m_Gun.AddAmmo(ammoDrop);
-		ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_RELOAD);
 	} break;
 	}
 }
@@ -117,10 +114,12 @@ void Player::OnKeyRelease(sf::Event::KeyEvent keyEvent)
 
 void Player::Tick(sf::Time elapsed)
 {
-	HandleMovement(elapsed);
+	if (!m_Level->IsShowingSpeechBubble())
+	{
+		HandleMovement(elapsed);
+	}
 
 	m_SpriteSheet.Tick(elapsed);
-	m_Gun.Tick(elapsed);
 }
 
 void Player::HandleMovement(sf::Time elapsed)
@@ -130,13 +129,14 @@ void Player::HandleMovement(sf::Time elapsed)
 	const float dVel = VEL * dt;
 	sf::Vector2f newVel = m_Actor->GetLinearVelocity();
 
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::W) || ApexKeyboard::IsKeyDown(sf::Keyboard::Up) ||
-		ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left) ||
-		ApexKeyboard::IsKeyDown(sf::Keyboard::S) || ApexKeyboard::IsKeyDown(sf::Keyboard::Down) ||
-		ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
-		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
-	else 
+	if (m_SpriteSheet.GetCurrentSequenceIndex() != AnimationSequence::STANDING &&
+		!ApexKeyboard::IsKeyDown(sf::Keyboard::W) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Up) &&
+		!ApexKeyboard::IsKeyDown(sf::Keyboard::A) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Left) &&
+		!ApexKeyboard::IsKeyDown(sf::Keyboard::S) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Down) &&
+		!ApexKeyboard::IsKeyDown(sf::Keyboard::D) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
+	{
 		m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING, false);
+	}
 
 	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
 	{
@@ -202,7 +202,6 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	DrawShadow(target, states);
 	DrawBody(target, states);
-	m_Gun.Draw(target, states);
 }
 
 void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)

@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Level.h"
 
-const float Camera::DEFAULT_ZOOM = 2.0f;
+const float Camera::DEFAULT_ZOOM = 2.5f;
 const float Camera::ACCELERATION = 4.0f;
 
 Camera::Camera(sf::Vector2f windowSize) :

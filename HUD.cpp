@@ -8,8 +8,6 @@
 HUD::HUD(Level* level) :
 	m_Level(level)
 {
-	Gun& gun = m_Level->GetPlayer()->GetGun();
-
 	const sf::Font& font = APEX->FontOpenSans;
 	m_BulletsInClip.setFont(font);
 	m_BulletsRemaining.setFont(font);
@@ -29,9 +27,9 @@ HUD::~HUD()
 
 void HUD::Tick(sf::Time elapsed)
 {
-	Gun& gun = m_Level->GetPlayer()->GetGun();
-	m_BulletsInClip.setString(std::to_string(gun.GetBulletsInClip()));
-	m_BulletsRemaining.setString(" / " + std::to_string(gun.GetBulletsRemaining()));
+	//Gun& gun = m_Level->GetPlayer()->GetGun();
+	//m_BulletsInClip.setString(std::to_string(gun.GetBulletsInClip()));
+	//m_BulletsRemaining.setString(" / " + std::to_string(gun.GetBulletsRemaining()));
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float padding = 18.0f;

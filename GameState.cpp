@@ -66,14 +66,6 @@ bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 	{
 		if (!m_Level->IsPaused()) Reset();
 	} break;
-	case sf::Keyboard::T:
-	{
-		m_Level->LoadShaders();
-	} break;
-	case sf::Keyboard::L:
-	{
-		m_Level->LoadLights();
-	} break;
 	case sf::Keyboard::F8:
 	{
 		m_Level->ToggleLightingEditor();

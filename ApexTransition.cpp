@@ -38,6 +38,11 @@ sf::Vector2f ApexTransition::Lerp(sf::Vector2f start, sf::Vector2f delta, float 
 	return sf::Vector2f(Lerp(start.x, delta.x, t), Lerp(start.y, delta.y, t));
 }
 
+int ApexTransition::Lerp(int start, int delta, float t)
+{
+	return int(Lerp(float(start), float(delta), t));
+}
+
 float ApexTransition::Lerp(float start, float delta, float t)
 {
 	assert(t >= 0.0f && t <= 1.0f);

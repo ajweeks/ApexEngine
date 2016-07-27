@@ -65,10 +65,10 @@ TransitionData TransformationTransition::GetCurrentTransitionData()
 	const sf::Color startColor = m_StartData.color;
 	if (m_EndData.color != m_StartData.color)
 	{
-		result.color.r = sf::Uint8(Lerp(startColor.r, float(m_EndData.color.r - startColor.r), progress));
-		result.color.g = sf::Uint8(Lerp(startColor.g, float(m_EndData.color.g - startColor.g), progress));
-		result.color.b = sf::Uint8(Lerp(startColor.b, float(m_EndData.color.b - startColor.b), progress));
-		result.color.a = sf::Uint8(Lerp(startColor.a, float(m_EndData.color.a - startColor.a), progress));
+		result.color.r = sf::Uint8(Lerp(startColor.r, m_EndData.color.r - startColor.r, progress));
+		result.color.g = sf::Uint8(Lerp(startColor.g, m_EndData.color.g - startColor.g, progress));
+		result.color.b = sf::Uint8(Lerp(startColor.b, m_EndData.color.b - startColor.b, progress));
+		result.color.a = sf::Uint8(Lerp(startColor.a, m_EndData.color.a - startColor.a, progress));
 	}
 
 	return result;

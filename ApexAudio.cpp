@@ -14,12 +14,19 @@ bool ApexAudio::LoadSounds()
 	LoadSound(Sound::GUN_RELOAD, "resources/sound/gun-reload.wav");
 	LoadSound(Sound::BOOP, "resources/sound/boop.wav");
 
+	LoadSound(Sound::TYPING_1, "resources/sound/typing-1.wav");
+	LoadSound(Sound::TYPING_2, "resources/sound/typing-2.wav");
+	LoadSound(Sound::TYPING_3, "resources/sound/typing-3.wav");
+
 	// SONGS
-	LoadMusicTrack(Music::BG_SONG, "resources/sound/music/map-1-yoshis-island.wav", true);
-	LoadMusicTrack(Music::OVERWORLD_BGM, "resources/sound/music/overworld-bgm.wav", true);
 
 	m_IsInitialized = true;
 	return true;
+}
+
+bool ApexAudio::IsSoundEffectPlaying(Sound sound)
+{
+	return m_SoundEffects[int(sound)].m_Sound.getStatus() == sf::Sound::Playing;
 }
 
 void ApexAudio::LoadSound(Sound sound, const std::string& filePath)

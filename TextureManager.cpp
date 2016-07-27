@@ -18,7 +18,7 @@ void TextureManager::Initialize()
 	s_Textures.resize(Texture::_LAST_ELEMENT, nullptr);
 
 	LoadTexture(Texture::DUST_PARTICLE, "resources/dust-explosion.png");
-	LoadTexture(Texture::SMALL_MARIO, "resources/small-mario.png");
+	LoadTexture(Texture::PLAYER, "resources/player.png");
 	LoadTexture(Texture::SHADOW, "resources/shadow.png");
 
 	LoadTexture(Texture::CURSOR_NORMAL, "resources/cursor-normal-x2.png");
@@ -28,6 +28,10 @@ void TextureManager::Initialize()
 
 	LoadTexture(Texture::TITLE_COLOR, "resources/title-color.png");
 	LoadTexture(Texture::TITLE_SHADOW, "resources/title-shadow.png");
+
+	LoadTexture(Texture::SPEECH_BUBBLE, "resources/speech-bubble.png");
+
+	LoadTexture(Texture::NPC, "resources/npc.png");
 
 	s_initialized = true;
 }

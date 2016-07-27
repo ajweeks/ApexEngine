@@ -24,27 +24,37 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 			currentQuad[3].position = sf::Vector2f(x * tileSize, (y+1) * tileSize);
 
 			const int tileSrc = m_Tiles[tileIndex] - 1;
-			const int textureTileWidth = m_TileSet->m_TilesWide;
-			const int tileSrcX = tileSrc % textureTileWidth;
-			const int tileSrcY = tileSrc / textureTileWidth;
-			currentQuad[0].texCoords = sf::Vector2f(tileSrcX * tileSize, tileSrcY * tileSize);
-			currentQuad[1].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, tileSrcY * tileSize);
-			currentQuad[2].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, (tileSrcY + 1) * tileSize);
-			currentQuad[3].texCoords = sf::Vector2f(tileSrcX * tileSize, (tileSrcY + 1) * tileSize);
-
-			if (solidTileIDs[tileSrc])
+			if (tileSrc == -1)
 			{
-				LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), ActorID::WALL);
-				PhysicsActor* newActor = newTile->GetPhysicsActor();
-				newActor->AddBoxFixture(tileSize, tileSize);
-				newActor->AddContactListener(contactListener);
+				currentQuad[0].color = sf::Color::Transparent;
+				currentQuad[1].color = sf::Color::Transparent;
+				currentQuad[2].color = sf::Color::Transparent;
+				currentQuad[3].color = sf::Color::Transparent;
+			}
+			else
+			{
+				const int textureTileWidth = m_TileSet->m_TilesWide;
+				const int tileSrcX = tileSrc % textureTileWidth;
+				const int tileSrcY = tileSrc / textureTileWidth;
+				currentQuad[0].texCoords = sf::Vector2f(tileSrcX * tileSize, tileSrcY * tileSize);
+				currentQuad[1].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, tileSrcY * tileSize);
+				currentQuad[2].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, (tileSrcY + 1) * tileSize);
+				currentQuad[3].texCoords = sf::Vector2f(tileSrcX * tileSize, (tileSrcY + 1) * tileSize);
 
-				b2Filter collisionFilter;
-				collisionFilter.categoryBits = ActorID::WALL;
-				collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
-				newActor->SetCollisionFilter(collisionFilter);
+				if (solidTileIDs[tileSrc])
+				{
+					LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), ActorID::WALL);
+					PhysicsActor* newActor = newTile->GetPhysicsActor();
+					newActor->AddBoxFixture(tileSize, tileSize);
+					newActor->AddContactListener(contactListener);
 
-				m_LevelTiles.push_back(newTile);
+					b2Filter collisionFilter;
+					collisionFilter.categoryBits = ActorID::WALL;
+					collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
+					newActor->SetCollisionFilter(collisionFilter);
+
+					m_LevelTiles.push_back(newTile);
+				}
 			}
 		}
 	}
@@ -52,8 +62,6 @@ Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<in
 
 Layer::~Layer()
 {
-	delete m_TileSet;
-
 	for (size_t i = 0; i < m_LevelTiles.size(); i++)
 	{
 		if (m_LevelTiles[i] != nullptr)
@@ -133,15 +141,23 @@ void Layer::Tick(sf::Time elapsed)
 {
 }
 
-void Layer::draw(sf::RenderTarget & target, sf::RenderStates states) const
+void Layer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	states.texture = m_TileSet->m_Texture;
-	target.draw(m_Verticies, states);
+	if (m_Visible)
+	{
+		states.texture = m_TileSet->m_Texture;
+		target.draw(m_Verticies, states);
+	}
 }
 
 int Layer::GetTileSize() const
 {
 	return m_TileSet->m_TileSize;
+}
+
+const std::string& Layer::GetName() const
+{
+	return m_Name;
 }
 
 Layer::Type Layer::StringToType(std::string string)

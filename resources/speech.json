@@ -1,0 +1,18 @@
+{
+  "characters": [
+    {
+      "name": "Charles",
+      "speech": [
+        "Hi there!\nHow are you doing?",
+        "I'm doing well thanks!",
+        {
+          "question": "How old are you now?",
+          "answers": [
+            "9!",
+            "I don't remember..."
+          ]
+        }
+      ]
+    }
+  ]
+}

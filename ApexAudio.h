@@ -9,19 +9,20 @@ public:
 	{
 		GUN_FIRE, GUN_FIRE_EMPTY, GUN_RELOAD,
 		BOOP,
+		TYPING_1, TYPING_2, TYPING_3,
 		// All values must be above this line
 		_LAST_ELEMENT
 	};
 	enum class Music
 	{
-		BG_SONG, OVERWORLD_BGM,
-
 		// All values must be above this line
 		_LAST_ELEMENT
 	};
 
 	static bool LoadSounds();
 	
+	static bool IsSoundEffectPlaying(Sound sound);
+
 	static void PlaySoundEffect(Sound sound);
 	static void PlayMusicTrack(Music track);
 	static void SetAllPaused(bool paused);

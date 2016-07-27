@@ -2,100 +2,28 @@
   "ambient": "rgba(195, 210, 222, 55)",
   "lights": [
     {
-      "blur": 0.14,
-      "color": "rgb(200, 200, 200)",
+      "blur": 0.09,
+      "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "701.853, 65",
-      "radius": 30.13
-    },
-    {
-      "blur": 0.14,
-      "color": "rgb(200, 200, 200)",
-      "flickers": false,
-      "opacity": 0.9,
-      "position": "894.479, 100",
-      "radius": 31.6
-    },
-    {
-      "blur": 0.22,
-      "color": "rgb(200, 200, 200)",
-      "flickers": false,
-      "opacity": 0.76,
-      "position": "969.56, 333.337",
-      "radius": 2.75
-    },
-    {
-      "blur": 0.11,
-      "color": "rgb(200, 205, 154)",
-      "flickers": true,
-      "opacity": 0.98,
-      "position": "96.5, 506.72",
-      "radius": 15.5
+      "position": "220.917, 191.467",
+      "radius": 17.55
     },
     {
       "blur": 0.1,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "160.117, 710.88",
-      "radius": 24.55
+      "position": "82.015, 198.25",
+      "radius": 10.5
     },
     {
-      "blur": 0.1,
+      "blur": 0.12,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "847.773, 934.5",
-      "radius": 21.34
-    },
-    {
-      "blur": 0.16,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "593.775, 869.201",
-      "radius": 35.16
-    },
-    {
-      "blur": 0.15,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "349.766, 797.916",
-      "radius": 39.05
-    },
-    {
-      "blur": 0.15,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "682.765, 289.888",
-      "radius": 47.25
-    },
-    {
-      "blur": 0.2,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "387.993, 540.208",
-      "radius": 27.54
-    },
-    {
-      "blur": 0.17,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "451.025, 120.478",
-      "radius": 45.25
-    },
-    {
-      "blur": 0.13,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "192.365, 91",
-      "radius": 42.5
+      "position": "99.6, 401.98",
+      "radius": 34.4
     }
   ]
 }
