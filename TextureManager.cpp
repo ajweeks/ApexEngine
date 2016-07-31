@@ -25,6 +25,7 @@ void TextureManager::Initialize()
 	LoadTexture(Texture::CURSOR_POINTER, "resources/cursor-point-x2.png");
 
 	LoadTexture(Texture::AMMO, "resources/ammo.png");
+	LoadTexture(Texture::COIN, "resources/coin.png");
 
 	LoadTexture(Texture::TITLE_COLOR, "resources/title-color.png");
 	LoadTexture(Texture::TITLE_SHADOW, "resources/title-shadow.png");

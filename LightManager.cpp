@@ -82,11 +82,6 @@ void LightManager::Tick(sf::Time elapsed)
 				
 			}
 		}
-
-		if (ApexKeyboard::IsKeyPressed(sf::Keyboard::Num9))
-		{
-			SaveLightData();
-		}
 	}
 }
 

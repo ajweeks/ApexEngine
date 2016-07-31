@@ -1,0 +1,14 @@
+{
+    "keybindings": {
+        "Down": 18,
+        "Interact": 4,
+        "Left": 0,
+        "Pause": 36,
+        "Restart": 17,
+        "Right": 3,
+        "Screenshot": 94,
+        "ToggleDebugOverlay": 93,
+        "ToggleLightEditor": 92,
+        "Up": 22
+    }
+}

@@ -21,8 +21,8 @@ public:
 	Level* GetLevel();
 	bool IsLevelPaused() const;
 
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
+	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
+	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
 	void Reset();
 

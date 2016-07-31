@@ -83,20 +83,16 @@ void Player::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& e
 {
 }
 
-bool Player::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+bool Player::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	if (keyPressed)
 	{
-		switch (keyEvent.code) 
+		switch (key) 
 		{
-		case sf::Keyboard::W:
-		case sf::Keyboard::Up:
-		case sf::Keyboard::A:
-		case sf::Keyboard::Left:
-		case sf::Keyboard::S:
-		case sf::Keyboard::Down:
-		case sf::Keyboard::D:
-		case sf::Keyboard::Right:
+		case ApexKeyboard::MOVE_LEFT:
+		case ApexKeyboard::MOVE_RIGHT:
+		case ApexKeyboard::MOVE_UP:
+		case ApexKeyboard::MOVE_DOWN:
 		{
 			if (!m_Level->IsShowingSpeechBubble())
 			{
@@ -105,10 +101,10 @@ bool Player::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 		} break;
 		}
 	}
-	return true;
+	return false;
 }
 
-void Player::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+void Player::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 

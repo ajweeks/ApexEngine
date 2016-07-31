@@ -2,6 +2,7 @@
 #include "BaseState.h"
 #include "StateManager.h"
 #include "enumerations.h"
+#include "ApexKeyboard.h"
 
 BaseState::BaseState(StateType stateType) : 
 	ApexKeyListener(),
@@ -13,12 +14,12 @@ BaseState::~BaseState()
 {
 }
 
-bool BaseState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+bool BaseState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	return false;
 }
 
-void BaseState::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+void BaseState::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 

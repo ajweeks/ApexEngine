@@ -38,8 +38,8 @@ public:
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
 
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
+	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
+	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
 private:
 	void ClampPosition();

@@ -99,6 +99,7 @@ ApexMain::ApexMain()
 	}
 
 	TextureManager::Initialize();
+	ApexKeyboard::LoadKeybindingsFromFile();
 
 	m_SlowMoData.Create(0.01f, 1.0f, sf::seconds(0.1f), ApexTransition::EaseType::QUADRATIC_IN_OUT);
 	m_SlowMoData.SetFinished();
@@ -225,38 +226,42 @@ void ApexMain::Run()
 				} break;
 				case sf::Event::KeyPressed:
 				{
-					const bool keyPressed = ApexKeyboard::IsKeyPressed(event.key.code);
-					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
+					ApexKeyboard::Key key;
+					if (ApexKeyboard::GetMappedKey(event.key.code, key))
 					{
-						if (m_KeyListeners[i] != nullptr)
+						const bool keyPressed = ApexKeyboard::IsKeyPressed(key);
+						for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 						{
-							if (m_KeyListeners[i]->OnKeyPress(event.key, keyPressed))
+							if (m_KeyListeners[i] != nullptr)
 							{
-								break;
+								if (m_KeyListeners[i]->OnKeyPress(key, keyPressed))
+								{
+									break;
+								}
 							}
 						}
-					}
 
-					if (keyPressed)
-					{
-						switch (event.key.code)
+						if (keyPressed)
 						{
-						case sf::Keyboard::F10:
-						{
-							TakeScreenshot();
-						} break;
-						case sf::Keyboard::Space:
-						{
-							DEBUGToggleGamePaused();
-						} break;
-						case sf::Keyboard::Period:
-						{
-							if (m_DEBUG_GamePaused) stepOneFrame = true;
-						} break;
-						case sf::Keyboard::P:
-						{
-							m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
-						} break;
+							switch (event.key.code)
+							{
+							case sf::Keyboard::F10:
+							{
+								TakeScreenshot();
+							} break;
+							case sf::Keyboard::Space:
+							{
+								DEBUGToggleGamePaused();
+							} break;
+							case sf::Keyboard::Period:
+							{
+								if (m_DEBUG_GamePaused) stepOneFrame = true;
+							} break;
+							case sf::Keyboard::P:
+							{
+								m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
+							} break;
+							}
 						}
 					}
 				} break;
@@ -264,9 +269,13 @@ void ApexMain::Run()
 				{
 					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
-						if (m_KeyListeners[i] != nullptr)
+						ApexKeyboard::Key key;
+						if (ApexKeyboard::GetMappedKey(event.key.code, key))
 						{
-							m_KeyListeners[i]->OnKeyRelease(event.key);
+							if (m_KeyListeners[i] != nullptr)
+							{
+								m_KeyListeners[i]->OnKeyRelease(key);
+							}
 						}
 					}
 				} break;

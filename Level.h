@@ -12,6 +12,7 @@
 #include "ApexParticleManager.h"
 #include "LightManager.h"
 #include "IntTransition.h"
+#include "ApexKeyboard.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
@@ -79,8 +80,8 @@ public:
 
 	virtual void OnWindowResize(sf::Vector2u windowSize) override;
 	
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) override;
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) override;
+	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
+	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
 private:
 	nlohmann::json GetSpeechDataFromFile();

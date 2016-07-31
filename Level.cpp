@@ -508,13 +508,13 @@ void Level::OnWindowResize(sf::Vector2u windowSize)
 	m_LightManager.OnWindowResize(windowSize);
 }
 
-bool Level::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+bool Level::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	if (keyPressed)
 	{
-		switch (keyEvent.code)
+		switch (key)
 		{
-		case sf::Keyboard::E:
+		case ApexKeyboard::INTERACT:
 		{
 			if (!m_CurrentSpeech.empty() &&
 				m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
@@ -528,10 +528,10 @@ bool Level::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
 		} break;
 		}
 	}
-	return true;
+	return false;
 }
 
-void Level::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+void Level::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 

@@ -79,11 +79,11 @@ void MainMenuState::Draw(sf::RenderTarget& target)
 	target.draw(m_TitleColorSprite);
 }
 
-bool MainMenuState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+bool MainMenuState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	return false;
 }
 
-void MainMenuState::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+void MainMenuState::OnKeyRelease(ApexKeyboard::Key key)
 {
 }

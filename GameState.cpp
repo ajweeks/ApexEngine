@@ -45,36 +45,36 @@ bool GameState::IsLevelPaused() const
 	return m_Level->IsPaused();
 }
 
-bool GameState::OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed)
+bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	if (APEX->DEBUGIsGamePaused()) return true;
 
-	switch (keyEvent.code)
+	if (keyPressed)
 	{
-	case sf::Keyboard::F9:
-	{
-		if (keyPressed)
+		switch (key)
 		{
-			m_Level->ToggleDebugOverlay();
+		case ApexKeyboard::PAUSE:
+		{
+			m_Level->TogglePaused(true);
+		} break;
+		case ApexKeyboard::DEBUG_TOGGLE_DEBUG_OVERLAY:
+		{
+				m_Level->ToggleDebugOverlay();
+		} break;
+		case ApexKeyboard::DEBUG_TOGGLE_LIGHT_EDITOR:
+		{
+			m_Level->ToggleLightingEditor();
+		} break;
+		case ApexKeyboard::DEBUG_RESTART:
+		{
+			if (!m_Level->IsPaused()) Reset();
+		} break;
 		}
-	} break;
-	case sf::Keyboard::Escape:
-	{
-		m_Level->TogglePaused(true);
-	} break;
-	case sf::Keyboard::R:
-	{
-		if (!m_Level->IsPaused()) Reset();
-	} break;
-	case sf::Keyboard::F8:
-	{
-		m_Level->ToggleLightingEditor();
-	} break;
 	}
 	return false;
 }
 
-void GameState::OnKeyRelease(sf::Event::KeyEvent keyEvent)
+void GameState::OnKeyRelease(ApexKeyboard::Key key)
 {
 	if (APEX->DEBUGIsGamePaused()) return;
 }

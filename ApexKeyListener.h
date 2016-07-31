@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ApexKeyboard.h"
+
 #include <SFML\Window\Event.hpp>
 
 class ApexKeyListener
@@ -12,9 +14,10 @@ public:
 	ApexKeyListener& operator=(const ApexKeyListener&) = delete;
 
 	// If keypressed, this is the first frame the key was pressed (it was not held down)
-	// Should return true if the key code should not be applied to any other listeners
-	virtual bool OnKeyPress(sf::Event::KeyEvent keyEvent, bool keyPressed) = 0;
-	virtual void OnKeyRelease(sf::Event::KeyEvent keyEvent) = 0;
+	// Returns whether or not to block further input
+	// (Should return true if the key code should not be applied to any other listeners)
+	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) = 0;
+	virtual void OnKeyRelease(ApexKeyboard::Key key) = 0;
 
 private:
 
