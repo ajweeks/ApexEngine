@@ -5,21 +5,16 @@
 
 struct TileSet
 {
-	TileSet(std::string imageFilePath, int tileSize, int margin, int spacing) :
+	TileSet(sf::Texture* texture, int tileSize, int margin, int spacing) :
 		m_TileSize(tileSize), m_Margin(margin), m_Spacing(spacing)
 	{
-		m_Texture = new sf::Texture();
-		if (!m_Texture->loadFromFile(imageFilePath))
-		{
-			ApexOutputDebugString("Couldn't load image \"" + imageFilePath + "\"!\n");
-		}
+		m_Texture = texture;
 		m_TilesWide = m_Texture->getSize().x / m_TileSize;
 		m_TilesHigh = m_Texture->getSize().y / m_TileSize;
 	}
 
 	virtual ~TileSet()
 	{
-		delete m_Texture;
 	}
 
 	sf::Texture* m_Texture;

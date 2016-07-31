@@ -27,15 +27,21 @@ public:
 	virtual void Interact() override;
 
 private:
-	struct Question
+	struct Statement
 	{
-		std::string question;
-		std::vector<std::string> answers; // Can be empty (for statements)
-		int answerIndex = -1;
+		enum class Type
+		{
+			NORMAL, END, REPEAT
+		};
+
+		std::string statement;
+		Type type = Type::NORMAL;
+		std::vector<std::string> answers; // Can be empty
+		int answerIndex;
 	};
 
 	std::string m_Name;
-	std::vector<Question> m_Statments;
+	std::vector<Statement> m_Statements;
 	int m_CurrentStatementIndex;
 
 	sf::Sprite m_Sprite;

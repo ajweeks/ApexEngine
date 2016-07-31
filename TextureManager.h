@@ -7,6 +7,7 @@ class TextureManager
 public:
 	enum Texture
 	{
+		GENERAL_TILES,
 		DUST_PARTICLE,
 		PLAYER,
 		SHADOW,

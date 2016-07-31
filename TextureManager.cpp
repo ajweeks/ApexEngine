@@ -17,6 +17,8 @@ void TextureManager::Initialize()
 
 	s_Textures.resize(Texture::_LAST_ELEMENT, nullptr);
 
+	LoadTexture(Texture::GENERAL_TILES, "resources/tiles.png");
+
 	LoadTexture(Texture::DUST_PARTICLE, "resources/dust-explosion.png");
 	LoadTexture(Texture::PLAYER, "resources/player.png");
 	LoadTexture(Texture::SHADOW, "resources/shadow.png");

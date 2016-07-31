@@ -18,24 +18,34 @@ ApexNPC::ApexNPC(Level* level, sf::Vector2f position, const json& info) :
 
 	m_Name = info["name"].get<std::string>();
 
-	std::vector<json> questions = info["speech"].get<std::vector<json>>();
-	for (size_t i = 0; i < questions.size(); ++i)
+	std::vector<json> statements = info["statements"].get<std::vector<json>>();
+	for (size_t i = 0; i < statements.size(); ++i)
 	{
-		Question question;
-
-		if (questions[i].find("answers") != questions[i].end())
+		Statement statement;
+		std::string statementString = statements[i]["q"].get<std::string>();
+		const std::string END = "[END]";
+		const size_t endPos = statementString.find(END);
+		const std::string REPEAT = "[REPEAT]";
+		const size_t repeatPos = statementString.find(REPEAT);
+		if (endPos != std::string::npos)
 		{
-			question.question = questions[i]["question"].get<std::string>();
-			question.answers = questions[i]["answers"].get<std::vector<std::string>>();
+			statement.type = Statement::Type::END;
+			statementString.erase(endPos, END.length());
 		}
-		else
+		else if (repeatPos != std::string::npos)
 		{
-			question.question = questions[i].get<std::string>();
+			statement.type = Statement::Type::REPEAT;
+			statementString.erase(repeatPos, REPEAT.length());
 		}
 
-		m_Statments.push_back(question);
+		statement.statement = statementString;
+		if (statements[i].find("a") != statements[i].end())
+		{
+			statement.answers = statements[i]["a"].get<std::vector<std::string>>();
+		}
+
+		m_Statements.push_back(statement);
 	}
-	m_CurrentStatementIndex = -1;
 
 	m_Sprite.setTexture(*TextureManager::GetTexture(TextureManager::NPC));
 	m_NameText = sf::Text(m_Name, APEX->FontOpenSans, 16);
@@ -65,7 +75,7 @@ void ApexNPC::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 std::string ApexNPC::GetCurrentSpeech() const
 {
-	return m_Statments[m_CurrentStatementIndex].question;
+	return m_Statements[m_CurrentStatementIndex].statement;
 }
 
 void ApexNPC::Reply(int responseIndex)
@@ -76,15 +86,46 @@ void ApexNPC::Reply(int responseIndex)
 
 void ApexNPC::Interact()
 {
-	++m_CurrentStatementIndex;
-
-	if (m_CurrentStatementIndex == m_Statments.size())
+	switch (m_Statements[m_CurrentStatementIndex].type)
 	{
-		m_CurrentStatementIndex = -1;
+	case Statement::Type::REPEAT:
+	{
+		if (m_Level->IsShowingSpeechBubble())
+		{
+			m_Level->ClearSpeechShowing();
+		}
+		else
+		{
+			m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+			return;
+		}
+	} break;
+	case Statement::Type::END:
+	{
+		if (m_Level->IsShowingSpeechBubble())
+		{
+			m_Level->ClearSpeechShowing();
+		}
+		else
+		{
+			m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+			return;
+		}
 		m_Level->ClearSpeechShowing();
-	}
-	else
+		++m_CurrentStatementIndex;
+		if (m_CurrentStatementIndex == m_Statements.size()) --m_CurrentStatementIndex;
+	} break;
+	case Statement::Type::NORMAL:
 	{
-		m_Level->SetCurrentSpeechShowing(m_Statments[m_CurrentStatementIndex].question);
+		if (m_CurrentStatementIndex == m_Statements.size() - 1) // We've said all we have to say
+		{
+			m_Level->ClearSpeechShowing(); // *drops mic*
+			return;
+		}
+
+		m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+
+		++m_CurrentStatementIndex;
+	} break;
 	}
 }

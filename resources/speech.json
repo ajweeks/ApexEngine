@@ -2,16 +2,20 @@
   "characters": [
     {
       "name": "Charles",
-      "speech": [
-        "Hi there!\nHow are you doing?",
-        "I'm doing well thanks!",
+      "statements": [
+        { "q": "Hi there!" },
+        { "q": "I'm an old man![END]" },
+        { "q":  "Wow, you're a talkative one![END]"},
+        { "q": "I don't have much to say...[END]"},
         {
-          "question": "How old are you now?",
-          "answers": [
-            "9!",
-            "I don't remember..."
+          "q": "Why do you keep bothering me?[END]",
+          "a": [
+            "Cause ur a qt 3.14 ;)",
+            "I'm bored" 
           ]
-        }
+        },
+        { "q":  "I can't believe you've done this"},
+        { "q": "Please go away[REPEAT]" }
       ]
     }
   ]
