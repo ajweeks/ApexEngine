@@ -191,6 +191,9 @@
     <ClCompile Include="IntTransition.cpp">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -351,6 +354,9 @@
     </ClInclude>
     <ClInclude Include="IntTransition.h">
       <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Source Files\Level\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

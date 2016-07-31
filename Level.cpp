@@ -17,6 +17,7 @@
 #include "ApexNPC.h"
 #include "ApexMath.h"
 #include "Interactable.h"
+#include "Coin.h"
 
 #include <fstream>
 
@@ -124,6 +125,10 @@ void Level::Reset()
 	}
 	m_Items.clear();
 		
+	m_Items.push_back(new Coin(this, sf::Vector2f(152, 150)));
+	m_Items.push_back(new Coin(this, sf::Vector2f(100, 150)));
+	m_Items.push_back(new Coin(this, sf::Vector2f(91, 250)));
+
 	ClearSpeechShowing();
 	m_HighlightedEntity = nullptr;
 }

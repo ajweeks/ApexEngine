@@ -13,6 +13,7 @@ bool ApexAudio::LoadSounds()
 	LoadSound(Sound::GUN_FIRE_EMPTY, "resources/sound/gun-fire-empty.wav");
 	LoadSound(Sound::GUN_RELOAD, "resources/sound/gun-reload.wav");
 	LoadSound(Sound::BOOP, "resources/sound/boop.wav");
+	LoadSound(Sound::COIN_PICKUP, "resources/sound/coin-pickup.wav");
 
 	LoadSound(Sound::TYPING_1, "resources/sound/typing-1.wav");
 	LoadSound(Sound::TYPING_2, "resources/sound/typing-2.wav");

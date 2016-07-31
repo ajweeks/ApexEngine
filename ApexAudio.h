@@ -10,12 +10,13 @@ public:
 		GUN_FIRE, GUN_FIRE_EMPTY, GUN_RELOAD,
 		BOOP,
 		TYPING_1, TYPING_2, TYPING_3,
-		// All values must be above this line
+		COIN_PICKUP,
+
 		_LAST_ELEMENT
 	};
 	enum class Music
 	{
-		// All values must be above this line
+
 		_LAST_ELEMENT
 	};
 
@@ -38,7 +39,6 @@ public:
 	static void SetSoundVolume(Sound sound, float volume);
 	static void SetAllMusicVolume(float volume);
 	static void SetMusicVolume(Music track, float volume);
-	
 
 private:
 	ApexAudio() = delete;
