@@ -74,6 +74,8 @@ public:
 
 	void InteractWithHighlightedItem();
 
+	void OnUnmappedKeypress(sf::Event::KeyEvent event);
+
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact);
@@ -89,6 +91,8 @@ private:
 	Entity* GetNearestEntityTo(Entity* sourceEntity, float& distance);
 	void LoadLights();
 	void LoadShaders();
+
+	void SetPaused(bool paused, bool pauseSounds);
 
 	static const sf::Uint32 MILLISECONDS_PER_SPEECH_BUBBLE_LETTER;
 

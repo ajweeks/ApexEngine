@@ -138,6 +138,30 @@ void Level::LoadShaders()
 	m_LightManager.LoadShader();
 }
 
+bool Level::IsPaused() const
+{
+	return m_Paused;
+}
+
+void Level::TogglePaused(bool pauseSounds)
+{
+	SetPaused(!m_Paused, pauseSounds);
+}
+
+void Level::SetPaused(bool paused, bool pauseSounds)
+{
+	m_Paused = paused;
+	APEX->SetPhysicsPaused(m_Paused);
+	m_DebugOverlay->ClearAllInput();
+
+	if (m_Paused)
+	{
+		m_PauseScreen->SetScreenShowing(ApexPauseScreen::Screen::MAIN);
+	}
+
+	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
+}
+
 void Level::LoadLights()
 {
 	m_LightManager.LoadLightData();
@@ -278,7 +302,7 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		const sf::Color SPEECH_FONT_COLOR = sf::Color(25, 25, 10);
 		std::string speechString = m_CurrentSpeech.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
 		sf::Text speechText(m_CurrentSpeech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
-		speechText.setColor(SPEECH_FONT_COLOR);
+		const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
 
 		const sf::FloatRect bounds = speechText.getLocalBounds();
 		speechText.setString(speechString);
@@ -327,6 +351,12 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale);
 		m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 1); // Middle middle
 
+		speechText.setColor(SPEECH_SHADOW_COLOR);
+		states.transform.translate(defaultScale);
+		target.draw(speechText, states);
+
+		speechText.setColor(SPEECH_FONT_COLOR);
+		states.transform.translate(-defaultScale);
 		target.draw(speechText, states);
 	}
 
@@ -346,25 +376,6 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 void Level::ToggleLightingEditor()
 {
 	m_LightManager.ToggleShowingEditor();
-}
-
-void Level::TogglePaused(bool pauseSounds)
-{
-	m_Paused = !m_Paused;
-	APEX->SetPhysicsPaused(m_Paused);
-	m_DebugOverlay->ClearAllInput();
-
-	if (m_Paused)
-	{
-		m_PauseScreen->SetScreenShowing(ApexPauseScreen::Screen::MAIN);
-	}
-
-	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
-}
-
-bool Level::IsPaused() const
-{
-	return m_Paused;
 }
 
 bool Level::IsShowingSpeechBubble() const
@@ -401,6 +412,14 @@ void Level::InteractWithHighlightedItem()
 }
 
 Entity* Level::GetNearestEntityTo(Entity* sourceEntity, float& distance)
+void Level::OnUnmappedKeypress(sf::Event::KeyEvent event)
+{
+	assert(m_Paused && m_PauseScreen != nullptr);
+
+	m_PauseScreen->OnUnmappedKeyPress(event);
+}
+
+Entity* Level::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
 {
 	Entity* nearestSoFar = nullptr;
 	distance = -1.0f;
@@ -514,6 +533,14 @@ bool Level::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 	{
 		switch (key)
 		{
+		case ApexKeyboard::PAUSE:
+		{
+			if (!m_Paused) // The pause screen will unpause itself
+			{
+				SetPaused(true, true);
+				return true;
+			}
+		} break;
 		case ApexKeyboard::INTERACT:
 		{
 			if (!m_CurrentSpeech.empty() &&

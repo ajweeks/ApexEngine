@@ -53,13 +53,9 @@ bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 	{
 		switch (key)
 		{
-		case ApexKeyboard::PAUSE:
+		case ApexKeyboard::DEBUG_TOGGLE_INFO_OVERLAY:
 		{
-			m_Level->TogglePaused(true);
-		} break;
-		case ApexKeyboard::DEBUG_TOGGLE_DEBUG_OVERLAY:
-		{
-				m_Level->ToggleDebugOverlay();
+			m_Level->ToggleDebugOverlay();
 		} break;
 		case ApexKeyboard::DEBUG_TOGGLE_LIGHT_EDITOR:
 		{
@@ -77,6 +73,11 @@ bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 void GameState::OnKeyRelease(ApexKeyboard::Key key)
 {
 	if (APEX->DEBUGIsGamePaused()) return;
+}
+
+void GameState::OnUnmappedKeypress(sf::Event::KeyEvent event)
+{
+	m_Level->OnUnmappedKeypress(event);
 }
 
 //static sf::ConvexShape CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius)

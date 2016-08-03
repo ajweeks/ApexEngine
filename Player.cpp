@@ -50,7 +50,6 @@ void Player::Reset()
 	m_Actor->SetPosition(m_IntialPos);
 	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
 	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
-	m_IsCrouching = false;
 	m_DirFacing = DirectionFacing::RIGHT;
 }
 
@@ -69,8 +68,9 @@ void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 	switch (otherActor->GetUserData())
 	{
-	case ActorID::WALL:
+	case ActorID::COIN:
 	{
+		ApexAudio::PlaySoundEffect(ApexAudio::Sound::COIN_PICKUP);
 	} break;
 	}
 }
@@ -126,34 +126,32 @@ void Player::HandleMovement(sf::Time elapsed)
 	sf::Vector2f newVel = m_Actor->GetLinearVelocity();
 
 	if (m_SpriteSheet.GetCurrentSequenceIndex() != AnimationSequence::STANDING &&
-		!ApexKeyboard::IsKeyDown(sf::Keyboard::W) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Up) &&
-		!ApexKeyboard::IsKeyDown(sf::Keyboard::A) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Left) &&
-		!ApexKeyboard::IsKeyDown(sf::Keyboard::S) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Down) &&
-		!ApexKeyboard::IsKeyDown(sf::Keyboard::D) && !ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
+		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_RIGHT) &&
+		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_LEFT) &&
+		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_UP) &&
+		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_DOWN))
 	{
 		m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING, false);
 	}
 
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::D) || ApexKeyboard::IsKeyDown(sf::Keyboard::Right))
+	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_RIGHT))
 	{
 		newVel.x += dVel;
 		m_DirFacing = DirectionFacing::RIGHT;
 	}
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::A) || ApexKeyboard::IsKeyDown(sf::Keyboard::Left))
+	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_LEFT))
 	{
 		newVel.x -= dVel;
 		m_DirFacing = DirectionFacing::LEFT;
 	}
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::W) || ApexKeyboard::IsKeyDown(sf::Keyboard::Up))
+	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_UP))
 	{
 		newVel.y -= dVel;
 	}
-	if (ApexKeyboard::IsKeyDown(sf::Keyboard::S) || ApexKeyboard::IsKeyDown(sf::Keyboard::Down))
+	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_DOWN))
 	{
 		newVel.y += dVel;
 	}
-
-	 m_IsCrouching = (ApexKeyboard::IsKeyDown(sf::Keyboard::C) || ApexKeyboard::IsKeyDown(sf::Keyboard::RControl));
 
 	m_Actor->SetLinearVelocity(newVel);
 	//ClampPosition();

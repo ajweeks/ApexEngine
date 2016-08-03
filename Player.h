@@ -51,7 +51,6 @@ private:
 	static const float MAX_VEL;
 	static const float FRICTION;
 
-	bool m_IsCrouching;
 	DirectionFacing m_DirFacing;
 
 	sf::Vector2f m_IntialPos;

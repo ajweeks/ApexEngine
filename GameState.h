@@ -24,6 +24,8 @@ public:
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
+	void OnUnmappedKeypress(sf::Event::KeyEvent event);
+
 	void Reset();
 
 private:
