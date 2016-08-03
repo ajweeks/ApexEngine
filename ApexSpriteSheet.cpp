@@ -83,16 +83,10 @@ void ApexSpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states, sf
 
 void ApexSpriteSheet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	if (m_CurrentSequenceIndex >= m_Sequences.size())
-	{
-		throw std::logic_error("Attempted to draw unknown sequence: " + m_CurrentSequenceIndex);
-		return;
-	}
-
 	Sequence& currentSequence = m_Sequences[m_CurrentSequenceIndex];
 	int col = currentSequence.startFrameIndex.x + currentSequence.currentFrame;
 	int row = currentSequence.startFrameIndex.y;
-	while (col > m_FramesWide) 
+	while (col >= m_FramesWide) 
 	{
 		col -= m_FramesWide;
 		++row;
@@ -173,6 +167,24 @@ void ApexSpriteSheet::SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame)
 	AddSequence(0, s);
 	m_CurrentSequenceIndex = 0;
 }
+
+void ApexSpriteSheet::SetFrameIndex(int frameIndex)
+{
+	if (frameIndex >= 0 && m_CurrentSequenceIndex < m_Sequences.size() && frameIndex < m_Sequences[m_CurrentSequenceIndex].framesLong)
+	{
+		m_Sequences[m_CurrentSequenceIndex].currentFrame = frameIndex;
+	}
+}
+
+sf::Uint8 ApexSpriteSheet::GetCurrentSequenceFramesLong() const
+{
+	if (m_CurrentSequenceIndex < m_Sequences.size())
+	{
+		return m_Sequences[m_CurrentSequenceIndex].framesLong;
+	}
+	return 1;
+}
+
 
 void ApexSpriteSheet::SetSpriteScale(const sf::Vector2f& scale)
 {

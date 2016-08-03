@@ -43,6 +43,9 @@ public:
 
 	// Call this if the entire image is only one sequence
 	void SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame);
+	void SetFrameIndex(int frameIndex);
+
+	sf::Uint8 GetCurrentSequenceFramesLong() const;
 
 	void SetSpriteScale(const sf::Vector2f& scale);
 	void SetSpriteScale(float scaleX, float scaleY);

@@ -36,10 +36,16 @@ void ApexButton::Tick(sf::Time elapsed)
 
 void ApexButton::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
+	if (m_Hovering)
+	{
+		states.transform.translate(0, 5.0f);
+	}
+
 	target.draw(m_BoundingRect, states);
 
-	// The vignette shaders messes up with text, either have to reset states.shader or just don't pass states in
-	target.draw(m_Text); 
+	// The vignette shader messes up text, don't use it
+	states.shader = states.Default.shader;
+	target.draw(m_Text, states); 
 }
 
 void ApexButton::SetFillColour(sf::Color fillColour)
@@ -60,6 +66,13 @@ bool ApexButton::IsDown() const
 bool ApexButton::IsPressed() const
 {
 	return m_IsPressed;
+}
+
+void ApexButton::SetString(size_t index, sf::String string)
+{
+	assert(index >= 0 && index < m_StringOptions.size());
+	m_StringOptions[index] = string;
+	m_Text.setString(m_StringOptions[index]);
 }
 
 void ApexButton::AddString(sf::String string)
@@ -121,9 +134,6 @@ void ApexButton::SetHovering(bool hovering)
 	{
 		m_Hovering = hovering;
 		m_BoundingRect.setFillColor(m_Hovering ? m_HoverFillColour : m_FillColour);
-		const float yOffset = m_Hovering ? 5.0f : -5.0f;
-		m_BoundingRect.move(0.0f, yOffset);
-		m_Text.move(0.0f, yOffset);
 		APEX->SetCursor(m_Hovering ? ApexCursor::POINT : ApexCursor::NORMAL);
 	}
 }

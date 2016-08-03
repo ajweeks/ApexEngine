@@ -88,7 +88,7 @@ public:
 private:
 	nlohmann::json GetSpeechDataFromFile();
 
-	Entity* GetNearestEntityTo(Entity* sourceEntity, float& distance);
+	Entity* GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance);
 	void LoadLights();
 	void LoadShaders();
 

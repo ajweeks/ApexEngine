@@ -10,6 +10,7 @@
 #include <Box2D\Dynamics\b2WorldCallbacks.h>
 
 #define APEX (ApexMain::GetSingleton())
+#define ArraySize(array) (sizeof(array) / sizeof(array[0]))
 
 class ApexDebug;
 class ApexKeyListener;
@@ -21,6 +22,7 @@ class b2World;
 
 // Global functions
 void ApexOutputDebugString(const std::string &string);
+
 
 std::vector<std::string> ApexSplit(const std::string& str);
 std::vector<std::string> ApexSplit(const std::string& str, const char& delim);
@@ -110,10 +112,9 @@ private:
 	int m_Updates;
 	int m_UPS;
 
-	FloatTransition m_SlowMoData; // A bit janky, use the rotation field to store physics speed
+	FloatTransition m_SlowMoData;
 
 	bool m_IsRunning;
-
 	bool m_WindowIsFullscreen;
 
 	// True when the world should be frozen

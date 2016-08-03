@@ -182,7 +182,7 @@ void Level::Tick(sf::Time elapsed)
 	m_ItemsToBeRemoved.clear();
 
 	m_Map->Tick(elapsed);
-	m_Minimap->Tick(elapsed);
+	//m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
@@ -210,7 +210,7 @@ void Level::Tick(sf::Time elapsed)
 
 	const float minDist = 28.0f;
 	float distanceToNearestEntity;
-	Entity* nearestEntity = GetNearestEntityTo(m_Player, distanceToNearestEntity);
+	Entity* nearestEntity = GetNearestInteractableEntityTo(m_Player, distanceToNearestEntity);
 	if (distanceToNearestEntity != -1.0f && distanceToNearestEntity <= minDist)
 	{
 		m_HighlightedEntity = nearestEntity;
@@ -292,17 +292,16 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	// Static elements
 	target.setView(target.getDefaultView());
 
-	m_Minimap->Draw(target, states);
-
+	//m_Minimap->Draw(target, states);
 	m_HUD->Draw(target, states);
 
 	if (!m_CurrentSpeech.empty())
 	{
 		const unsigned int SPEECH_FONT_SIZE = 48;
 		const sf::Color SPEECH_FONT_COLOR = sf::Color(25, 25, 10);
+		const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
 		std::string speechString = m_CurrentSpeech.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
 		sf::Text speechText(m_CurrentSpeech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
-		const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
 
 		const sf::FloatRect bounds = speechText.getLocalBounds();
 		speechText.setString(speechString);
@@ -403,15 +402,10 @@ void Level::InteractWithHighlightedItem()
 {
 	if (m_HighlightedEntity != nullptr)
 	{
-		Interactable* interactable = dynamic_cast<Interactable*>(m_HighlightedEntity);
-		if (interactable) // If this item is interactable
-		{
-			interactable->Interact();
-		}
+		dynamic_cast<Interactable*>(m_HighlightedEntity)->Interact();
 	}
 }
 
-Entity* Level::GetNearestEntityTo(Entity* sourceEntity, float& distance)
 void Level::OnUnmappedKeypress(sf::Event::KeyEvent event)
 {
 	assert(m_Paused && m_PauseScreen != nullptr);
@@ -427,24 +421,32 @@ Entity* Level::GetNearestInteractableEntityTo(Entity* sourceEntity, float& dista
 	const sf::Vector2f sourcePos = sourceEntity->GetPhysicsActor()->GetPosition();
 	for (size_t i = 0; i < m_Mobs.size(); ++i)
 	{
-		const sf::Vector2f otherPos = m_Mobs[i]->GetPhysicsActor()->GetPosition();
-		const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
-
-		if (distance == -1.0f || currentDistance < distance)
+		Interactable* interactable = dynamic_cast<Interactable*>(m_Mobs[i]);
+		if (interactable)
 		{
-			distance = currentDistance;
-			nearestSoFar = m_Mobs[i];
+			const sf::Vector2f otherPos = m_Mobs[i]->GetPhysicsActor()->GetPosition();
+			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+			if (distance == -1.0f || currentDistance < distance)
+			{
+				distance = currentDistance;
+				nearestSoFar = m_Mobs[i];
+			}
 		}
 	}
 	for (size_t i = 0; i < m_Items.size(); ++i)
 	{
-		const sf::Vector2f otherPos = m_Items[i]->GetPhysicsActor()->GetPosition();
-		const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
-
-		if (distance == -1.0f || currentDistance < distance)
+		Interactable* interactable = dynamic_cast<Interactable*>(m_Items[i]);
+		if (interactable)
 		{
-			distance = currentDistance;
-			nearestSoFar = m_Items[i];
+			const sf::Vector2f otherPos = m_Items[i]->GetPhysicsActor()->GetPosition();
+			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+			if (distance == -1.0f || currentDistance < distance)
+			{
+				distance = currentDistance;
+				nearestSoFar = m_Items[i];
+			}
 		}
 	}
 

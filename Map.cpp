@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "Layer.h"
 #include "TileSet.h"
+#include "TextureManager.h"
 
 #include <JSON\json.hpp>
 
@@ -59,7 +60,6 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 		std::cout << "More than one tile set in map! Please only use one!" << std::endl;
 		return;
 	}
-	std::string tileSetImagePath = tileSets[0]["image"];
 	int tileSetTileSize = tileSets[0]["tilewidth"];
 	int tileSetSpacing = tileSets[0]["spacing"];
 	int tileSetMargin = tileSets[0]["margin"];
@@ -74,7 +74,7 @@ void Map::Create(Level* level, std::string filePath, ApexContactListener* contac
 			solidTileIDs[i] = currentTile["solid"].get<bool>();
 		}
 	}
-	m_TileSet = new TileSet(tileSetImagePath, tileSetTileSize, tileSetMargin, tileSetSpacing);
+	m_TileSet = new TileSet(TextureManager::GetTexture(TextureManager::GENERAL_TILES), tileSetTileSize, tileSetMargin, tileSetSpacing);
 
 	json layers = tileMap["layers"];
 	for (json::iterator i = layers.begin(); i != layers.end(); ++i)

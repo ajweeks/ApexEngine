@@ -243,24 +243,35 @@ void ApexMain::Run()
 
 						if (keyPressed)
 						{
-							switch (event.key.code)
+							switch (key)
 							{
-							case sf::Keyboard::F10:
+							case ApexKeyboard::SCREENSHOT:
 							{
 								TakeScreenshot();
 							} break;
-							case sf::Keyboard::Space:
+							case ApexKeyboard::DEBUG_PAUSE_EVERYTHING:
 							{
 								DEBUGToggleGamePaused();
 							} break;
-							case sf::Keyboard::Period:
+							case ApexKeyboard::DEBUG_STEP_ONE_PHYSICS_FRAME:
 							{
 								if (m_DEBUG_GamePaused) stepOneFrame = true;
 							} break;
-							case sf::Keyboard::P:
+							case ApexKeyboard::DEBUG_TOGGLE_PHYSICS_OVERLAY:
 							{
 								m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
 							} break;
+							}
+						}
+					}
+					else
+					{
+						GameState* gameState = dynamic_cast<GameState*>(m_StateManager->CurrentState());
+						if (gameState)
+						{
+							if (gameState->IsLevelPaused())
+							{
+								gameState->OnUnmappedKeypress(event.key);
 							}
 						}
 					}

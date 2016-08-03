@@ -23,6 +23,7 @@ public:
 
 	bool IsDown() const;
 	bool IsPressed() const;
+	void SetString(size_t index, sf::String string);
 	void AddString(sf::String string);
 	sf::String GetCurrentString() const;
 

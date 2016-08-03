@@ -49,14 +49,14 @@ void MainMenuState::Tick(sf::Time elapsed)
 	m_VignetteShader.setParameter("u_center", x / 4.0f + 0.3f, y / 6.0f + 0.4f);
 
 	m_PlayButton->Tick(elapsed);
-	if (m_PlayButton->IsDown())
+	if (m_PlayButton->IsPressed())
 	{
 		APEX->GetStateManager()->SetState(new GameState());
 		return;
 	}
 
 	m_QuitButton->Tick(elapsed);
-	if (m_QuitButton->IsDown())
+	if (m_QuitButton->IsPressed())
 	{
 		APEX->Quit();
 		return;

@@ -3,8 +3,8 @@
 
 static const struct {
 	unsigned int width;
-	unsigned int  	 height;
-	unsigned int  	 bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */
+	unsigned int height;
+	unsigned int bytes_per_pixel; /* 2:RGB16, 3:RGB, 4:RGBA */
 	sf::Uint8 	 pixel_data[32 * 32 * 4 + 1];
 } apex_logo = {
 	32, 32, 4,
