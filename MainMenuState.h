@@ -29,5 +29,8 @@ private:
 	sf::Sprite m_TitleColorSprite;
 	sf::Sprite m_TitleShadowSprite;
 
+	sf::Sprite m_LogoSprite;
+
+
 };
 

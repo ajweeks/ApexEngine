@@ -1,9 +1,11 @@
 #pragma once
 
-#include <vector>
 #include "BaseState.h"
+
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
+
+#include <vector>
 
 class StateManager
 {

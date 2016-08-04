@@ -2,7 +2,7 @@
 
 enum class StateType
 {
-	MAIN_MENU, GAME
+	LOADING, MAIN_MENU, GAME
 };
 
 enum class ApexCursor

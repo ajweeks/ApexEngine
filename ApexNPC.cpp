@@ -48,7 +48,7 @@ ApexNPC::ApexNPC(Level* level, sf::Vector2f position, const json& info) :
 	}
 
 	m_Sprite.setTexture(*TextureManager::GetTexture(TextureManager::NPC));
-	m_NameText = sf::Text(m_Name, APEX->FontOpenSans, 16);
+	m_NameText = sf::Text(m_Name, APEX->FontPixelFJ8, 32);
 	m_NameText.setColor(sf::Color::White);
 }
 
@@ -66,9 +66,8 @@ void ApexNPC::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	states.transform.translate(topLeft);
 	target.draw(m_Sprite, states);
 
-	states.transform = states.Default.transform;
-	states.transform.scale(0.5f, 0.5f, m_Actor->GetPosition().x, m_Actor->GetPosition().y);
-	states.transform.translate(topLeft).translate(-10.0f, 55.0f);
+	states.transform.translate(-109.0f, -190.0f);
+	states.transform.scale(sf::Vector2f(0.2f, 0.2f), m_Actor->GetPosition());
 	states.shader = states.Default.shader;
 	target.draw(m_NameText, states);
 }
@@ -76,12 +75,6 @@ void ApexNPC::Draw(sf::RenderTarget& target, sf::RenderStates states)
 std::string ApexNPC::GetCurrentSpeech() const
 {
 	return m_Statements[m_CurrentStatementIndex].statement;
-}
-
-void ApexNPC::Reply(int responseIndex)
-{
-
-	++m_CurrentStatementIndex;
 }
 
 void ApexNPC::Interact()
@@ -105,15 +98,14 @@ void ApexNPC::Interact()
 		if (m_Level->IsShowingSpeechBubble())
 		{
 			m_Level->ClearSpeechShowing();
+			++m_CurrentStatementIndex;
+			if (m_CurrentStatementIndex == m_Statements.size()) --m_CurrentStatementIndex;
 		}
 		else
 		{
 			m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 			return;
 		}
-		m_Level->ClearSpeechShowing();
-		++m_CurrentStatementIndex;
-		if (m_CurrentStatementIndex == m_Statements.size()) --m_CurrentStatementIndex;
 	} break;
 	case Statement::Type::NORMAL:
 	{

@@ -17,6 +17,8 @@ void TextureManager::Initialize()
 
 	s_Textures.resize(Texture::_LAST_ELEMENT, nullptr);
 
+	LoadTexture(Texture::LIQWIDICE_GAMES_LOGO_SCREEN, "resources/title-card.png");
+
 	LoadTexture(Texture::GENERAL_TILES, "resources/tiles.png");
 
 	LoadTexture(Texture::DUST_PARTICLE, "resources/dust-explosion.png");

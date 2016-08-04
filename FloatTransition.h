@@ -11,10 +11,10 @@ class FloatTransition : public ApexTransition
 {
 public:
 	FloatTransition();
-	FloatTransition(float start, float end, sf::Time totalTime, EaseType easeType);
+	FloatTransition(float start, float end, sf::Time totalTime, EaseType easeType = EaseType::LINEAR);
 	virtual ~FloatTransition();
 
-	void Create(float start, float end, sf::Time totalTime, EaseType easeType);
+	void Create(float start, float end, sf::Time totalTime, EaseType easeType = EaseType::LINEAR);
 
 	virtual void Tick(sf::Time elapsed) override;
 	virtual float GetCurrentTransitionData();

@@ -1,7 +1,8 @@
 
 #include "ApexMain.h"
-#include "GameState.h"
+#include "LoadingState.h"
 #include "MainMenuState.h"
+#include "GameState.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "ApexKeyListener.h"
@@ -29,7 +30,6 @@ const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
 
 const bool ApexMain::USE_V_SYNC = true;
-const bool ApexMain::SKIP_MAIN_MENU = false;
 
 ApexMain* ApexMain::m_Singleton = nullptr;
 sf::Font ApexMain::FontOpenSans;
@@ -105,6 +105,13 @@ ApexMain::ApexMain()
 	m_SlowMoData.SetFinished();
 
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
+
+	TransitionData start;
+	start.color = sf::Color::White;
+	TransitionData end;
+	end.color = sf::Color::White;
+	m_FadeTransition.Create(start, end, sf::seconds(1));
+	m_FadeTransition.SetFinished();
 }
 
 ApexMain::~ApexMain()
@@ -124,10 +131,7 @@ void ApexMain::Init()
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
 
-	BaseState* startingState = nullptr;
-	if (SKIP_MAIN_MENU) startingState = new GameState();
-	else startingState = new MainMenuState();
-	m_StateManager = new StateManager(startingState);
+	m_StateManager = new StateManager(new LoadingState());
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
@@ -227,7 +231,7 @@ void ApexMain::Run()
 				case sf::Event::KeyPressed:
 				{
 					ApexKeyboard::Key key;
-					if (ApexKeyboard::GetMappedKey(event.key.code, key))
+					if (ApexKeyboard::GetKeyFromVKCode(event.key.code, key))
 					{
 						const bool keyPressed = ApexKeyboard::IsKeyPressed(key);
 						for (size_t i = 0; i < m_KeyListeners.size(); ++i)
@@ -251,7 +255,10 @@ void ApexMain::Run()
 							} break;
 							case ApexKeyboard::DEBUG_PAUSE_EVERYTHING:
 							{
-								DEBUGToggleGamePaused();
+								if (m_StateManager->CurrentState()->GetType() != StateType::LOADING)
+								{
+									DEBUGToggleGamePaused();
+								}
 							} break;
 							case ApexKeyboard::DEBUG_STEP_ONE_PHYSICS_FRAME:
 							{
@@ -281,7 +288,7 @@ void ApexMain::Run()
 					for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 					{
 						ApexKeyboard::Key key;
-						if (ApexKeyboard::GetMappedKey(event.key.code, key))
+						if (ApexKeyboard::GetKeyFromVKCode(event.key.code, key))
 						{
 							if (m_KeyListeners[i] != nullptr)
 							{
@@ -357,6 +364,7 @@ void ApexMain::Tick(double& accumulator)
 		const sf::Time dt = sf::seconds(time);
 
 		m_StateManager->Tick(dt);
+		m_FadeTransition.Tick(dt);
 		if (!m_PhysicsPaused)
 		{
 			m_PhysicsActorManager->Tick(dt);
@@ -381,6 +389,16 @@ void ApexMain::Draw()
 	m_Window->setView(m_Window->getDefaultView());
 	m_CursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*m_Window)));
 	m_Window->draw(m_CursorSprite);
+
+	const sf::Color color = m_FadeTransition.GetCurrentTransitionData().color;
+	if (color != sf::Color::White)
+	{
+		sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
+		rect.setFillColor(color);
+		sf::RenderStates states;
+		states.blendMode = sf::BlendMultiply;
+		m_Window->draw(rect, states);
+	}
 
 	m_Window->display();
 	++m_Frames;
@@ -599,6 +617,16 @@ void ApexMain::SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeTyp
 	m_SlowMoData.SetDuration(duration);
 	m_SlowMoData.SetEaseType(easeType);
 	m_SlowMoData.Restart();
+}
+
+void ApexMain::SetColorFade(sf::Time length, sf::Color from, sf::Color to, ApexTransition::EaseType easeType)
+{
+	TransitionData start;
+	start.color = from;
+	TransitionData end;
+	end.color = to;
+	m_FadeTransition.Create(start, end, length, easeType);
+	m_FadeTransition.Restart();
 }
 
 void ApexMain::DEBUGToggleGamePaused()

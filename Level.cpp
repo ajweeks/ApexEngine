@@ -60,8 +60,6 @@ Level::Level(int levelIndex) :
 	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
 
 	m_SpeechLetterTransition.SetEaseType(ApexTransition::EaseType::LINEAR);
-
-	Reset();
 }
 
 Level::~Level()
@@ -125,9 +123,9 @@ void Level::Reset()
 	}
 	m_Items.clear();
 		
-	m_Items.push_back(new Coin(this, sf::Vector2f(152, 150)));
-	m_Items.push_back(new Coin(this, sf::Vector2f(100, 150)));
-	m_Items.push_back(new Coin(this, sf::Vector2f(91, 250)));
+	m_Items.push_back(new Coin(this, sf::Vector2f(211, 151)));
+	m_Items.push_back(new Coin(this, sf::Vector2f(98, 262)));
+	m_Items.push_back(new Coin(this, sf::Vector2f(61, 250)));
 
 	ClearSpeechShowing();
 	m_HighlightedEntity = nullptr;

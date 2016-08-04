@@ -15,15 +15,14 @@ ApexPauseScreen::ApexPauseScreen(Level* level) :
 	ApexKeyListener(),
 	m_Level(level)
 {
-	const float width = 300.0f;
-	const float height = 120.0f;
-	const sf::Vector2u windowSize = APEX->GetWindowSize();
-	const float centerX = windowSize.x / 2.0f;
+	float width = 300.0f;
+	float height = 120.0f;
+	sf::Vector2u windowSize = APEX->GetWindowSize();
+	float centerX = windowSize.x / 2.0f;
 	float left = centerX - width / 2.0f;
-	const float initialTop = 550.0f;
+	float initialTop = 550.0f;
 	float top = initialTop;
 	float dy = height * 1.5f;
-	const float maxY = windowSize.y - height * 1.5f;
 
 	const unsigned int fontSize = 38;
 	const sf::Font& font = APEX->FontPixelFJ8;
@@ -62,22 +61,25 @@ ApexPauseScreen::ApexPauseScreen(Level* level) :
 
 	// Keybindings screen
 	int vkCode;
-	const int buttonXO = 300;
-	const float smallButtonWidth = 160;
-	const float smallButtonHeight = 70;
+	const int buttonXO = 750;
+	const float smallButtonWidth = 160.0f;
+	const float smallButtonHeight = 70.0f;
+	const float labelYO = 25.0f;
+	const float maxY = windowSize.y - smallButtonHeight * 2.0f;
 	dy = smallButtonHeight * 1.5f;
-	top = 120;
-	left = 220;
+	initialTop = 90.0f;
+	top = initialTop;
+	left = 100.0f;
 	for (size_t i = 0; i < ApexKeyboard::GetNumberOfKeys(); i++)
 	{
 		Keybinding keybinding;
 
 		keybinding.label = sf::Text(ApexKeyboard::GetKeyName(ApexKeyboard::Key(i)), font, fontSize);
-		keybinding.label.setPosition(left, top);
+		keybinding.label.setPosition(left, top + labelYO);
 		keybinding.key = ApexKeyboard::Key(i);
-		ApexKeyboard::GetUnMappedKey(keybinding.key, vkCode);
+		ApexKeyboard::GetVKCodeFromKey(keybinding.key, vkCode);
 		keybinding.button = new ApexButton(left + buttonXO, top, smallButtonWidth, smallButtonHeight, 
-			ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)));
+			ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)), 42);
 		
 		m_Keybindings.push_back(keybinding);
 
@@ -85,8 +87,8 @@ ApexPauseScreen::ApexPauseScreen(Level* level) :
 
 		if (top > maxY) 
 		{
-			top = 120;
-			left += width * 3.0f;
+			top = initialTop;
+			left += 975.0f;
 		}
 	}
 
@@ -226,13 +228,17 @@ void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 			bgRect.setFillColor(sf::Color(25, 25, 30, 100));
 			target.draw(bgRect);
 
-			sf::RectangleShape centerRect(sf::Vector2f(200, 100));
-			centerRect.setPosition(renderTargetSize.x / 2.0f - 50, renderTargetSize.y / 2.0f);
+			sf::RectangleShape centerRect(sf::Vector2f(500, 145));
+			centerRect.setPosition(renderTargetSize.x / 2.0f - 250, renderTargetSize.y / 2.0f);
 			centerRect.setFillColor(sf::Color(165, 230, 130));
 			target.draw(centerRect, states);
 
-			sf::Text text("Press any key to assign to " + m_Keybindings[m_KeybindingAssigningIndex].key, APEX->FontPixelFJ8);
-			text.setPosition(renderTargetSize.x / 2.0f - 20, renderTargetSize.y / 2.0f + 10);
+			int vkCode;
+			ApexKeyboard::GetVKCodeFromKey(ApexKeyboard::PAUSE, vkCode);
+			sf::Text text("Press any key to\nassign to " + ApexKeyboard::GetKeyName(m_Keybindings[m_KeybindingAssigningIndex].key) + 
+			"\n(" + ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)) + " to cancel)", APEX->FontPixelFJ8);
+			text.setPosition(renderTargetSize.x / 2.0f - 240, renderTargetSize.y / 2.0f + 20);
+			text.setColor(sf::Color::Black);
 			target.draw(text, states);
 		}
 	} break;
@@ -287,15 +293,22 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		{
 			if (m_KeybindingAssigningIndex != -1)
 			{
-				int vkCode;
-				if (ApexKeyboard::GetUnMappedKey(key, vkCode))
+				if (key == ApexKeyboard::PAUSE)
 				{
-					for (size_t i = 0; i < m_Keybindings.size(); i++)
+					m_KeybindingAssigningIndex = -1;
+				}
+				else
+				{
+					int vkCode;
+					if (ApexKeyboard::GetVKCodeFromKey(key, vkCode))
 					{
-						if (m_Keybindings[i].key == key)
+						for (size_t i = 0; i < m_Keybindings.size(); i++)
 						{
-							AssignKeybinding(m_Keybindings[i], vkCode);
-							return true;
+							if (m_Keybindings[i].key == key)
+							{
+								AssignKeybinding(m_Keybindings[i], vkCode);
+								return true;
+							}
 						}
 					}
 				}
@@ -330,7 +343,6 @@ void ApexPauseScreen::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 
-#include "windows.h"
 void ApexPauseScreen::AssignKeybinding(Keybinding& keybinding, int vkCode)
 {
 	ApexKeyboard::MapKey(keybinding.key, vkCode);

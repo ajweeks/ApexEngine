@@ -2,6 +2,7 @@
 
 #include "StateManager.h"
 #include "FloatTransition.h"
+#include "TransformationTransition.h"
 
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\Font.hpp>
@@ -82,6 +83,8 @@ public:
 
 	void SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType); // Call this with the amount of time to be in slow mo for
 
+	void SetColorFade(sf::Time length, sf::Color from, sf::Color to, ApexTransition::EaseType easeType = ApexTransition::EaseType::LINEAR);
+
 	// Box2D overriden methods
 	virtual void BeginContact(b2Contact* contact);
 	virtual void EndContact(b2Contact* contact);
@@ -100,7 +103,6 @@ private:
 	static const std::string WINDOW_TITLE;
 
 	static const bool USE_V_SYNC;
-	static const bool SKIP_MAIN_MENU;
 
 	static ApexMain* m_Singleton;
 
@@ -135,4 +137,6 @@ private:
 	std::vector<ApexKeyListener*> m_KeyListeners;
 	std::vector<ApexMouseListener*> m_MouseListeners;
 	std::vector<ApexWindowListener*> m_WindowListeners;
+
+	TransformationTransition m_FadeTransition;
 };

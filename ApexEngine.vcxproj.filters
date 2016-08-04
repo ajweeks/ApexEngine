@@ -194,6 +194,9 @@
     <ClCompile Include="Coin.cpp">
       <Filter>Source Files\Level\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="LoadingState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -357,6 +360,9 @@
     </ClInclude>
     <ClInclude Include="Coin.h">
       <Filter>Source Files\Level\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingState.h">
+      <Filter>Source Files\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

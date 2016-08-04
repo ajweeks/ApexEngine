@@ -9,7 +9,7 @@
 class ApexButton : public ApexMouseListener
 {
 public:
-	ApexButton(float left, float top, float width, float height, std::string text);
+	ApexButton(float left, float top, float width, float height, std::string text, unsigned int characterSize = 48);
 	virtual ~ApexButton();
 
 	ApexButton(const ApexButton&) = delete;

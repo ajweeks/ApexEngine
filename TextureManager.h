@@ -7,6 +7,7 @@ class TextureManager
 public:
 	enum Texture
 	{
+		LIQWIDICE_GAMES_LOGO_SCREEN,
 		GENERAL_TILES,
 		DUST_PARTICLE,
 		PLAYER,

@@ -156,7 +156,7 @@ bool ApexKeyboard::IsKeyReleased(Key key)
 	return false;
 }
 
-bool ApexKeyboard::GetMappedKey(int vkCode, Key& key)
+bool ApexKeyboard::GetKeyFromVKCode(int vkCode, Key& key)
 {
 	std::map<Key, int>::iterator iter;
 	for (iter = m_KeysToVKCodesMap.begin(); iter != m_KeysToVKCodesMap.end(); ++iter)
@@ -170,7 +170,7 @@ bool ApexKeyboard::GetMappedKey(int vkCode, Key& key)
 	return false;
 }
 
-bool ApexKeyboard::GetUnMappedKey(Key key, int& vkCode)
+bool ApexKeyboard::GetVKCodeFromKey(Key key, int& vkCode)
 {
 	if (m_KeysToVKCodesMap.find(key) != m_KeysToVKCodesMap.end())
 	{
@@ -191,14 +191,14 @@ std::string ApexKeyboard::GetKeyName(Key key)
 {
 	switch (key)
 	{
-	case Key::MOVE_LEFT:
-		return "Move Left";
-	case Key::MOVE_RIGHT:
-		return "Move Right";
 	case Key::MOVE_UP:
 		return "Move Up";
+	case Key::MOVE_LEFT:
+		return "Move Left";
 	case Key::MOVE_DOWN:
 		return "Move Down";
+	case Key::MOVE_RIGHT:
+		return "Move Right";
 	case Key::PAUSE:
 		return "Pause";
 	case Key::INTERACT:

@@ -17,10 +17,10 @@ class TransformationTransition : public ApexTransition
 {
 public:
 	TransformationTransition();
-	TransformationTransition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
+	TransformationTransition(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType = EaseType::LINEAR);
 	virtual ~TransformationTransition();
 
-	void Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType);
+	void Create(TransitionData start, TransitionData end, sf::Time totalTime, EaseType easeType = EaseType::LINEAR);
 
 	virtual void Tick(sf::Time elapsed) override;
 	virtual TransitionData GetCurrentTransitionData();

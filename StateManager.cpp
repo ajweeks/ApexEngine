@@ -1,3 +1,4 @@
+
 #include "StateManager.h"
 
 StateManager::StateManager(BaseState * startingState)

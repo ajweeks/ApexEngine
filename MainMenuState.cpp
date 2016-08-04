@@ -26,6 +26,8 @@ MainMenuState::MainMenuState()
 	m_VignetteShader.setParameter("u_resolution", windowSize);
 	m_VignetteShader.setParameter("u_bounds", 0.0f, 0.0f, windowSize.x, windowSize.y);
 
+	m_LogoSprite.setTexture(*TextureManager::GetTexture(TextureManager::LIQWIDICE_GAMES_LOGO_SCREEN));
+
 	m_TitleColorSprite.setTexture(*TextureManager::GetTexture(TextureManager::TITLE_COLOR));
 	m_TitleShadowSprite.setTexture(*TextureManager::GetTexture(TextureManager::TITLE_SHADOW));
 	const sf::Vector2u titleSize = m_TitleColorSprite.getTexture()->getSize();
@@ -33,6 +35,8 @@ MainMenuState::MainMenuState()
 	m_TitleColorSprite.setPosition(titlePos);
 	titlePos.y += 1.5f;
 	m_TitleShadowSprite.setPosition(titlePos);
+
+	APEX->SetColorFade(sf::seconds(1.5f), sf::Color::Black, sf::Color::White);
 }
 
 MainMenuState::~MainMenuState()

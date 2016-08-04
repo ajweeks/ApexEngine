@@ -11,14 +11,13 @@ class ApexKeyboard
 public:
 	enum Key
 	{
-		MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN,
+		MOVE_UP, MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT,
 		PAUSE, INTERACT, SCREENSHOT,
 		DEBUG_TOGGLE_INFO_OVERLAY, DEBUG_TOGGLE_LIGHT_EDITOR, DEBUG_RESTART, 
 		DEBUG_TOGGLE_PHYSICS_OVERLAY, DEBUG_STEP_ONE_PHYSICS_FRAME, DEBUG_PAUSE_EVERYTHING,
 
 		NONE
 	};
-
 
 	static void LoadKeybindingsFromFile();
 	static void SaveKeybindingsToFile();
@@ -30,8 +29,8 @@ public:
 	static bool IsKeyPressed(Key key);
 	static bool IsKeyReleased(Key key);
 
-	static bool GetMappedKey(int vkCode, Key& key);
-	static bool GetUnMappedKey(Key key, int& vkCode);
+	static bool GetKeyFromVKCode(int vkCode, Key& key);
+	static bool GetVKCodeFromKey(Key key, int& vkCode);
 
 	static void MapKey(Key key, int vkCode);
 
@@ -44,6 +43,7 @@ private:
 	ApexKeyboard();
 	virtual ~ApexKeyboard();
 
+	// TODO: Allow mouse/controller input to replace certain keyboard keys
 	static void StoreStringData(const std::string& fileContents);
 	static int FindVKCode(const nlohmann::json& keybindings, const std::string& tagName, sf::Keyboard::Key defaultKey);
 

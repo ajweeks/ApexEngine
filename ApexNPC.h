@@ -22,7 +22,6 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states) override;
 
 	std::string GetCurrentSpeech() const;
-	void Reply(int responseIndex);
 
 	virtual void Interact() override;
 

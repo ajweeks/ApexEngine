@@ -4,7 +4,7 @@
       "name": "Charles",
       "statements": [
         { "q": "Hi there!" },
-        { "q": "I'm an old man![END]" },
+        { "q": "I'm an old man!" },
         { "q":  "Wow, you're a talkative one![END]"},
         { "q": "I don't have much to say...[END]"},
         {

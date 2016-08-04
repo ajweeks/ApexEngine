@@ -216,6 +216,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="LoadingState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="Minimap.cpp">
       <SubType>
@@ -338,6 +339,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="LoadingState.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="Minimap.h">
       <SubType>

@@ -4,7 +4,7 @@
 #include "ApexMouse.h"
 #include <SFML\Graphics\Shader.hpp>
 
-ApexButton::ApexButton(float left, float top, float width, float height, std::string text) :
+ApexButton::ApexButton(float left, float top, float width, float height, std::string text, unsigned int characterSize) :
 	ApexMouseListener()
 {
 	m_BoundingRect = sf::RectangleShape(sf::Vector2f(width, height));
@@ -16,7 +16,7 @@ ApexButton::ApexButton(float left, float top, float width, float height, std::st
 	m_StringOptions.push_back(text);
 	m_CurrentStringIndex = 0;
 	m_Text = sf::Text(m_StringOptions[m_CurrentStringIndex], APEX->FontOpenSans);
-	m_Text.setCharacterSize(48);
+	m_Text.setCharacterSize(characterSize);
 	m_Text.setStyle(sf::Text::Bold);
 	m_Text.setPosition(left + width / 2.0f - 25 * text.length() / 2.0f, top + height / 2.0f - 24.0f);
 	m_TextColour = sf::Color(80, 15, 45);
