@@ -1,13 +1,14 @@
 
 #include "Player.h"
 #include "ApexKeyboard.h"
-#include "PhysicsActor.h"
+#include "Tile.h"
 #include "World.h"
 #include "enumerations.h"
 #include "ApexMain.h"
 #include "TextureManager.h"
 #include "AmmoDrop.h"
 #include "ApexAudio.h"
+#include "PhysicsActor.h"
 
 const float Player::VEL = 550000.0f;
 
@@ -23,7 +24,7 @@ Player::Player(World* world) :
 
 	b2Filter collisionFilter;
 	collisionFilter.categoryBits = ActorID::PLAYER;
-	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::SHEEP;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::SHEEP;
 	m_Actor->SetCollisionFilter(collisionFilter);
 
 	ApexSpriteSheet::Sequence walkingSequence;
@@ -72,6 +73,11 @@ void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	{
 		ApexAudio::PlaySoundEffect(ApexAudio::Sound::COIN_PICKUP);
 	} break;
+	case ActorID::DOOR:
+	{
+		Tile* tile = static_cast<Tile*>(otherActor->GetUserPointer());
+		m_BuildingIndexToEnterNextFrame = tile->GetDoorID();
+	} break;
 	}
 }
 
@@ -110,6 +116,13 @@ void Player::OnKeyRelease(ApexKeyboard::Key key)
 
 void Player::Tick(sf::Time elapsed)
 {
+	if (m_BuildingIndexToEnterNextFrame != -1)
+	{
+		m_World->EnterBuilding(m_BuildingIndexToEnterNextFrame);
+		m_BuildingIndexToEnterNextFrame = -1;
+		return;
+	}
+
 	if (!m_World->IsShowingSpeechBubble())
 	{
 		HandleMovement(elapsed);

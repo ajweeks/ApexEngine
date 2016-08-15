@@ -59,4 +59,6 @@ private:
 	World* m_World = nullptr;
 
 	ApexSpriteSheet m_SpriteSheet;
+
+	int m_BuildingIndexToEnterNextFrame = -1;
 };

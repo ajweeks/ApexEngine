@@ -2,6 +2,7 @@
 
 #include "TileSet.h"
 #include "ApexContactListener.h"
+#include "Tile.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\VertexArray.hpp>
@@ -36,13 +37,12 @@ public:
 
 	const std::string& GetName() const;
 
-	static Type StringToType(std::string string);
+	static Type ParseLayerTypeString(std::string layerTypeString);
 
 private:
 	//void CreatePhysicsActors();
 
-	std::vector<int> m_Tiles;
-	std::vector<LevelTile*> m_LevelTiles;
+	std::vector<Tile*> m_Tiles;
 	sf::VertexArray m_Verticies;
 
 	std::string m_Name;
@@ -51,6 +51,7 @@ private:
 	int m_Height;
 	Type m_Type;
 	float m_Opacity;
+
 	TileSet* m_TileSet;
 
 	sf::Time m_Elapsed;

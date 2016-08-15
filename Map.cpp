@@ -3,6 +3,7 @@
 #include "Layer.h"
 #include "TileSet.h"
 #include "TextureManager.h"
+#include "Tile.h"
 
 #include <JSON\json.hpp>
 
@@ -60,52 +61,111 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 		std::cout << "More than one tile set in map! Please only use one!" << std::endl;
 		return;
 	}
-	int tileSetTileSize = tileSets[0]["tilewidth"];
-	int tileSetSpacing = tileSets[0]["spacing"];
-	int tileSetMargin = tileSets[0]["margin"];
-	int tileCount = tileSets[0]["tilecount"];
-	json tilePropertiesObject = tileSets[0]["tileproperties"];
-	std::map<int, bool> solidTileIDs;
+	const int tileSetTileSize = tileSets[0]["tilewidth"];
+	const int tileSetSpacing = tileSets[0]["spacing"];
+	const int tileSetMargin = tileSets[0]["margin"];
+	const int tileCount = tileSets[0]["tilecount"];
+	json tileProperties = tileSets[0]["tileproperties"];
+
+	std::vector<Tile*> tileAtlas;
+	tileAtlas.reserve(tileCount);
 	for (int i = 0; i < tileCount; ++i)
 	{
-		if (tilePropertiesObject.find(std::to_string(i)) != tilePropertiesObject.end())
+		const int ID = i -1;
+		int doorID = -1;
+		bool solid = false;
+		const std::string tileIndexString = std::to_string(ID);
+		if (tileProperties.find(tileIndexString) != tileProperties.end())
 		{
-			json currentTile = tilePropertiesObject[std::to_string(i)];
-			solidTileIDs[i] = currentTile["solid"].get<bool>();
+			const json currentTile = tileProperties[tileIndexString];
+			if (currentTile.find("solid") != currentTile.end())
+			{
+				solid = currentTile["solid"].get<bool>();
+			}
+			if (currentTile.find("id") != currentTile.end())
+			{
+				const std::string tileIDString = currentTile["id"].get<std::string>();
+				std::string extraChars;
+				if (StringBeginsWith(tileIDString, "door", extraChars))
+				{
+					doorID = stoi(extraChars);
+				}
+				if (StringBeginsWith(tileIDString, "building", extraChars))
+				{
+					// TODO: "Inform" tiles that they are part of a building (?)
+					//int buildingID = stoi(extraChars);
+				}
+				if (StringBeginsWith(tileIDString, "bed", extraChars))
+				{
+					// TODO: "Inform" tiles that they are part of a bed (?)
+				}
+			}
 		}
+		Tile* tile = new Tile(ID, solid, doorID);
+		tileAtlas.push_back(tile);
 	}
+
 	m_TileSet = new TileSet(TextureManager::GetTexture(TextureManager::GENERAL_TILES), tileSetTileSize, tileSetMargin, tileSetSpacing);
 
 	json layers = tileMap["layers"];
 	for (json::iterator i = layers.begin(); i != layers.end(); ++i)
 	{
 		json currentLayer = *i;
-		if (currentLayer["type"].get<std::string>().compare("objectgroup") == 0)
+		const std::string layerTypeString = currentLayer["type"].get<std::string>();
+		const Layer::Type layerType = Layer::ParseLayerTypeString(layerTypeString);
+		const std::string layerName = currentLayer["name"];
+		const bool layerVisible = currentLayer["visible"];
+		const float layerOpacity = currentLayer["opacity"];
+		const int layerWidth = currentLayer["width"];
+		const int layerHeight = currentLayer["height"];
+
+		switch (layerType)
+		{
+		case Layer::Type::TILE:
+		{
+			const std::vector<int> tileIDs = currentLayer["data"];
+			std::vector<Tile*> tiles;
+			tiles.reserve(tileIDs.size());
+			for (size_t i = 0; i < tileIDs.size(); ++i)
+			{
+				const int id = tileIDs[i];
+				Tile* tile = new Tile(id, tileAtlas[id]->IsSolid(), tileAtlas[id]->GetDoorID());
+				tiles.push_back(tile);
+			}
+
+			Layer* newLayer = new Layer(world, tiles, m_TileSet, layerName, layerVisible,
+				layerOpacity, layerType, layerWidth, layerHeight, contactListener);
+
+			if (layerName.compare("foreground") == 0) m_ForegroundLayers.push_back(newLayer);
+			else m_BackgroundLayers.push_back(newLayer);
+		} break;
+		case Layer::Type::OBJECT:
+		{
+			// Skip image layers for now
+		} break;
+		case Layer::Type::IMAGE:
 		{
 			// Skip object layers for now
-			continue;
 		}
-
-		std::vector<int> layerData = currentLayer["data"];
-		std::string layerName = currentLayer["name"];
-		Layer::Type layerType = Layer::StringToType(currentLayer["type"]);
-		bool layerVisible = currentLayer["visible"];
-		float layerOpacity = currentLayer["opacity"];
-		int layerWidth = currentLayer["width"];
-		int layerHeight = currentLayer["height"];
-
-		Layer* newLayer = new Layer(level, layerData, m_TileSet, solidTileIDs, layerName, layerVisible,
-			layerOpacity, layerType, layerWidth, layerHeight, contactListener);
-
-		if (layerName.compare("foreground") == 0) m_ForegroundLayers.push_back(newLayer);
-		else m_BackgroundLayers.push_back(newLayer);
+		case Layer::Type::NONE:
+		default:
+		{
+		} break;
+		}
 	}
+
 	std::string orientation = tileMap["orientation"];
 	if (orientation.compare("orthogonal") != 0)
 	{
 		std::cout << "Non-orthogonal map passed in! The type specified was \"" << orientation << "\"!" << std::endl;
 		return;
 	}
+
+	for (size_t i = 0; i < tileAtlas.size(); ++i)
+	{
+		delete tileAtlas[i];
+	}
+	tileAtlas.clear();
 }
 
 Map::~Map()
@@ -153,6 +213,20 @@ void Map::DrawBackground(sf::RenderTarget& target, sf::RenderStates states)
 int Map::GetTileSize() const
 {
 	return m_TileSet->m_TileSize;
+}
+
+bool Map::StringBeginsWith(const std::string& string, const std::string& begin, std::string& extraChars)
+{
+	if (string.length() >= begin.length() &&
+		string.substr(0, begin.length()).compare(begin) == 0)
+	{
+		if (string.length() > begin.length() + 1)
+		{
+			extraChars = string.substr(begin.length() + 1);
+		}
+		return true;
+	}
+	return false;
 }
 
 int Map::GetTilesWide() const

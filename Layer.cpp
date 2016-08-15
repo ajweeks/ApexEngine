@@ -1,7 +1,7 @@
 
 #include "Layer.h"
 #include "PhysicsActor.h"
-#include "LevelTile.h"
+#include "Building.h"
 
 Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 	std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener) :
@@ -22,7 +22,7 @@ Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 			currentQuad[2].position = sf::Vector2f((x+1) * tileSize, (y+1) * tileSize);
 			currentQuad[3].position = sf::Vector2f(x * tileSize, (y+1) * tileSize);
 
-			const int tileSrc = m_Tiles[tileIndex] - 1;
+			const int tileSrc = m_Tiles[tileIndex]->GetID() - 1;
 			if (tileSrc == -1)
 			{
 				currentQuad[0].color = sf::Color::Transparent;
@@ -40,19 +40,28 @@ Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 				currentQuad[2].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, (tileSrcY + 1) * tileSize);
 				currentQuad[3].texCoords = sf::Vector2f(tileSrcX * tileSize, (tileSrcY + 1) * tileSize);
 
-				if (solidTileIDs[tileSrc])
+				if (m_Tiles[tileIndex]->IsSolid())
 				{
-					LevelTile* newTile = new LevelTile(level, sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), ActorID::WALL);
-					PhysicsActor* newActor = newTile->GetPhysicsActor();
+					PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), b2BodyType::b2_staticBody);
 					newActor->AddBoxFixture(tileSize, tileSize);
+					newActor->SetUserPointer(m_Tiles[tileIndex]);
 					newActor->AddContactListener(contactListener);
 
 					b2Filter collisionFilter;
-					collisionFilter.categoryBits = ActorID::WALL;
+					if (m_Tiles[tileIndex]->IsDoorTile())
+					{
+						collisionFilter.categoryBits = ActorID::DOOR;
+						newActor->SetUserData(ActorID::DOOR);
+					}
+					else
+					{
+						collisionFilter.categoryBits = ActorID::WALL;
+						newActor->SetUserData(ActorID::WALL);
+					}
 					collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
 					newActor->SetCollisionFilter(collisionFilter);
 
-					m_LevelTiles.push_back(newTile);
+					m_Tiles[tileIndex]->SetPhysicsActor(newActor);
 				}
 			}
 		}
@@ -61,13 +70,11 @@ Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 
 Layer::~Layer()
 {
-	for (size_t i = 0; i < m_LevelTiles.size(); i++)
+	for (size_t i = 0; i < m_Tiles.size(); ++i)
 	{
-		if (m_LevelTiles[i] != nullptr)
-		{
-			delete m_LevelTiles[i];
-		}
+		delete m_Tiles[i];
 	}
+	m_Tiles.clear();
 }
 
 // TODO: Finish implementing this
@@ -159,7 +166,7 @@ const std::string& Layer::GetName() const
 	return m_Name;
 }
 
-Layer::Type Layer::StringToType(std::string string)
+Layer::Type Layer::ParseLayerTypeString(std::string string)
 {
 	if (string.compare("tilelayer") == 0) return Type::TILE;
 	else if (string.compare("imagelayer") == 0) return Type::IMAGE;

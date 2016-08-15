@@ -189,6 +189,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Building.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <SubType>
       </SubType>
@@ -310,6 +314,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="ApexWindowListener.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Building.h">
       <SubType>
       </SubType>
     </ClInclude>

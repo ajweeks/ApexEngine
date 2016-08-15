@@ -21,5 +21,6 @@ enum ActorID
 	SHEEP		= (1 << 4),
 	AMMO		= (1 << 5),
 	NPC			= (1 << 6),
-	COIN		= (1 << 7)
+	COIN		= (1 << 7),
+	DOOR		= (1 << 8)
 };
