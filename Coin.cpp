@@ -2,10 +2,10 @@
 #include "Coin.h"
 #include "TextureManager.h"
 #include "PhysicsActor.h"
-#include "Level.h"
+#include "World.h"
 
-Coin::Coin(Level * level, sf::Vector2f position) :
-	Item(level, position, ActorID::COIN, this)
+Coin::Coin(World* world, sf::Vector2f position) :
+	Item(world, position, ActorID::COIN, this)
 {
 	m_Actor->AddBoxFixture(16, 16);
 	m_Actor->SetSensor(true);
@@ -36,7 +36,7 @@ void Coin::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	{
 	case ActorID::PLAYER:
 	{
-		m_Level->AddItemToBeRemoved(this);
+		m_World->AddItemToBeRemoved(this);
 	} break;
 	}
 }

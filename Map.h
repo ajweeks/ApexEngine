@@ -9,17 +9,17 @@
 #include <vector>
 
 class Layer;
-class Level;
+class World;
 struct TileSet;
 
 class Map
 {
 public:
 	Map();
-	Map(Level* level, std::string filePath, ApexContactListener* contactListener);
+	Map(World* world, std::string filePath, ApexContactListener* contactListener);
 	virtual ~Map();
 
-	void Create(Level* level, std::string filePath, ApexContactListener* contactListener);
+	void Create(World* world, std::string filePath, ApexContactListener* contactListener);
 
 	Map(const Map&) = delete;
 	Map& operator=(const Map&) = delete;

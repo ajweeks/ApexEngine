@@ -8,7 +8,7 @@
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 
-class Level;
+class World;
 
 class Player : public Entity, public ApexKeyListener
 {
@@ -22,7 +22,7 @@ public:
 		LEFT, RIGHT
 	};
 
-	Player(Level* level);
+	Player(World* world);
 	virtual ~Player();
 
 	void Tick(sf::Time elapsed);
@@ -56,7 +56,7 @@ private:
 	sf::Vector2f m_IntialPos;
 	float m_SecondsElapsed = 0.0f;
 
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 
 	ApexSpriteSheet m_SpriteSheet;
 };

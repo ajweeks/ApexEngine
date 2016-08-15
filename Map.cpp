@@ -14,12 +14,12 @@ Map::Map()
 {
 }
 
-Map::Map(Level* level, std::string filePath, ApexContactListener* contactListener)
+Map::Map(World* world, std::string filePath, ApexContactListener* contactListener)
 {
-	Create(level, filePath, contactListener);
+	Create(world, filePath, contactListener);
 }
 
-void Map::Create(Level* level, std::string filePath, ApexContactListener* contactListener)
+void Map::Create(World* world, std::string filePath, ApexContactListener* contactListener)
 {
 	std::ifstream fileInStream;
 

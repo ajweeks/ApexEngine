@@ -42,6 +42,9 @@
     <Filter Include="Source Files\Level\Entity\Weapon">
       <UniqueIdentifier>{00a1836c-0490-42bf-902d-1e022d6a1f54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Level\World">
+      <UniqueIdentifier>{7106c2a4-e6b5-4854-b717-ef7f30fc5ee8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -70,9 +73,6 @@
     </ClCompile>
     <ClCompile Include="ApexMouse.cpp">
       <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>Source Files\Level</Filter>
@@ -197,6 +197,9 @@
     <ClCompile Include="LoadingState.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumerations.h">
@@ -225,9 +228,6 @@
     </ClInclude>
     <ClInclude Include="ApexMouse.h">
       <Filter>Source Files\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Source Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="logo.h">
       <Filter>Source Files</Filter>
@@ -363,6 +363,9 @@
     </ClInclude>
     <ClInclude Include="LoadingState.h">
       <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Source Files\Level\World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

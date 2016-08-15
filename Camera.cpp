@@ -1,7 +1,7 @@
 
 #include "Camera.h"
 #include "Player.h"
-#include "Level.h"
+#include "World.h"
 
 const float Camera::DEFAULT_ZOOM = 2.5f;
 const float Camera::ACCELERATION = 4.0f;
@@ -25,11 +25,11 @@ Camera::~Camera()
 {
 }
 
-void Camera::Tick(sf::Time elapsed, Level* level)
+void Camera::Tick(sf::Time elapsed, World* world)
 {
 	const float dt = elapsed.asSeconds();
 	
-	Player* player = level->GetPlayer();
+	Player* player = world->GetPlayer();
 	sf::Vector2f playerPos = player->GetPosition();
 
 	sf::View newView(m_View);
@@ -49,7 +49,7 @@ void Camera::Tick(sf::Time elapsed, Level* level)
 	const float acc = ACCELERATION * dt;
 	newView.move(dx * acc, dy * acc);
 
-	BoundsCheck(newView, level);
+	BoundsCheck(newView, world);
 	m_View = newView;
 }
 
@@ -84,10 +84,10 @@ void Camera::OnWindowResize(sf::Vector2u windowSize)
 	m_View.setSize(windowSize.x / m_CurrentZoom, windowSize.y / m_CurrentZoom);
 }
 
-void Camera::BoundsCheck(sf::View& view, Level* level)
+void Camera::BoundsCheck(sf::View& view, World* world)
 {
-	const float levelWidth = float(level->GetWidth());
-	const float levelHeight = float(level->GetHeight());
+	const float worldWidth = float(world->GetWidth());
+	const float worldHeight = float(world->GetHeight());
 
 	const float halfCameraWidth = view.getSize().x / 2.0f;
 	const float halfCameraHeight = view.getSize().y / 2.0f;
@@ -96,17 +96,17 @@ void Camera::BoundsCheck(sf::View& view, Level* level)
 	{
 		view.setCenter(halfCameraWidth, view.getCenter().y);
 	}
-	if (view.getCenter().x + halfCameraWidth > levelWidth)
+	if (view.getCenter().x + halfCameraWidth > worldWidth)
 	{
-		view.setCenter(levelWidth - halfCameraWidth, view.getCenter().y);
+		view.setCenter(worldWidth - halfCameraWidth, view.getCenter().y);
 	}
 
 	if (view.getCenter().y - halfCameraHeight < 0.0f)
 	{
 		view.setCenter(view.getCenter().x, halfCameraHeight);
 	}
-	if (view.getCenter().y + halfCameraHeight > levelHeight)
+	if (view.getCenter().y + halfCameraHeight > worldHeight)
 	{
-		view.setCenter(view.getCenter().x, levelHeight - halfCameraHeight);
+		view.setCenter(view.getCenter().x, worldHeight - halfCameraHeight);
 	}
 }

@@ -5,7 +5,7 @@
 class AmmoDrop : public Item
 {
 public:
-	AmmoDrop(Level* level, sf::Vector2f position, int bulletCount);
+	AmmoDrop(World* world, sf::Vector2f position, int bulletCount);
 	virtual ~AmmoDrop();
 
 	AmmoDrop(const AmmoDrop&) = delete;

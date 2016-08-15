@@ -4,7 +4,7 @@
 
 #include <SFML\Graphics\ConvexShape.hpp>
 
-class Level;
+class World;
 
 class GameState : public BaseState
 {
@@ -18,8 +18,8 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target);
 
-	Level* GetLevel();
-	bool IsLevelPaused() const;
+	World* GetWorld();
+	bool IsWorldPaused() const;
 
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
@@ -29,7 +29,7 @@ public:
 	void Reset();
 
 private:
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 
 };
 

@@ -8,7 +8,7 @@
 class Sheep : public Mob
 {
 public:
-	Sheep(Level* level, sf::Vector2f position);
+	Sheep(World* world, sf::Vector2f position);
 	virtual ~Sheep();
 
 	Sheep(const Sheep&) = delete;

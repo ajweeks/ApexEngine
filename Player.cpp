@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "ApexKeyboard.h"
 #include "PhysicsActor.h"
-#include "Level.h"
+#include "World.h"
 #include "enumerations.h"
 #include "ApexMain.h"
 #include "TextureManager.h"
@@ -11,10 +11,10 @@
 
 const float Player::VEL = 550000.0f;
 
-Player::Player(Level* level) :
-	Entity(level, sf::Vector2f(), ActorID::PLAYER, this),
+Player::Player(World* world) :
+	Entity(world, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
-	m_Level(level),
+	m_World(world),
 	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32),
 	m_IntialPos(90.0f, 150.0f)
 {
@@ -94,7 +94,7 @@ bool Player::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		case ApexKeyboard::MOVE_UP:
 		case ApexKeyboard::MOVE_DOWN:
 		{
-			if (!m_Level->IsShowingSpeechBubble())
+			if (!m_World->IsShowingSpeechBubble())
 			{
 				m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
 			}
@@ -110,7 +110,7 @@ void Player::OnKeyRelease(ApexKeyboard::Key key)
 
 void Player::Tick(sf::Time elapsed)
 {
-	if (!m_Level->IsShowingSpeechBubble())
+	if (!m_World->IsShowingSpeechBubble())
 	{
 		HandleMovement(elapsed);
 	}
@@ -157,14 +157,14 @@ void Player::HandleMovement(sf::Time elapsed)
 	//ClampPosition();
 }
 
-// Bounds check against the edges of the level (in theory shouldn't be neccessary, the levels
+// Bounds check against the edges of the world (in theory shouldn't be neccessary, the world
 // should have 4 containing walls)
 void Player::ClampPosition()
 {
 	const float left = 0;
-	const float right = float(m_Level->GetWidth()) - 50.0f;
+	const float right = float(m_World->GetWidth()) - 50.0f;
 	const float top = 0;
-	const float bottom = float(m_Level->GetHeight()) - 50.0f;
+	const float bottom = float(m_World->GetHeight()) - 50.0f;
 	if (m_Actor->GetPosition().x < left)
 	{
 		m_Actor->SetXPosition(left);

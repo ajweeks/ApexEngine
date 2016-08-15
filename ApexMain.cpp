@@ -276,7 +276,7 @@ void ApexMain::Run()
 						GameState* gameState = dynamic_cast<GameState*>(m_StateManager->CurrentState());
 						if (gameState)
 						{
-							if (gameState->IsLevelPaused())
+							if (gameState->IsWorldPaused())
 							{
 								gameState->OnUnmappedKeypress(event.key);
 							}
@@ -642,7 +642,7 @@ void ApexMain::DEBUGToggleGamePaused()
 		if (currentState->GetType() == StateType::GAME)
 		{
 			GameState* gameState = static_cast<GameState*>(currentState);
-			if (!gameState->IsLevelPaused())
+			if (!gameState->IsWorldPaused())
 			{
 				m_PhysicsPaused = false;
 			}

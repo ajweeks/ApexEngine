@@ -10,12 +10,12 @@
 #include <Box2D\Dynamics\b2Body.h>
 
 class PhysicsActor;
-class Level;
+class World;
 
 class Entity : public ApexContactListener
 {
 public:
-	Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer = nullptr, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
+	Entity(World* world, sf::Vector2f position, ActorID id, void* userPointer = nullptr, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
 	virtual ~Entity();
 
 	Entity& operator=(const Entity&) = delete;
@@ -31,7 +31,7 @@ public:
 	PhysicsActor* GetPhysicsActor() const;
 
 protected:
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 	PhysicsActor* m_Actor = nullptr;
 	sf::Sprite m_ShadowSprite;
 

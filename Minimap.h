@@ -6,7 +6,7 @@
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\Rect.hpp>
 
-class Level;
+class World;
 
 class Minimap : public ApexWindowListener
 {
@@ -16,7 +16,7 @@ public:
 		NE, NW, SE, SW
 	};
 
-	Minimap(Level* level, sf::Vector2f size, Location location = Location::NE);
+	Minimap(World* world, sf::Vector2f size, Location location = Location::NE);
 	virtual ~Minimap();
 
 	Minimap(const Minimap&) = delete;
@@ -34,7 +34,7 @@ private:
 	static const float EDGE_WIDTH;
 	static const float MARGIN;
 
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 	sf::FloatRect m_Bounds;
 	Location m_Location;
 

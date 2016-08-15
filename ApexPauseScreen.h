@@ -6,7 +6,7 @@
 #include <SFML\Graphics\Text.hpp>
 #include <SFML\System\Time.hpp>
 
-class Level;
+class World;
 class ApexButton;
 class ApexSlider;
 
@@ -18,7 +18,7 @@ public:
 		MAIN, OPTIONS, KEYBINDINGS
 	};
 
-	ApexPauseScreen(Level* level);
+	ApexPauseScreen(World* world);
 	virtual ~ApexPauseScreen();
 
 	ApexPauseScreen(const ApexPauseScreen&) = delete;
@@ -65,7 +65,7 @@ private:
 	std::vector<Keybinding> m_Keybindings;
 	int m_KeybindingAssigningIndex = -1;
 
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 
 	Screen m_CurrentScreenShowing;
 

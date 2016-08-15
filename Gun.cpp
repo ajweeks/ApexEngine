@@ -3,7 +3,7 @@
 #include "ApexMain.h"
 #include "Bullet.h"
 #include "PhysicsActor.h"
-#include "Level.h"
+#include "World.h"
 #include "ApexMouse.h"
 #include "ApexAudio.h"
 #include "Player.h"
@@ -11,11 +11,11 @@
 
 const float Gun::RELOAD_SECONDS = 0.8f;
 
-Gun::Gun(Level* level, sf::Vector2f position) :
-	Entity(level, position, ActorID::GUN, this),
-	m_Level(level)
+Gun::Gun(World* world, sf::Vector2f position) :
+	Entity(world, position, ActorID::GUN, this),
+	m_World(world)
 {
-	m_BulletManager = level->GetBulletManager();
+	m_BulletManager = world->GetBulletManager();
 	m_Direction = 0.0f;
 
 	m_RectShape.setFillColor(sf::Color::Blue);
@@ -64,7 +64,7 @@ int Gun::GetClipSize() const
 
 bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
-	if (m_Level->IsPaused()) return true;
+	if (m_World->IsPaused()) return true;
 	if (APEX->DEBUGIsGamePaused()) return true;
 
 	switch (buttonEvent.button)
@@ -85,13 +85,13 @@ bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 
 void Gun::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
 {
-	if (m_Level->IsPaused()) return;
+	if (m_World->IsPaused()) return;
 	if (APEX->DEBUGIsGamePaused()) return;
 }
 
 void Gun::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 {
-	if (m_Level->IsPaused()) return;
+	if (m_World->IsPaused()) return;
 	if (APEX->DEBUGIsGamePaused()) return;
 }
 
@@ -102,7 +102,7 @@ float Gun::GetDirection() const
 
 void Gun::Tick(sf::Time elapsed)
 {
-	if (m_Level->GetPlayer() != nullptr)
+	if (m_World->GetPlayer() != nullptr)
 	{
 		if (m_ReloadingTimeRemaining != sf::Time::Zero)
 		{
@@ -111,14 +111,14 @@ void Gun::Tick(sf::Time elapsed)
 				m_ReloadingTimeRemaining = sf::Time::Zero;
 		}
 
-		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_Level->GetCurrentView()));
+		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_World->GetCurrentView()));
 		if (mousePos.x != -1.0f && mousePos.y != -1.0f) // only update our rotation when the mouse is inside the window
 		{
 			const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
 			m_Direction = atan2(dPos.y, dPos.x);
 		}
 		
-		m_Actor->SetPosition(m_Level->GetPlayer()->GetPosition());
+		m_Actor->SetPosition(m_World->GetPlayer()->GetPosition());
 	}
 }
 
@@ -142,11 +142,11 @@ void Gun::Shoot()
 	const float sinDir = sin(m_Direction);
 
 	//const float screenJoltAmount = 2.0f + (std::rand() % 8);
-	//m_Level->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
+	//m_World->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
-	const sf::Vector2f playerVel = m_Level->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
-	Bullet* newBullet = new Bullet(m_Level, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
+	const sf::Vector2f playerVel = m_World->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
+	Bullet* newBullet = new Bullet(m_World, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsInClip;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
 

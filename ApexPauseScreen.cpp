@@ -1,6 +1,6 @@
 
 #include "ApexPauseScreen.h"
-#include "Level.h"
+#include "World.h"
 #include "GameState.h"
 #include "ApexMain.h"
 #include "MainMenuState.h"
@@ -11,9 +11,9 @@
 
 #include <SFML\Graphics\RectangleShape.hpp>
 
-ApexPauseScreen::ApexPauseScreen(Level* level) :
+ApexPauseScreen::ApexPauseScreen(World* world) :
 	ApexKeyListener(),
-	m_Level(level)
+	m_World(world)
 {
 	float width = 300.0f;
 	float height = 120.0f;
@@ -124,7 +124,7 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 		m_ResumeButton->Tick(elapsed);
 		if (m_ResumeButton->IsPressed())
 		{
-			m_Level->TogglePaused(true);
+			m_World->TogglePaused(true);
 			return;
 		}
 
@@ -273,7 +273,7 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 			{
 			case ApexKeyboard::PAUSE:
 			{
-				m_Level->TogglePaused(true);
+				m_World->TogglePaused(true);
 				return true;
 			} break;
 			}

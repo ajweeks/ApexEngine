@@ -3,15 +3,15 @@
 #include "PhysicsActor.h"
 #include "TextureManager.h"
 #include "ApexMain.h"
-#include "Level.h"
+#include "World.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Graphics\Shader.hpp>
 
 using namespace nlohmann;
 
-ApexNPC::ApexNPC(Level* level, sf::Vector2f position, const json& info) :
-	Mob(level, position, ActorID::NPC)
+ApexNPC::ApexNPC(World* world, sf::Vector2f position, const json& info) :
+	Mob(world, position, ActorID::NPC)
 {
 	m_Actor->AddBoxFixture(10.0f, 20.0f);
 	m_Actor->SetSensor(true);
@@ -83,27 +83,27 @@ void ApexNPC::Interact()
 	{
 	case Statement::Type::REPEAT:
 	{
-		if (m_Level->IsShowingSpeechBubble())
+		if (m_World->IsShowingSpeechBubble())
 		{
-			m_Level->ClearSpeechShowing();
+			m_World->ClearSpeechShowing();
 		}
 		else
 		{
-			m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 			return;
 		}
 	} break;
 	case Statement::Type::END:
 	{
-		if (m_Level->IsShowingSpeechBubble())
+		if (m_World->IsShowingSpeechBubble())
 		{
-			m_Level->ClearSpeechShowing();
+			m_World->ClearSpeechShowing();
 			++m_CurrentStatementIndex;
 			if (m_CurrentStatementIndex == m_Statements.size()) --m_CurrentStatementIndex;
 		}
 		else
 		{
-			m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 			return;
 		}
 	} break;
@@ -111,11 +111,11 @@ void ApexNPC::Interact()
 	{
 		if (m_CurrentStatementIndex == m_Statements.size() - 1) // We've said all we have to say
 		{
-			m_Level->ClearSpeechShowing(); // *drops mic*
+			m_World->ClearSpeechShowing(); // *drops mic*
 			return;
 		}
 
-		m_Level->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 
 		++m_CurrentStatementIndex;
 	} break;

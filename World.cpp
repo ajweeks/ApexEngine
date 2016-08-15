@@ -1,5 +1,5 @@
 
-#include "Level.h"
+#include "World.h"
 #include "ApexMain.h"
 #include "Map.h"
 #include "ApexKeyboard.h"
@@ -18,25 +18,30 @@
 #include "ApexMath.h"
 #include "Interactable.h"
 #include "Coin.h"
+#include "Building.h"
 
 #include <fstream>
 
 using namespace nlohmann;
 
-const sf::Uint32 Level::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 50;
+const sf::Uint32 World::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 50;
 
-Level::Level(int levelIndex) :
+World::World(int worldIndex) :
 	ApexWindowListener(),
-	m_LevelIndex(levelIndex),
-	m_LightManager(levelIndex, this)
+	m_WorldIndex(worldIndex),
+	m_LightManager(worldIndex, this)
 {
 	m_DebugOverlay = new ApexDebug();
 	m_ShowingDebugOverlay = false;
 
 	m_BulletManager = new BulletManager();
-	m_Map = new Map(this, "resources/level/" + std::to_string(levelIndex) + "/tiles.json", this);
+
+	CreateMap();
+
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
 	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
+
+	//ReadBuildingData();
 
 	m_Player = new Player(this);
 
@@ -62,9 +67,12 @@ Level::Level(int levelIndex) :
 	m_SpeechLetterTransition.SetEaseType(ApexTransition::EaseType::LINEAR);
 }
 
-Level::~Level()
+World::~World()
 {
-	delete m_Map;
+	if (m_Map != nullptr)
+	{
+		delete m_Map;
+	}
 	delete m_Player;
 	delete m_Camera;
 	delete m_DebugOverlay;
@@ -96,9 +104,15 @@ Level::~Level()
 		delete m_ItemsToBeRemoved[i];
 	}
 	m_ItemsToBeRemoved.clear();
+
+	for (size_t i = 0; i < m_Buildings.size(); ++i)
+	{
+		delete m_Buildings[i];
+	}
+	m_Buildings.clear();
 }
 
-void Level::Reset()
+void World::Reset()
 {
 	m_Player->Reset();
 	m_BulletManager->Reset();
@@ -116,37 +130,105 @@ void Level::Reset()
 	{
 		m_Mobs.push_back(new ApexNPC(this, sf::Vector2f(128.0f + 16.0f * i, 228.0f), characters[i]));
 	}
-	
+
 	for (size_t i = 0; i < m_Items.size(); i++)
 	{
 		delete m_Items[i];
 	}
 	m_Items.clear();
-		
+
 	m_Items.push_back(new Coin(this, sf::Vector2f(211, 151)));
 	m_Items.push_back(new Coin(this, sf::Vector2f(98, 262)));
 	m_Items.push_back(new Coin(this, sf::Vector2f(61, 250)));
 
 	ClearSpeechShowing();
 	m_HighlightedEntity = nullptr;
+
+	m_BuildingPlayerIsIn = nullptr;
 }
 
-void Level::LoadShaders()
+void World::LoadShaders()
 {
 	m_LightManager.LoadShader();
 }
 
-bool Level::IsPaused() const
+void World::ReadBuildingData()
+{
+	std::ifstream fileInStream;
+
+	const std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
+	const std::string fileName = "tiles.json";
+
+	int buildingIndex = 0;
+	bool fileFound;
+	do
+	{
+		fileFound = false;
+
+		const std::string fullPath = directoryPath + std::to_string(buildingIndex) + "/" + fileName;
+		fileInStream.open(fullPath);
+
+		if (fileInStream)
+		{
+			fileFound = true;
+
+			Building* building = new Building(this, fullPath, this);
+			m_Buildings.push_back(building);
+
+			++buildingIndex;
+		}
+	} while (fileFound);
+}
+
+bool World::CreateBuilding(int buildingIndex)
+{
+	assert(m_Buildings.size() == buildingIndex);
+
+	std::ifstream fileInStream;
+
+	const std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
+	const std::string fileName = "tiles.json";
+
+	const std::string fullPath = directoryPath + std::to_string(buildingIndex) + "/" + fileName;
+	fileInStream.open(fullPath);
+
+	if (fileInStream)
+	{
+		Building* building = new Building(this, fullPath, this);
+		m_Buildings.push_back(building);
+
+		return true;
+	}
+	return false;
+}
+
+void World::DeleteBuilding(int buildingIndex)
+{
+	assert(buildingIndex == m_Buildings.size() - 1);
+
+	if (buildingIndex >= 0 && buildingIndex < int(m_Buildings.size()))
+	{
+		delete m_Buildings[buildingIndex];
+		m_Buildings.resize(m_Buildings.size() - 1);
+	}
+}
+
+void World::CreateMap()
+{
+	m_Map = new Map(this, "resources/worlds/" + std::to_string(m_WorldIndex) + "/tiles.json", this);
+}
+
+bool World::IsPaused() const
 {
 	return m_Paused;
 }
 
-void Level::TogglePaused(bool pauseSounds)
+void World::TogglePaused(bool pauseSounds)
 {
 	SetPaused(!m_Paused, pauseSounds);
 }
 
-void Level::SetPaused(bool paused, bool pauseSounds)
+void World::SetPaused(bool paused, bool pauseSounds)
 {
 	m_Paused = paused;
 	APEX->SetPhysicsPaused(m_Paused);
@@ -160,12 +242,12 @@ void Level::SetPaused(bool paused, bool pauseSounds)
 	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
 }
 
-void Level::LoadLights()
+void World::LoadLights()
 {
 	m_LightManager.LoadLightData();
 }
 
-void Level::Tick(sf::Time elapsed)
+void World::Tick(sf::Time elapsed)
 {
 	if (m_Paused)
 	{
@@ -179,7 +261,10 @@ void Level::Tick(sf::Time elapsed)
 	}
 	m_ItemsToBeRemoved.clear();
 
-	m_Map->Tick(elapsed);
+	if (m_Map != nullptr)
+	{
+		m_Map->Tick(elapsed);
+	}
 	//m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
@@ -228,13 +313,13 @@ void Level::Tick(sf::Time elapsed)
 	if (!m_CurrentSpeech.empty() &&
 		m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
 	{
-		if (!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_1) && 
+		if (!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_1) &&
 			!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_2) &&
 			!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_3))
 		{
 			int rand = std::rand() % 3;
 			ApexAudio::PlaySoundEffect(rand == 0 ? ApexAudio::Sound::TYPING_1 :
-			rand == 1 ? ApexAudio::Sound::TYPING_2 : ApexAudio::Sound::TYPING_3);
+				rand == 1 ? ApexAudio::Sound::TYPING_2 : ApexAudio::Sound::TYPING_3);
 		}
 	}
 
@@ -248,12 +333,20 @@ void Level::Tick(sf::Time elapsed)
 #endif
 }
 
-void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
+void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	sf::View cameraView = m_Camera->GetCurrentView();
 	target.setView(cameraView);
-	
-	m_Map->DrawBackground(target, states);
+
+	const bool playerIsInBuilding = m_BuildingPlayerIsIn != nullptr;
+	if (playerIsInBuilding)
+	{
+		m_BuildingPlayerIsIn->Draw(target, states);
+	}
+	else
+	{
+		m_Map->DrawBackground(target, states);
+	}
 
 	m_BulletManager->Draw(target, states);
 	m_Player->Draw(target, states);
@@ -284,8 +377,14 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	m_ParticleManager.Draw(target, states);
 
-	m_Map->DrawForeground(target, states);
-	m_LightManager.Draw(target, states);
+	if (playerIsInBuilding)
+	{
+	}
+	else
+	{
+		m_Map->DrawForeground(target, states);
+		m_LightManager.Draw(target, states);
+	}
 
 	// Static elements
 	target.setView(target.getDefaultView());
@@ -370,17 +469,17 @@ void Level::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.setView(cameraView);
 }
 
-void Level::ToggleLightingEditor()
+void World::ToggleLightingEditor()
 {
 	m_LightManager.ToggleShowingEditor();
 }
 
-bool Level::IsShowingSpeechBubble() const
+bool World::IsShowingSpeechBubble() const
 {
 	return !m_CurrentSpeech.empty();
 }
 
-void Level::SetCurrentSpeechShowing(const std::string& speech)
+void World::SetCurrentSpeechShowing(const std::string& speech)
 {
 	m_CurrentSpeech = speech;
 
@@ -391,12 +490,12 @@ void Level::SetCurrentSpeechShowing(const std::string& speech)
 	m_Player->StopMoving();
 }
 
-void Level::ClearSpeechShowing()
+void World::ClearSpeechShowing()
 {
 	m_CurrentSpeech = "";
 }
 
-void Level::InteractWithHighlightedItem()
+void World::InteractWithHighlightedItem()
 {
 	if (m_HighlightedEntity != nullptr)
 	{
@@ -404,14 +503,31 @@ void Level::InteractWithHighlightedItem()
 	}
 }
 
-void Level::OnUnmappedKeypress(sf::Event::KeyEvent event)
+void World::OnUnmappedKeypress(sf::Event::KeyEvent event)
 {
 	assert(m_Paused && m_PauseScreen != nullptr);
 
 	m_PauseScreen->OnUnmappedKeyPress(event);
 }
 
-Entity* Level::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
+void World::EnterBuilding(int buildingIndex)
+{
+	CreateBuilding(buildingIndex);
+	m_BuildingPlayerIsIn = m_Buildings[buildingIndex];
+	delete m_Map;
+	m_Map = nullptr;
+	// TODO: Fade in/out here
+}
+
+void World::ExitBuilding()
+{
+	DeleteBuilding(m_Buildings.size() - 1);
+	m_BuildingPlayerIsIn = nullptr;
+	CreateMap();
+	// TODO: Fade in/out here
+}
+
+Entity* World::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
 {
 	Entity* nearestSoFar = nullptr;
 	distance = -1.0f;
@@ -451,17 +567,17 @@ Entity* Level::GetNearestInteractableEntityTo(Entity* sourceEntity, float& dista
 	return nearestSoFar;
 }
 
-void Level::AddParticle(ApexParticle* spriteSheet)
+void World::AddParticle(ApexParticle* spriteSheet)
 {
 	m_ParticleManager.AddParticle(spriteSheet);
 }
 
-void Level::AddMob(Mob* mob)
+void World::AddMob(Mob* mob)
 {
 	m_Mobs.push_back(mob);
 }
 
-void Level::RemoveMob(Mob* mob)
+void World::RemoveMob(Mob* mob)
 {
 	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
@@ -474,12 +590,12 @@ void Level::RemoveMob(Mob* mob)
 	}
 }
 
-void Level::AddItem(Item* item)
+void World::AddItem(Item* item)
 {
 	m_Items.push_back(item);
 }
 
-void Level::RemoveItem(Item* item)
+void World::RemoveItem(Item* item)
 {
 	for (size_t i = 0; i < m_Items.size(); i++)
 	{
@@ -492,7 +608,7 @@ void Level::RemoveItem(Item* item)
 	}
 }
 
-void Level::AddItemToBeRemoved(Item* item)
+void World::AddItemToBeRemoved(Item* item)
 {
 	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
 	{
@@ -510,24 +626,24 @@ void Level::AddItemToBeRemoved(Item* item)
 	}
 }
 
-void Level::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void World::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 }
 
-void Level::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void World::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 }
 
-void Level::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & enableContact)
+void World::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & enableContact)
 {
 }
 
-void Level::OnWindowResize(sf::Vector2u windowSize)
+void World::OnWindowResize(sf::Vector2u windowSize)
 {
 	m_LightManager.OnWindowResize(windowSize);
 }
 
-bool Level::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
+bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	if (keyPressed)
 	{
@@ -558,11 +674,11 @@ bool Level::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 	return false;
 }
 
-void Level::OnKeyRelease(ApexKeyboard::Key key)
+void World::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 
-json Level::GetSpeechDataFromFile()
+json World::GetSpeechDataFromFile()
 {
 	json result;
 	std::ifstream inputStream;
@@ -585,49 +701,49 @@ json Level::GetSpeechDataFromFile()
 	return result;
 }
 
-unsigned int Level::GetWidth() const
+unsigned int World::GetWidth() const
 {
 	return m_Width;
 }
 
-unsigned int Level::GetHeight() const
+unsigned int World::GetHeight() const
 {
 	return m_Height;
 }
 
-Player* Level::GetPlayer()
+Player* World::GetPlayer()
 {
 	return m_Player;
 }
 
-BulletManager* Level::GetBulletManager()
+BulletManager* World::GetBulletManager()
 {
 	return m_BulletManager;
 }
 
-void Level::ToggleDebugOverlay()
+void World::ToggleDebugOverlay()
 {
 	m_ShowingDebugOverlay = !m_ShowingDebugOverlay;
 	m_DebugOverlay->ClearAllInput();
 	APEX->SetCursor(ApexCursor::NORMAL);
 }
 
-bool Level::IsShowingDebugOverlay() const
+bool World::IsShowingDebugOverlay() const
 {
 	return m_ShowingDebugOverlay;
 }
 
-sf::View Level::GetCurrentView() const
+sf::View World::GetCurrentView() const
 {
 	return m_Camera->GetCurrentView();
 }
 
-void Level::JoltCamera(float xAmount, float yAmount)
+void World::JoltCamera(float xAmount, float yAmount)
 {
 	m_Camera->Jolt(xAmount, yAmount);
 }
 
-void Level::SetScreenShake(float xScale, float yScale)
+void World::SetScreenShake(float xScale, float yScale)
 {
 	m_Camera->Shake(xScale, yScale);
 }

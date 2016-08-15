@@ -7,8 +7,8 @@
 
 #include <Box2D\Dynamics\Contacts\b2Contact.h>
 
-Entity::Entity(Level* level, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
-	m_Level(level)
+Entity::Entity(World* world, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
+	m_World(world)
 {
 	m_ShadowSprite = sf::Sprite(*TextureManager::GetTexture(TextureManager::SHADOW));
 

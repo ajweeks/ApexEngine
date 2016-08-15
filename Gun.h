@@ -8,7 +8,7 @@
 #include <SFML\Graphics\RenderTarget.hpp>
 
 class Player;
-class Level;
+class World;
 class BulletManager;
 class Game;
 class AmmoDrop;
@@ -16,7 +16,7 @@ class AmmoDrop;
 class Gun : public Entity, public ApexMouseListener
 {
 public:
-	Gun(Level* level, sf::Vector2f position);
+	Gun(World* world, sf::Vector2f position);
 	virtual ~Gun();
 
 	Gun(const Gun&) = delete;
@@ -47,7 +47,7 @@ private:
 	void Reload();
 
 	bool m_BeingHeld;
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 	BulletManager* m_BulletManager = nullptr;
 
 	float m_Direction;

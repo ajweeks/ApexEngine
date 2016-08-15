@@ -1,10 +1,9 @@
 
 #include "Layer.h"
 #include "PhysicsActor.h"
-#include "Level.h"
 #include "LevelTile.h"
 
-Layer::Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs,
+Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 	std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener) :
 	m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
 {

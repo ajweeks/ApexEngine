@@ -212,6 +212,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="LightManager.cpp">
       <SubType>
       </SubType>
@@ -383,7 +384,6 @@
     <ClInclude Include="Gun.h" />
     <ClInclude Include="ApexKeyListener.h" />
     <ClInclude Include="Layer.h" />
-    <ClInclude Include="Level.h" />
     <ClInclude Include="logo.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Player.h" />

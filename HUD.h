@@ -4,12 +4,12 @@
 #include <SFML\Graphics\Text.hpp>
 #include <SFML\System\Time.hpp>
 
-class Level;
+class World;
 
 class HUD
 {
 public:
-	HUD(Level* level);
+	HUD(World* world);
 	virtual ~HUD();
 
 	HUD(const HUD&) = delete;
@@ -19,7 +19,7 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 private:
-	Level* m_Level = nullptr;
+	World* m_World = nullptr;
 
 	sf::Text m_BulletsInClip;
 	sf::Text m_BulletsRemaining;

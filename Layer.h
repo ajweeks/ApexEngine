@@ -11,7 +11,7 @@
 #include <string>
 #include <map>
 
-class Level;
+class World;
 class LevelTile;
 
 class Layer : public sf::Drawable
@@ -22,7 +22,7 @@ public:
 		TILE, OBJECT, IMAGE, NONE
 	};
 
-	Layer(Level* level, std::vector<int> tiles, TileSet* tileSet, std::map<int, bool> solidTileIDs, 
+	Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 		std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener);
 	virtual ~Layer();
 

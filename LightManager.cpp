@@ -3,7 +3,7 @@
 #include "ApexMain.h"
 #include "ApexMath.h"
 #include "ApexMouse.h"
-#include "Level.h"
+#include "World.h"
 #include "ApexKeyboard.h"
 
 #include "JSON\json.hpp"
@@ -16,14 +16,11 @@
 
 using nlohmann::json;
 
-LightManager::LightManager(int levelIndex, Level* level) :
+LightManager::LightManager(int worldIndex, World* world) :
 	ApexMouseListener(),
-	m_LevelIndex(levelIndex),
-	m_Level(level)
+	m_WorldIndex(worldIndex),
+	m_World(world)
 {
-	//m_Lights.push_back({ sf::Vector2f(250.0f, 100.0f), sf::Color(240, 240, 180), 30.0f, 25.0f, 1.0f });
-	//m_Lights.push_back({ sf::Vector2f(50.0f, 20.0f), sf::Color(140, 240, 200), 30.0f, 5.0f, 0.8f });
-	
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	m_LightmapTexture.create(windowSize.x, windowSize.y);
 	m_LightmapSprite.setTexture(m_LightmapTexture.getTexture());
@@ -51,7 +48,7 @@ void LightManager::Tick(sf::Time elapsed)
 	{
 		if (ApexMouse::IsButtonDown(sf::Mouse::Left))
 		{
-			const sf::Vector2f deltaMousePos = APEX->GetMouseCoordsWorldSpace(m_Level->GetCurrentView()) - m_MouseDragStart;
+			const sf::Vector2f deltaMousePos = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView()) - m_MouseDragStart;
 			if (m_CurrentLightDraggingIndex != -1)
 			{
 				m_Lights[m_CurrentLightDraggingIndex].position = m_PosDragStart + deltaMousePos;
@@ -158,7 +155,7 @@ void LightManager::LoadLightData()
 {
 	std::ifstream fileStream;
 
-	const std::string directory = "resources/level/" + std::to_string(m_LevelIndex) + "/";
+	const std::string directory = "resources/worlds/" + std::to_string(m_WorldIndex) + "/";
 	if (!std::experimental::filesystem::exists(directory)) {
 		ApexOutputDebugString("Directory not found: " + directory + "\n");
 		return;
@@ -205,7 +202,7 @@ void LightManager::LoadLightData()
 
 void LightManager::SaveLightData()
 {
-	const std::string directory = "resources/level/" + std::to_string(m_LevelIndex) + "/";
+	const std::string directory = "resources/worlds/" + std::to_string(m_WorldIndex) + "/";
 	if (!std::experimental::filesystem::exists(directory)) {
 		std::experimental::filesystem::create_directory(directory);
 	}
@@ -314,9 +311,9 @@ void LightManager::LoadShader()
 	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
-void LightManager::SetLevelIndex(int levelIndex)
+void LightManager::SetWorldIndex(int worldIndex)
 {
-	m_LevelIndex = levelIndex;
+	m_WorldIndex = worldIndex;
 	LoadLightData();
 }
 
@@ -345,7 +342,7 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 		{
 		case  sf::Mouse::Left:
 		{
-			sf::Vector2f mouseWorldSpace = APEX->GetMouseCoordsWorldSpace(m_Level->GetCurrentView());
+			sf::Vector2f mouseWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView());
 				m_MouseDragStart = mouseWorldSpace;
 			for (size_t i = 0; i < m_Lights.size(); ++i)
 			{
@@ -400,7 +397,7 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 				m_CurrentLightBlurIndex == -1 &&
 				m_CurrentLightRadiusIndex == -1)
 			{
-				sf::Vector2f mousePosWorldSpace = APEX->GetMouseCoordsWorldSpace(m_Level->GetCurrentView());
+				sf::Vector2f mousePosWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView());
 
 				bool deletedLight = false;
 				for (size_t i = 0; i < m_Lights.size(); ++i)

@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "enumerations.h"
 #include "GameState.h"
-#include "Level.h"
+#include "World.h"
 #include "PhysicsActor.h"
 #include "Gun.h"
 
@@ -44,8 +44,8 @@ void ApexDebug::Tick(sf::Time elapsed)
 		BaseState* currentState = APEX->GetStateManager()->CurrentState();
 		if (currentState->GetType() == StateType::GAME)
 		{
-			Level* level = ((GameState*)currentState)->GetLevel();
-			Player* player = level->GetPlayer();
+			World* world = ((GameState*)currentState)->GetWorld();
+			Player* player = world->GetPlayer();
 			std::string newPlayerPos = ApexMain::Vector2fToString(player->GetPosition());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
 

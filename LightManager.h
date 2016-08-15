@@ -10,12 +10,12 @@
 
 #include <vector>
 
-class Level;
+class World;
 
 class LightManager : public ApexMouseListener
 {
 public:
-	LightManager(int levelIndex, Level* level);
+	LightManager(int worldIndex, World* world);
 	virtual ~LightManager();
 
 	LightManager(const LightManager&) = delete;
@@ -30,7 +30,7 @@ public:
 	void LoadLightData();
 	void SaveLightData();
 
-	void SetLevelIndex(int levelIndex);
+	void SetWorldIndex(int worldIndex);
 
 	void SetShowingEditor(bool showingEditor);
 	void ToggleShowingEditor();
@@ -65,8 +65,8 @@ private:
 
 	sf::Shader m_LightingShader;
 
-	int m_LevelIndex;
-	Level* m_Level = nullptr;
+	int m_WorldIndex;
+	World* m_World = nullptr;
 
 	// Editor variables:
 	bool m_IsShowingEditor;

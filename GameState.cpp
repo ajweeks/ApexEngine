@@ -4,12 +4,12 @@
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
-#include "Level.h"
+#include "World.h"
 
 GameState::GameState() :
 	BaseState(StateType::GAME)
 {
-	m_Level = new Level(0);
+	m_World = new World(0);
 	APEX->SetPhysicsPaused(false);
 
 	Reset();
@@ -17,32 +17,32 @@ GameState::GameState() :
 
 GameState::~GameState()
 {
-	delete m_Level;
+	delete m_World;
 }
 
 void GameState::Reset()
 {
-	m_Level->Reset();
+	m_World->Reset();
 }
 
 void GameState::Tick(sf::Time elapsed)
 {
-	m_Level->Tick(elapsed);
+	m_World->Tick(elapsed);
 }
 
 void GameState::Draw(sf::RenderTarget& target)
 {
-	m_Level->Draw(target, sf::RenderStates::Default);
+	m_World->Draw(target, sf::RenderStates::Default);
 }
 
-Level* GameState::GetLevel()
+World* GameState::GetWorld()
 {
-	return m_Level;
+	return m_World;
 }
 
-bool GameState::IsLevelPaused() const
+bool GameState::IsWorldPaused() const
 {
-	return m_Level->IsPaused();
+	return m_World->IsPaused();
 }
 
 bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
@@ -55,15 +55,15 @@ bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		{
 		case ApexKeyboard::DEBUG_TOGGLE_INFO_OVERLAY:
 		{
-			m_Level->ToggleDebugOverlay();
+			m_World->ToggleDebugOverlay();
 		} break;
 		case ApexKeyboard::DEBUG_TOGGLE_LIGHT_EDITOR:
 		{
-			m_Level->ToggleLightingEditor();
+			m_World->ToggleLightingEditor();
 		} break;
 		case ApexKeyboard::DEBUG_RESTART:
 		{
-			if (!m_Level->IsPaused()) Reset();
+			if (!m_World->IsPaused()) Reset();
 		} break;
 		}
 	}
@@ -77,7 +77,7 @@ void GameState::OnKeyRelease(ApexKeyboard::Key key)
 
 void GameState::OnUnmappedKeypress(sf::Event::KeyEvent event)
 {
-	m_Level->OnUnmappedKeypress(event);
+	m_World->OnUnmappedKeypress(event);
 }
 
 //static sf::ConvexShape CreateStar(sf::Vector2f centerPos, size_t numPoints, float innerRadius, float outerRadius)

@@ -1,12 +1,12 @@
 
 #include "HUD.h"
-#include "Level.h"
+#include "World.h"
 #include "Player.h"
 #include "Gun.h"
 #include "ApexMain.h"
 
-HUD::HUD(Level* level) :
-	m_Level(level)
+HUD::HUD(World* world) :
+	m_World(world)
 {
 	const sf::Font& font = APEX->FontOpenSans;
 	m_BulletsInClip.setFont(font);
@@ -27,7 +27,7 @@ HUD::~HUD()
 
 void HUD::Tick(sf::Time elapsed)
 {
-	//Gun& gun = m_Level->GetPlayer()->GetGun();
+	//Gun& gun = m_World->GetPlayer()->GetGun();
 	//m_BulletsInClip.setString(std::to_string(gun.GetBulletsInClip()));
 	//m_BulletsRemaining.setString(" / " + std::to_string(gun.GetBulletsRemaining()));
 

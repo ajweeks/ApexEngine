@@ -2,15 +2,15 @@
 #include "Sheep.h"
 #include "PhysicsActor.h"
 #include "ApexMain.h"
-#include "Level.h"
+#include "World.h"
 #include "ApexMath.h"
 #include "DustParticle.h"
 
 const float Sheep::WIDTH = 15.0f;
 const float Sheep::HEIGHT = 15.0f;
 
-Sheep::Sheep(Level* level, sf::Vector2f position) :
-	Mob(level, position, ActorID::SHEEP)
+Sheep::Sheep(World* world, sf::Vector2f position) :
+	Mob(world, position, ActorID::SHEEP)
 {
 	m_Actor->AddBoxFixture(15, 15);
 	m_Actor->AddContactListener(this);
@@ -48,7 +48,7 @@ void Sheep::Tick(sf::Time elapsed)
 {
 	if (m_IsDead)
 	{
-		m_Level->RemoveMob(this);
+		m_World->RemoveMob(this);
 		return;
 	}
 
@@ -120,7 +120,7 @@ void Sheep::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 			m_IsDead = true;
 
 			DustParticle *dustParticle = new DustParticle(m_Actor->GetPosition());
-			m_Level->AddParticle(dustParticle);
+			m_World->AddParticle(dustParticle);
 		}
 		else
 		{

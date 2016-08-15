@@ -1,15 +1,15 @@
 
 #include "AmmoDrop.h"
 #include "PhysicsActor.h"
-#include "Level.h"
+#include "World.h"
 #include "Player.h"
 #include "ApexMain.h"
 
 const float AmmoDrop::WIDTH = 26.0f;
 const float AmmoDrop::HEIGHT = 26.0f;
 
-AmmoDrop::AmmoDrop(Level* level, sf::Vector2f position, int bulletCount) :
-	Item(level, position, ActorID::AMMO, this, b2BodyType::b2_staticBody),
+AmmoDrop::AmmoDrop(World* world, sf::Vector2f position, int bulletCount) :
+	Item(world, position, ActorID::AMMO, this, b2BodyType::b2_staticBody),
 	m_BulletCount(bulletCount)
 {
 	m_Actor->AddBoxFixture(WIDTH, HEIGHT);
@@ -52,7 +52,7 @@ void AmmoDrop::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	{
 	case ActorID::PLAYER:
 	{
-		m_Level->AddItemToBeRemoved(this);
+		m_World->AddItemToBeRemoved(this);
 	} break;
 	}
 }

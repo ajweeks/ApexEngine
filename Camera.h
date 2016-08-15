@@ -5,7 +5,7 @@
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\View.hpp>
 
-class Level;
+class World;
 
 class Camera : public ApexWindowListener
 {
@@ -16,10 +16,10 @@ public:
 
 	Camera(const Camera&) = delete;
 
-	void Tick(sf::Time elapsed, Level* level);
+	void Tick(sf::Time elapsed, World* world);
 
 	sf::View GetCurrentView() const;
-	// NOTE: This only effects the scale that the level renders at, (not the GUI)
+	// NOTE: This only effects the scale that the world renders at, (not the GUI)
 	void SetZoom(float zoom);
 
 	void Jolt(float xScale, float yScale);
@@ -28,7 +28,7 @@ public:
 	virtual void OnWindowResize(sf::Vector2u windowSize) override;
 
 private:
-	void BoundsCheck(sf::View& view, Level* level);
+	void BoundsCheck(sf::View& view, World* world);
 
 	static const float DEFAULT_ZOOM;
 	static const float ACCELERATION;
