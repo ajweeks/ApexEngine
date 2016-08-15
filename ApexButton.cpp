@@ -41,7 +41,10 @@ void ApexButton::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		states.transform.translate(0, 5.0f);
 	}
 
-	target.draw(m_BoundingRect, states);
+	if (m_ShowBackground)
+	{
+		target.draw(m_BoundingRect, states);
+	}
 
 	// The vignette shader messes up text, don't use it
 	states.shader = states.Default.shader;
@@ -85,6 +88,16 @@ sf::String ApexButton::GetCurrentString() const
 	return m_Text.getString();
 }
 
+sf::Vector2f ApexButton::GetPosition() const
+{
+	return m_BoundingRect.getPosition();
+}
+
+void ApexButton::SetShowingBackground(bool show)
+{
+	m_ShowBackground = show;
+}
+
 void ApexButton::ClearInputs()
 {
 	SetHovering(false);
@@ -95,6 +108,11 @@ void ApexButton::ClearInputs()
 sf::RectangleShape ApexButton::GetRectangle() const
 {
 	return m_BoundingRect;
+}
+
+bool ApexButton::IsHovering() const
+{
+	return m_Hovering;
 }
 
 bool ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)

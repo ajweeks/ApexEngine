@@ -2,7 +2,8 @@
 
 #include "BaseState.h"
 #include "ApexMain.h"
-#include "ApexButton.h"
+#include "ApexButtonList.h"
+#include "TransformableTransition.h"
 
 #include <SFML\Graphics\Shader.hpp>
 
@@ -22,8 +23,12 @@ public:
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
 private:
-	ApexButton* m_PlayButton = nullptr;
-	ApexButton* m_QuitButton = nullptr;
+	enum class Buttons
+	{
+		PLAY, QUIT
+	};
+
+	ApexButtonList m_Buttons;
 
 	sf::Shader m_VignetteShader;
 	sf::Sprite m_TitleColorSprite;

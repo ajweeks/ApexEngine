@@ -28,18 +28,25 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 	const sf::Font& font = APEX->FontPixelFJ8;
 
 	// Main screen
-	m_ResumeButton = new ApexButton(left, top, width, height, "Resume");
+	ApexButton* resumeButton = new ApexButton(left, top, width, height, "Resume");
+	m_MainScreenButtonList.AddButton(resumeButton, int(MainScreenButtons::RESUME));
 	top += dy;
-	m_OptionsButton = new ApexButton(left, top, width, height, "Options");
+	ApexButton* optionsButton = new ApexButton(left, top, width, height, "Options");
+	m_MainScreenButtonList.AddButton(optionsButton, int(MainScreenButtons::OPTIONS));
 	top += dy;
-	m_MainMenuButton = new ApexButton(left, top, width, height, "Main Menu");
+	ApexButton* mainMenuButton = new ApexButton(left, top, width, height, "Main Menu");
+	m_MainScreenButtonList.AddButton(mainMenuButton, int(MainScreenButtons::MAIN_MENU));
 
 	// Options screen
 	top = initialTop;
-	m_FullscreenButton = new ApexButton(left, top, width, height, "Fullscreen");
-	m_FullscreenButton->AddString("Windowed");
+	ApexButton* fullscreenButton = new ApexButton(left, top, width, height, "Fullscreen");
+	fullscreenButton->AddString("Windowed");
+	m_OptionsButtonList.AddButton(fullscreenButton, int(OptionsScreenButtons::FULLSCREEN));
+
 	top += dy;
-	m_KeybindingsButton = new ApexButton(left + (width / 2.0f - width * 0.8f), top, width * 1.6f, height, "Keyboard bindings");
+	const float bindingsButtonWidth = width * 2.5f;
+	ApexButton* keybindingsButton = new ApexButton(left + (width * 0.5f - bindingsButtonWidth * 0.5f), top, bindingsButtonWidth, height, "Keyboard bindings");
+	m_OptionsButtonList.AddButton(keybindingsButton, int(OptionsScreenButtons::KEYBINDINGS));
 
 	top += dy;
 	m_MusicVolumeText = sf::Text("Music Volume:", font, fontSize);
@@ -99,14 +106,8 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 
 ApexPauseScreen::~ApexPauseScreen()
 {
-	delete m_ResumeButton;
-	delete m_OptionsButton;
-	delete m_MainMenuButton;
-
-	delete m_FullscreenButton;
 	delete m_MusicVolumeSlider;
 	delete m_SoundVolumeSlider;
-	delete m_KeybindingsButton;
 
 	for (size_t i = 0; i < m_Keybindings.size(); i++)
 	{
@@ -121,22 +122,20 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 	{
 	case Screen::MAIN:
 	{
-		m_ResumeButton->Tick(elapsed);
-		if (m_ResumeButton->IsPressed())
+		m_MainScreenButtonList.Tick(elapsed);
+		if (m_MainScreenButtonList.GetButton(int(MainScreenButtons::RESUME))->IsPressed())
 		{
 			m_World->TogglePaused(true);
 			return;
 		}
 
-		m_MainMenuButton->Tick(elapsed);
-		if (m_MainMenuButton->IsPressed())
+		if (m_MainScreenButtonList.GetButton(int(MainScreenButtons::MAIN_MENU))->IsPressed())
 		{
 			APEX->GetStateManager()->SetState(new MainMenuState());
 			return;
 		}
 
-		m_OptionsButton->Tick(elapsed);
-		if (m_OptionsButton->IsPressed())
+		if (m_MainScreenButtonList.GetButton(int(MainScreenButtons::OPTIONS))->IsPressed())
 		{
 			SetScreenShowing(Screen::OPTIONS);
 			return;
@@ -144,10 +143,10 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 	} break;
 	case Screen::OPTIONS:
 	{
-		m_FullscreenButton->Tick(elapsed);
-		if (m_FullscreenButton->IsPressed())
+		m_OptionsButtonList.Tick(elapsed);
+		if (m_OptionsButtonList.GetButton(int(OptionsScreenButtons::FULLSCREEN))->IsPressed())
 		{
-			m_FullscreenButton->ClearInputs();
+			m_OptionsButtonList.GetButton(int(OptionsScreenButtons::FULLSCREEN))->ClearInputs();
 			ApexMouse::Clear();
 			SetScreenShowing(Screen::MAIN);
 			APEX->ToggleWindowFullscreen();
@@ -166,8 +165,7 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 		}
 		m_SoundVolumeSliderWasBeingDragged = soundVolumeSliderBeingBragged;
 
-		m_KeybindingsButton->Tick(elapsed);
-		if (m_KeybindingsButton->IsPressed())
+		if (m_OptionsButtonList.GetButton(int(OptionsScreenButtons::KEYBINDINGS))->IsPressed())
 		{
 			SetScreenShowing(Screen::KEYBINDINGS);
 			return;
@@ -199,21 +197,17 @@ void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	{
 	case Screen::MAIN:
 	{
-		m_ResumeButton->Draw(target, states);
-		m_OptionsButton->Draw(target, states);
-		m_MainMenuButton->Draw(target, states);
+		m_MainScreenButtonList.Draw(target, states);
 	} break;
 	case Screen::OPTIONS:
 	{
-		m_FullscreenButton->Draw(target, states);
+		m_OptionsButtonList.Draw(target, states);
 
 		target.draw(m_MusicVolumeText, states);
 		m_MusicVolumeSlider->Draw(target, states);
 
 		target.draw(m_SoundVolumeText, states);
 		m_SoundVolumeSlider->Draw(target, states);
-
-		m_KeybindingsButton->Draw(target, states);
 	} break;
 	case Screen::KEYBINDINGS:
 	{
@@ -249,11 +243,11 @@ void ApexPauseScreen::SetScreenShowing(Screen screen)
 {
 	m_CurrentScreenShowing = screen;
 
-	m_MainMenuButton->ClearInputs();
-	m_OptionsButton->ClearInputs();
-	m_ResumeButton->ClearInputs();
-	m_FullscreenButton->ClearInputs();
-	m_KeybindingsButton->ClearInputs();
+	m_MainScreenButtonList.GetButton(int(MainScreenButtons::RESUME))->ClearInputs();
+	m_MainScreenButtonList.GetButton(int(MainScreenButtons::OPTIONS))->ClearInputs();
+	m_MainScreenButtonList.GetButton(int(MainScreenButtons::MAIN_MENU))->ClearInputs();
+	m_OptionsButtonList.GetButton(int(OptionsScreenButtons::FULLSCREEN))->ClearInputs();
+	m_OptionsButtonList.GetButton(int(OptionsScreenButtons::KEYBINDINGS))->ClearInputs();
 
 	for (size_t i = 0; i < m_Keybindings.size(); i++)
 	{

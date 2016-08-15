@@ -1,6 +1,7 @@
 
 #include "MainMenuState.h"
 #include "ApexMain.h"
+#include "ApexButton.h"
 #include "enumerations.h"
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
@@ -14,9 +15,11 @@ MainMenuState::MainMenuState()
 	float y = 650;
 	const float width = 400.0f;
 	const float height = 125.0f;
-	m_PlayButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Play");
+	ApexButton* playButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Play");
+	m_Buttons.AddButton(playButton, int(Buttons::PLAY));
 	y += 150;
-	m_QuitButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Quit");
+	ApexButton* quitButton = new ApexButton(x - width / 2.0f, y - height / 2.0f, width, height, "Quit");
+	m_Buttons.AddButton(quitButton, int(Buttons::QUIT));
 
 	if (!m_VignetteShader.loadFromFile("resources/shaders/vignette.frag", sf::Shader::Fragment))
 	{
@@ -41,8 +44,6 @@ MainMenuState::MainMenuState()
 
 MainMenuState::~MainMenuState()
 {
-	delete m_PlayButton;
-	delete m_QuitButton;
 }
 
 void MainMenuState::Tick(sf::Time elapsed)
@@ -52,15 +53,14 @@ void MainMenuState::Tick(sf::Time elapsed)
 	const float y = (cos(512.25f + time * 1.31f) + 1.0f) / 2.0f;
 	m_VignetteShader.setParameter("u_center", x / 4.0f + 0.3f, y / 6.0f + 0.4f);
 
-	m_PlayButton->Tick(elapsed);
-	if (m_PlayButton->IsPressed())
+	m_Buttons.Tick(elapsed);
+	if (m_Buttons.GetButton(int(Buttons::PLAY))->IsPressed())
 	{
 		APEX->GetStateManager()->SetState(new GameState());
 		return;
 	}
 
-	m_QuitButton->Tick(elapsed);
-	if (m_QuitButton->IsPressed())
+	if (m_Buttons.GetButton(int(Buttons::QUIT))->IsPressed())
 	{
 		APEX->Quit();
 		return;
@@ -76,8 +76,7 @@ void MainMenuState::Draw(sf::RenderTarget& target)
 	sf::RectangleShape bgRect(windowSize);
 	bgRect.setFillColor(sf::Color(150, 55, 60));
 	target.draw(bgRect, &m_VignetteShader);
-	m_PlayButton->Draw(target, &m_VignetteShader);
-	m_QuitButton->Draw(target, &m_VignetteShader);
+	m_Buttons.Draw(target, &m_VignetteShader);
 
 	target.draw(m_TitleShadowSprite);
 	target.draw(m_TitleColorSprite);

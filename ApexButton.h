@@ -26,9 +26,14 @@ public:
 	void SetString(size_t index, sf::String string);
 	void AddString(sf::String string);
 	sf::String GetCurrentString() const;
+	sf::Vector2f GetPosition() const;
+
+	void SetShowingBackground(bool show);
 
 	void ClearInputs();
 	sf::RectangleShape GetRectangle() const;
+
+	bool IsHovering() const;
 	
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
@@ -48,4 +53,6 @@ private:
 	bool m_Hovering = false;
 	bool m_IsDown = false;
 	bool m_IsPressed = false;
+
+	bool m_ShowBackground = true;
 };

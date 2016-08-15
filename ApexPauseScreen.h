@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ApexKeyListener.h"
+#include "ApexButtonList.h"
 
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\Text.hpp>
@@ -41,27 +42,33 @@ private:
 		ApexKeyboard::Key key;
 		ApexButton* button = nullptr;
 	};
+
+	enum class MainScreenButtons
+	{
+		RESUME, OPTIONS, MAIN_MENU
+	};
+	enum class OptionsScreenButtons
+	{
+		FULLSCREEN, KEYBINDINGS
+	};
+
 	void AssignKeybinding(Keybinding& keybinding, int vkCode);
 
 	// Main screen:
-	ApexButton* m_ResumeButton = nullptr;
-	ApexButton* m_OptionsButton = nullptr;
-	ApexButton* m_MainMenuButton = nullptr;
+	ApexButtonList m_MainScreenButtonList;
 
 	// Options screen:
-	ApexButton* m_FullscreenButton = nullptr;
-	sf::Text m_MusicVolumeText;
+	ApexButtonList m_OptionsButtonList;
 	ApexSlider* m_MusicVolumeSlider = nullptr;
-	sf::Text m_SoundVolumeText;
+	sf::Text m_MusicVolumeText;
 	ApexSlider* m_SoundVolumeSlider = nullptr;
+	sf::Text m_SoundVolumeText;
 	bool m_SoundVolumeSliderWasBeingDragged;
-	ApexButton* m_KeybindingsButton = nullptr;
 	// Brightness
 	// Resolution
 	// ...
 
 	// Keybindings screen:
-
 	std::vector<Keybinding> m_Keybindings;
 	int m_KeybindingAssigningIndex = -1;
 

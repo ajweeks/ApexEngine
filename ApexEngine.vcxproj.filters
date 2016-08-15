@@ -197,6 +197,9 @@
     <ClCompile Include="LoadingState.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
+    <ClCompile Include="ApexButtonList.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="World.cpp">
       <Filter>Source Files\Level\World</Filter>
     </ClCompile>
@@ -363,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="LoadingState.h">
       <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ApexButtonList.h">
+      <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Source Files\Level\World</Filter>
