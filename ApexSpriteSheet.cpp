@@ -168,7 +168,7 @@ void ApexSpriteSheet::SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame)
 	m_CurrentSequenceIndex = 0;
 }
 
-void ApexSpriteSheet::SetFrameIndex(int frameIndex)
+void ApexSpriteSheet::SetFrameIndex(sf::Uint8 frameIndex)
 {
 	if (frameIndex >= 0 && m_CurrentSequenceIndex < m_Sequences.size() && frameIndex < m_Sequences[m_CurrentSequenceIndex].framesLong)
 	{

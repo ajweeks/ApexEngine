@@ -2,7 +2,7 @@
 
 #include "StateManager.h"
 #include "FloatTransition.h"
-#include "TransformationTransition.h"
+#include "ColorTransition.h"
 
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Graphics\Font.hpp>
@@ -49,6 +49,7 @@ public:
 	sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
 	// Returns the mouse coords relative to the game window, or (-1, -1) if mouse is outside of window
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
+	bool IsMouseInWindow() const;
 
 	void SetCursor(ApexCursor cursorType);
 
@@ -138,5 +139,5 @@ private:
 	std::vector<ApexMouseListener*> m_MouseListeners;
 	std::vector<ApexWindowListener*> m_WindowListeners;
 
-	TransformationTransition m_FadeTransition;
+	ColorTransition m_FadeTransition;
 };

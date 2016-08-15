@@ -14,10 +14,8 @@ LoadingState::LoadingState()
 {
 	m_LogoSprite.setTexture(*TextureManager::GetTexture(TextureManager::LIQWIDICE_GAMES_LOGO_SCREEN));
 	
-	TransitionData start;
-	start.color = sf::Color::Black;
-	TransitionData end;
-	end.color = sf::Color::White;
+	sf::Color start = sf::Color::Black;
+	sf::Color end = sf::Color::White;
 	m_FadeTransition.Create(start, end, sf::seconds(0.75f), ApexTransition::EaseType::QUADRATIC_OUT);
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
@@ -30,8 +28,8 @@ LoadingState::LoadingState()
 	m_LogoSprite.setColor(sf::Color::Black);
 
 	m_AnimState = AnimationState::INITAL_BLACK;
-
 	m_SpriteFlicker = 1.0f;
+	m_LogoOffset = sf::Vector2f(0.0f, 0.0f);
 }
 
 LoadingState::~LoadingState()
@@ -40,9 +38,19 @@ LoadingState::~LoadingState()
 
 void LoadingState::Tick(sf::Time elapsed)
 {
-	const sf::Vector2u windowSize = APEX->GetWindowSize();
-	const sf::Vector2i mousePos = APEX->GetMouseCoordsScreenSpace();
-	m_LogoSprite.setPosition(mousePos.x / 50.0f , mousePos.y / 50.0f);
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+	sf::Vector2f diff;
+	if (APEX->IsMouseInWindow())
+	{
+		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace());
+		diff = (mousePos - windowSize / 2.0f) - m_LogoOffset;
+	}
+	else
+	{
+		diff = sf::Vector2f(0.0f, 0.0f) - m_LogoOffset;
+	}
+	m_LogoOffset += diff / 500.0f;
+	m_LogoSprite.setPosition(m_LogoOffset);
 	
 	switch (m_AnimState)
 	{
@@ -117,7 +125,7 @@ void LoadingState::Tick(sf::Time elapsed)
 	} break;
 	}
 
-	sf::Color spriteColor = m_FadeTransition.GetCurrentTransitionData().color;
+	sf::Color spriteColor = m_FadeTransition.GetCurrentColor();
 	spriteColor.a = sf::Uint8(m_SpriteFlicker * 127 + 128);
 	m_LogoSprite.setColor(spriteColor);
 }

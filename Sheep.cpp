@@ -26,17 +26,17 @@ Sheep::Sheep(World* world, sf::Vector2f position) :
 	m_Vel = sf::Vector2f(cos(PI_2 + m_Actor->GetAngle()) * m_ForwardVel, sin(PI_2 + m_Actor->GetAngle()) * m_ForwardVel);
 	m_Actor->SetLinearVelocity(m_Vel);
 
-	TransitionData hurtTransitionStart;
-	hurtTransitionStart.color = sf::Color(200, 110, 80);
-	TransitionData hurtTransitionEnd;
-	hurtTransitionEnd.color = sf::Color(235, 240, 250);
-	m_HurtTransition = TransformationTransition(hurtTransitionStart, hurtTransitionEnd, sf::milliseconds(450), ApexTransition::EaseType::LINEAR);
+	sf::Color hurtTransitionStart;
+	hurtTransitionStart = sf::Color(200, 110, 80);
+	sf::Color hurtTransitionEnd;
+	hurtTransitionEnd = sf::Color(235, 240, 250);
+	m_HurtTransition = ColorTransition(hurtTransitionStart, hurtTransitionEnd, sf::milliseconds(450), ApexTransition::EaseType::LINEAR);
 	m_HurtTransition.SetFinished();
 
-	TransitionData blinkTransitionStart;
-	blinkTransitionStart.transformable.scale(1.0f, 0.1f);
-	TransitionData blinkTransitionEnd;
-	m_BlinkTransition = TransformationTransition(blinkTransitionStart, blinkTransitionEnd, sf::milliseconds(80), ApexTransition::EaseType::LINEAR);
+	sf::Transformable blinkTransitionStart;
+	blinkTransitionStart.scale(1.0f, 0.1f);
+	sf::Transformable blinkTransitionEnd;
+	m_BlinkTransition = TransformableTransition(blinkTransitionStart, blinkTransitionEnd, sf::milliseconds(80), ApexTransition::EaseType::LINEAR);
 	m_SecondsUntilNextBlink = 2.0f + rand() % 3;
 }
 
@@ -76,19 +76,19 @@ void Sheep::Tick(sf::Time elapsed)
 
 void Sheep::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	const TransitionData hurtTransitionData = m_HurtTransition.GetCurrentTransitionData();
+	const sf::Color hurtTransitionColor = m_HurtTransition.GetCurrentColor();
 	const sf::Color pColor = m_BgRect.getFillColor();
 	const sf::Vector2f center = m_BgRect.getPosition() + m_BgRect.getSize() / 2.0f;
 
 	// Body
 	float angle = m_Actor->GetAngle() * 180.0f / PI;
 	states.transform.rotate(angle, center);
-	m_BgRect.setFillColor(pColor * hurtTransitionData.color);
+	m_BgRect.setFillColor(pColor * hurtTransitionColor);
 	target.draw(m_BgRect, states);
 
 	// Eyes
-	const TransitionData blinkTransitionData = m_BlinkTransition.GetCurrentTransitionData();
-	const sf::Vector2f blinkScale = blinkTransitionData.transformable.getScale();
+	const sf::Transformable blinkTransitionData = m_BlinkTransition.GetCurrentTransformable();
+	const sf::Vector2f blinkScale = blinkTransitionData.getScale();
 	states.transform.scale(blinkScale, center + sf::Vector2f(0.0f, 3.5f));
 
 	m_BgRect.setFillColor(sf::Color::Black);

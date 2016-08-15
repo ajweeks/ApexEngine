@@ -22,6 +22,7 @@ void ApexTransition::Create(sf::Time totalTime, EaseType easeType)
 {
 	m_TotalTime = totalTime;
 	m_EaseType = easeType;
+	m_TimeElapsed = sf::Time::Zero;
 }
 
 void ApexTransition::Tick(sf::Time elapsed)

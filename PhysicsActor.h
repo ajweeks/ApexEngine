@@ -11,7 +11,7 @@ class ApexContactListener;
 class PhysicsActor
 {
 public:
-	PhysicsActor(sf::Vector2f pos, b2BodyType bodyType, float angle);
+	PhysicsActor(sf::Vector2f pos, b2BodyType bodyType, float angle = 0.0f);
 	virtual ~PhysicsActor();
 
 	PhysicsActor(const PhysicsActor&) = delete;

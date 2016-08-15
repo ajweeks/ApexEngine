@@ -159,6 +159,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ApexButtonList.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ApexContactListener.cpp">
       <SubType>
       </SubType>
@@ -190,6 +194,7 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="ColorTransition.cpp" />
     <ClCompile Include="DustParticle.cpp">
       <SubType>
       </SubType>
@@ -208,7 +213,7 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="LevelTile.cpp">
+    <ClCompile Include="Tile.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -259,7 +264,6 @@
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="ApexKeyListener.cpp" />
     <ClCompile Include="Layer.cpp" />
-    <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -269,7 +273,7 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="TransformationTransition.cpp">
+    <ClCompile Include="TransformableTransition.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -314,6 +318,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="ColorTransition.h" />
     <ClInclude Include="DustParticle.h">
       <SubType>
       </SubType>
@@ -336,10 +341,11 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="LevelTile.h">
+    <ClInclude Include="Tile.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="World.h" />
     <ClInclude Include="LightManager.h">
       <SubType>
       </SubType>
@@ -398,7 +404,7 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="TileSet.h" />
-    <ClInclude Include="TransformationTransition.h">
+    <ClInclude Include="TransformableTransition.h">
       <SubType>
       </SubType>
     </ClInclude>

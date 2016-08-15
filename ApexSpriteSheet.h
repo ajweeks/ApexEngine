@@ -43,7 +43,7 @@ public:
 
 	// Call this if the entire image is only one sequence
 	void SetEntireSpriteAsOneSequence(sf::Int32 msPerFrame);
-	void SetFrameIndex(int frameIndex);
+	void SetFrameIndex(sf::Uint8 frameIndex);
 
 	sf::Uint8 GetCurrentSequenceFramesLong() const;
 

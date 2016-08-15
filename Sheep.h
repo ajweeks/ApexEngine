@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Mob.h"
-#include "TransformationTransition.h"
+#include "ColorTransition.h"
+#include "TransformableTransition.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 
@@ -32,8 +33,8 @@ private:
 
 	int m_HitPoints = 5;
 	bool m_IsDead = false;
-	TransformationTransition m_HurtTransition;
-	TransformationTransition m_BlinkTransition;
+	ColorTransition m_HurtTransition;
+	TransformableTransition m_BlinkTransition;
 	float m_SecondsUntilNextBlink;
 
 };

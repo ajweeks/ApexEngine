@@ -74,12 +74,6 @@
     <ClCompile Include="ApexMouse.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="Layer.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>Source Files\Level\Entity\Weapon</Filter>
     </ClCompile>
@@ -137,9 +131,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Level\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="LevelTile.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClCompile>
     <ClCompile Include="Minimap.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
@@ -165,9 +156,6 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="ApexTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformationTransition.cpp">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClCompile>
     <ClCompile Include="FloatTransition.cpp">
@@ -197,10 +185,25 @@
     <ClCompile Include="LoadingState.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
+    <ClCompile Include="TransformableTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
     <ClCompile Include="ApexButtonList.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Layer.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
       <Filter>Source Files\Level\World</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,15 +237,6 @@
     </ClInclude>
     <ClInclude Include="logo.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="Layer.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="TileSet.h">
-      <Filter>Source Files\Level</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>Source Files\Level\Entity\Weapon</Filter>
@@ -304,9 +298,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Source Files\Level\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="LevelTile.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="Minimap.h">
       <Filter>Source Files\Level</Filter>
     </ClInclude>
@@ -332,9 +323,6 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="ApexTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformationTransition.h">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClInclude>
     <ClInclude Include="FloatTransition.h">
@@ -367,10 +355,28 @@
     <ClInclude Include="LoadingState.h">
       <Filter>Source Files\State</Filter>
     </ClInclude>
+    <ClInclude Include="TransformableTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
     <ClInclude Include="ApexButtonList.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="TileSet.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
     <ClInclude Include="World.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
       <Filter>Source Files\Level\World</Filter>
     </ClInclude>
   </ItemGroup>

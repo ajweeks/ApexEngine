@@ -106,10 +106,8 @@ ApexMain::ApexMain()
 
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 
-	TransitionData start;
-	start.color = sf::Color::White;
-	TransitionData end;
-	end.color = sf::Color::White;
+	sf::Color start = sf::Color::White;
+	sf::Color end = sf::Color::White;
 	m_FadeTransition.Create(start, end, sf::seconds(1));
 	m_FadeTransition.SetFinished();
 }
@@ -390,7 +388,7 @@ void ApexMain::Draw()
 	m_CursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*m_Window)));
 	m_Window->draw(m_CursorSprite);
 
-	const sf::Color color = m_FadeTransition.GetCurrentTransitionData().color;
+	const sf::Color color = m_FadeTransition.GetCurrentColor();
 	if (color != sf::Color::White)
 	{
 		sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
@@ -433,6 +431,14 @@ sf::Vector2i ApexMain::GetMouseCoordsScreenSpace(sf::View currentView) const
 	mouseCoords += static_cast<sf::Vector2i>((currentView.getCenter() - currentView.getSize() / 2.0f));
 
 	return mouseCoords;
+}
+
+bool ApexMain::IsMouseInWindow() const
+{
+	const sf::Vector2i mousePos = GetMouseCoordsScreenSpace();
+	const sf::Vector2i windowSize = static_cast<sf::Vector2i>(m_Window->getSize());
+	return (mousePos.x >= 0 && mousePos.y >= 0 && 
+		mousePos.x < windowSize.x && mousePos.y < windowSize.y);
 }
 
 void ApexMain::LoadCursorTextures()
@@ -621,10 +627,10 @@ void ApexMain::SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeTyp
 
 void ApexMain::SetColorFade(sf::Time length, sf::Color from, sf::Color to, ApexTransition::EaseType easeType)
 {
-	TransitionData start;
-	start.color = from;
-	TransitionData end;
-	end.color = to;
+	sf::Color start;
+	start = from;
+	sf::Color end;
+	end = to;
 	m_FadeTransition.Create(start, end, length, easeType);
 	m_FadeTransition.Restart();
 }

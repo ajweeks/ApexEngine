@@ -13,6 +13,7 @@
 *.tlog
 /Release/
 /Debug/
+/resources/inspiration/
 
 # Windows image file caches
 Thumbs.db

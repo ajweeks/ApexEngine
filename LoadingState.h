@@ -3,7 +3,7 @@
 #include "BaseState.h"
 #include "ApexMain.h"
 #include "ApexButton.h"
-#include "TransformationTransition.h"
+#include "ColorTransition.h"
 
 #include <SFML\Graphics\Shader.hpp>
 
@@ -30,11 +30,13 @@ private:
 
 	sf::Sprite m_LogoSprite;
 
-	TransformationTransition m_FadeTransition;
+	ColorTransition m_FadeTransition;
 	sf::Time m_TimeToShowLogo;
 	sf::Time m_BufferTime;
 	AnimationState m_AnimState;
 	float m_SpriteFlicker;
+	
+	sf::Vector2f m_LogoOffset;
 
 };
 

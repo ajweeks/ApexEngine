@@ -36,7 +36,7 @@ Bullet::~Bullet()
 void Bullet::Tick(sf::Time elapsed)
 {
 	sf::Vector2f pos = m_Actor->GetPosition();
-	if (pos.x < 0 || pos.x > m_Level->GetWidth() || pos.y < 0 || pos.y > m_Level->GetHeight())
+	if (pos.x < 0 || pos.x > m_World->GetWidth() || pos.y < 0 || pos.y > m_World->GetHeight())
 	{
 		m_BulletManager->RemoveBullet(this);
 		return;

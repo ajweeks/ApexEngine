@@ -116,7 +116,7 @@ void ApexDebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Colo
 
 void ApexDebugDraw::DrawTransform(const b2Transform& xf)
 {
-	static const float lineLength = 0.2f;
+	static const float lineLength = 0.05f;
 
 	b2Vec2 xAxis = b2Vec2(xf.p + lineLength * xf.q.GetXAxis());
 	sf::Vertex redLine[2] = {
