@@ -27,6 +27,10 @@ private:
 	{
 		PLAY, QUIT
 	};
+	enum class FadingOutTo
+	{
+		GAME, QUIT, NONE
+	};
 
 	ApexButtonList m_Buttons;
 
@@ -36,6 +40,6 @@ private:
 
 	sf::Sprite m_LogoSprite;
 
-
+	FadingOutTo m_FadingOutTo = FadingOutTo::NONE;
 };
 

@@ -4,26 +4,28 @@
 #include "TileSet.h"
 #include "TextureManager.h"
 #include "Tile.h"
-
-#include <JSON\json.hpp>
+#include "World.h"
+#include "Mob.h"
+#include "Item.h"
+#include "ApexMath.h"
+#include "Interactable.h"
+#include "PhysicsActor.h"
+#include "ApexNPC.h"
+#include "Layer.h"
+#include "LightManager.h"
 
 #include <fstream>
 
 using json = nlohmann::json;
 
-Map::Map()
+Map::Map(World* world, std::string directory) :
+	m_LightManager(world, directory),
+	m_World(world)
 {
-}
+	const std::string fileName = "tiles.json";
+	const std::string filePath = directory + fileName;
 
-Map::Map(World* world, std::string filePath, ApexContactListener* contactListener)
-{
-	Create(world, filePath, contactListener);
-}
-
-void Map::Create(World* world, std::string filePath, ApexContactListener* contactListener)
-{
 	std::ifstream fileInStream;
-
 	fileInStream.open(filePath);
 
 	if (!fileInStream)
@@ -45,7 +47,6 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 	wholeFileString.erase(std::remove_if(wholeFileString.begin(), wholeFileString.end(), isspace), wholeFileString.end());
 
 	json tileMap = json::parse(wholeFileString);
-
 	if (tileMap.empty())
 	{
 		std::cout << "File \"" << filePath << "\" was empty!" << std::endl;
@@ -71,9 +72,11 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 	tileAtlas.reserve(tileCount);
 	for (int i = 0; i < tileCount; ++i)
 	{
-		const int ID = i -1;
-		int doorID = -1;
+		Tile::Type tileType = Tile::Type::NORMAL;
+		Tile::ExtraInfo tileExtraInfo{};
+		const int ID = i - 1;
 		bool solid = false;
+		bool sensor = false;
 		const std::string tileIndexString = std::to_string(ID);
 		if (tileProperties.find(tileIndexString) != tileProperties.end())
 		{
@@ -82,30 +85,44 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 			{
 				solid = currentTile["solid"].get<bool>();
 			}
+			if (currentTile.find("sensor") != currentTile.end())
+			{
+				sensor = currentTile["sensor"].get<bool>();
+			}
 			if (currentTile.find("id") != currentTile.end())
 			{
 				const std::string tileIDString = currentTile["id"].get<std::string>();
 				std::string extraChars;
 				if (StringBeginsWith(tileIDString, "door", extraChars))
 				{
-					doorID = stoi(extraChars);
+					tileExtraInfo.buildingID = stoi(extraChars);
+					tileType = Tile::Type::DOOR;
+				}
+				if (StringBeginsWith(tileIDString, "exit", extraChars))
+				{
+					tileType = Tile::Type::EXIT;
 				}
 				if (StringBeginsWith(tileIDString, "building", extraChars))
 				{
-					// TODO: "Inform" tiles that they are part of a building (?)
-					//int buildingID = stoi(extraChars);
+					tileType = Tile::Type::BUILDING;
+					tileExtraInfo.buildingID = stoi(extraChars);
 				}
 				if (StringBeginsWith(tileIDString, "bed", extraChars))
 				{
-					// TODO: "Inform" tiles that they are part of a bed (?)
+					tileType = Tile::Type::BED;
 				}
 			}
 		}
-		Tile* tile = new Tile(ID, solid, doorID);
+		Tile* tile = new Tile(ID, solid, sensor, tileType);
+		tile->SetExtraInfo(tileExtraInfo);
 		tileAtlas.push_back(tile);
 	}
 
 	m_TileSet = new TileSet(TextureManager::GetTexture(TextureManager::GENERAL_TILES), tileSetTileSize, tileSetMargin, tileSetSpacing);
+
+	m_PlayerSpawnPosition = APEX->StringToVector2f(tileMap["properties"]["player_spawn"]);
+	m_PlayerSpawnPosition.x *= m_TileSet->m_TileSize;
+	m_PlayerSpawnPosition.y *= m_TileSet->m_TileSize;
 
 	json layers = tileMap["layers"];
 	for (json::iterator i = layers.begin(); i != layers.end(); ++i)
@@ -129,15 +146,19 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 			for (size_t i = 0; i < tileIDs.size(); ++i)
 			{
 				const int id = tileIDs[i];
-				Tile* tile = new Tile(id, tileAtlas[id]->IsSolid(), tileAtlas[id]->GetDoorID());
+				Tile::Type tileType = tileAtlas[id]->GetType();
+				Tile* tile = new Tile(id, tileAtlas[id]->IsSolid(), tileAtlas[id]->IsSensor(), tileType);
+				tile->SetExtraInfo(tileAtlas[id]->GetExtraInfo());
 				tiles.push_back(tile);
 			}
 
-			Layer* newLayer = new Layer(world, tiles, m_TileSet, layerName, layerVisible,
-				layerOpacity, layerType, layerWidth, layerHeight, contactListener);
+			Layer* newLayer = new Layer(m_World, tiles, m_TileSet, layerName, layerVisible,
+				layerOpacity, layerType, layerWidth, layerHeight);
 
-			if (layerName.compare("foreground") == 0) m_ForegroundLayers.push_back(newLayer);
-			else m_BackgroundLayers.push_back(newLayer);
+			if (layerName.compare("background") == 0) m_BackgroundLayer = newLayer;
+			else if (layerName.compare("midground") == 0) m_MidgroundLayer = newLayer;
+			else if (layerName.compare("foreground") == 0) m_ForegroundLayer = newLayer;
+			else ApexOutputDebugString("ERROR: Unhandled layer name! " + layerName + "\n");
 		} break;
 		case Layer::Type::OBJECT:
 		{
@@ -166,53 +187,249 @@ void Map::Create(World* world, std::string filePath, ApexContactListener* contac
 		delete tileAtlas[i];
 	}
 	tileAtlas.clear();
+
+	if (!m_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
+	{
+		ApexOutputDebugString("Could not either load or compile color-sprite.frag\n");
+	}
+	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
 }
 
 Map::~Map()
 {
-	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
-	{
-		delete m_BackgroundLayers[i];
-	}
-	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
-	{
-		delete m_ForegroundLayers[i];
-	}
+	delete m_BackgroundLayer;
+	delete m_MidgroundLayer;
+	delete m_ForegroundLayer;
 
 	delete m_TileSet;
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		if (m_Mobs[i] != nullptr)
+		{
+			delete m_Mobs[i];
+		}
+	}
+	m_Mobs.clear();
+	for (size_t i = 0; i < m_MobsToBeRemoved.size(); ++i)
+	{
+		delete m_MobsToBeRemoved[i];
+	}
+	m_MobsToBeRemoved.clear();
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr)
+		{
+			delete m_Items[i];
+		}
+	}
+	m_Items.clear();
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); i++)
+	{
+		delete m_ItemsToBeRemoved[i];
+	}
+	m_ItemsToBeRemoved.clear();
+
+	m_HighlightedEntity = nullptr;
+}
+
+void Map::Reset()
+{
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		delete m_Items[i];
+	}
+	m_Items.clear();
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); i++)
+	{
+		delete m_ItemsToBeRemoved[i];
+	}
+	m_ItemsToBeRemoved.clear();
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		delete m_Mobs[i];
+	}
+	m_Mobs.clear();
+	for (size_t i = 0; i < m_MobsToBeRemoved.size(); ++i)
+	{
+		delete m_MobsToBeRemoved[i];
+	}
+	m_MobsToBeRemoved.clear();
+
+	json speechInfo = GetSpeechDataFromFile();
+	std::vector<json> characters = speechInfo["characters"].get<std::vector<json>>();
+	for (size_t i = 0; i < characters.size(); ++i)
+	{
+		m_Mobs.push_back(new ApexNPC(m_World, this, sf::Vector2f(128.0f + 16.0f * i, 228.0f), characters[i]));
+	}
+
+	m_HighlightedEntity = nullptr;
 }
 
 void Map::Tick(sf::Time elapsed)
 {
-	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
 	{
-		m_BackgroundLayers[i]->Tick(elapsed);
+		delete m_ItemsToBeRemoved[i];
 	}
-	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
+	m_ItemsToBeRemoved.clear();
+	
+	m_BackgroundLayer->Tick(elapsed);
+	m_MidgroundLayer->Tick(elapsed);
+	m_ForegroundLayer->Tick(elapsed);
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
-		m_ForegroundLayers[i]->Tick(elapsed);
+		if (m_Mobs[i] != nullptr)
+		{
+			m_Mobs[i]->Tick(elapsed);
+		}
+	}
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr)
+		{
+			m_Items[i]->Tick(elapsed);
+		}
+	}
+
+	m_LightManager.Tick(elapsed);
+
+	const float minDist = 28.0f;
+	float distanceToNearestEntity;
+	Entity* nearestEntity = GetNearestInteractableEntityTo(m_World->GetPlayer(), distanceToNearestEntity);
+	if (distanceToNearestEntity != -1.0f && distanceToNearestEntity <= minDist)
+	{
+		m_HighlightedEntity = nearestEntity;
+	}
+	else
+	{
+		m_HighlightedEntity = nullptr;
+	}
+
+	// Somehow the player moved away while talking with someone, clear the speech bubble
+	if (m_HighlightedEntity == nullptr && m_World->IsShowingSpeechBubble())
+	{
+		m_World->ClearSpeechShowing();
 	}
 }
 
-void Map::DrawForeground(sf::RenderTarget& target, sf::RenderStates states)
+/*
+
+	First draw the background tiles
+	Second, sort all items/mobs/player by their y pos
+	Third draw items/mobs/player from back to front
+
+*/
+void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	for (size_t i = 0; i < m_ForegroundLayers.size(); ++i)
+	m_BackgroundLayer->Draw(target, states);
+	m_MidgroundLayer->Draw(target, states);
+	m_ForegroundLayer->Draw(target, states);
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
 	{
-		m_ForegroundLayers[i]->draw(target, states);
+		if (m_Mobs[i] != nullptr && m_Mobs[i] != m_HighlightedEntity)
+		{
+			m_Mobs[i]->Draw(target, states);
+		}
+	}
+
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] != nullptr && m_Items[i] != m_HighlightedEntity)
+		{
+			m_Items[i]->Draw(target, states);
+		}
+	}
+
+	if (m_HighlightedEntity != nullptr)
+	{
+		states.shader = &m_OutlinedSpriteShader;
+		m_HighlightedEntity->Draw(target, states);
+		states.transform = states.Default.transform;
+		states.shader = states.Default.shader;
 	}
 }
 
-void Map::DrawBackground(sf::RenderTarget& target, sf::RenderStates states)
+Entity* Map::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
 {
-	for (size_t i = 0; i < m_BackgroundLayers.size(); ++i)
+	Entity* nearestSoFar = nullptr;
+	distance = -1.0f;
+
+	const sf::Vector2f sourcePos = sourceEntity->GetPhysicsActor()->GetPosition();
+	for (size_t i = 0; i < m_Mobs.size(); ++i)
 	{
-		m_BackgroundLayers[i]->draw(target, states);
+		Interactable* interactable = dynamic_cast<Interactable*>(m_Mobs[i]);
+		if (interactable)
+		{
+			const sf::Vector2f otherPos = m_Mobs[i]->GetPhysicsActor()->GetPosition();
+			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+			if (distance == -1.0f || currentDistance < distance)
+			{
+				distance = currentDistance;
+				nearestSoFar = m_Mobs[i];
+			}
+		}
+	}
+	for (size_t i = 0; i < m_Items.size(); ++i)
+	{
+		Interactable* interactable = dynamic_cast<Interactable*>(m_Items[i]);
+		if (interactable)
+		{
+			const sf::Vector2f otherPos = m_Items[i]->GetPhysicsActor()->GetPosition();
+			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
+
+			if (distance == -1.0f || currentDistance < distance)
+			{
+				distance = currentDistance;
+				nearestSoFar = m_Items[i];
+			}
+		}
+	}
+
+	return nearestSoFar;
+}
+
+void Map::InteractWithHighlightedItem()
+{
+	if (m_HighlightedEntity != nullptr)
+	{
+		dynamic_cast<Interactable*>(m_HighlightedEntity)->Interact();
 	}
 }
 
 int Map::GetTileSize() const
 {
 	return m_TileSet->m_TileSize;
+}
+
+void Map::CreatePhysicsActors(ApexContactListener* contactListener)
+{
+	m_BackgroundLayer->CreatePhysicsActors(contactListener);
+	m_MidgroundLayer->CreatePhysicsActors(contactListener);
+	m_ForegroundLayer->CreatePhysicsActors(contactListener);
+}
+
+void Map::DestroyPhysicsActors()
+{
+	m_BackgroundLayer->DestroyPhysicsActors();
+	m_MidgroundLayer->DestroyPhysicsActors();
+	m_ForegroundLayer->DestroyPhysicsActors();
+}
+
+sf::Vector2f Map::GetPlayerSpawnPosition() const
+{
+	return m_PlayerSpawnPosition;
+}
+
+void Map::ToggleLightingEditor()
+{
+	m_LightManager.ToggleShowingEditor();
 }
 
 bool Map::StringBeginsWith(const std::string& string, const std::string& begin, std::string& extraChars)
@@ -237,4 +454,102 @@ int Map::GetTilesWide() const
 int Map::GetTilesHigh() const
 {
 	return m_TilesHigh;
+}
+
+void Map::AddMob(Mob* mob)
+{
+	m_Mobs.push_back(mob);
+}
+
+void Map::RemoveMob(Mob* mob)
+{
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		if (m_Mobs[i] == mob)
+		{
+			delete m_Mobs[i];
+			m_Mobs[i] = nullptr;
+			return;
+		}
+	}
+}
+
+void Map::AddMobToBeRemoved(Mob* mob)
+{
+	for (size_t i = 0; i < m_MobsToBeRemoved.size(); ++i)
+	{
+		if (m_MobsToBeRemoved[i] == mob) return;
+	}
+
+	m_MobsToBeRemoved.push_back(mob);
+
+	for (size_t i = 0; i < m_Items.size(); ++i)
+	{
+		if (m_Mobs[i] == mob)
+		{
+			m_Mobs[i] = nullptr;
+			break;
+		}
+	}
+}
+
+void Map::AddItem(Item* item)
+{
+	m_Items.push_back(item);
+}
+
+void Map::RemoveItem(Item* item)
+{
+	for (size_t i = 0; i < m_Items.size(); i++)
+	{
+		if (m_Items[i] == item)
+		{
+			delete m_Items[i];
+			m_Items[i] = nullptr;
+			return;
+		}
+	}
+}
+
+void Map::AddItemToBeRemoved(Item* item)
+{
+	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
+	{
+		if (m_ItemsToBeRemoved[i] == item) return;
+	}
+
+	m_ItemsToBeRemoved.push_back(item);
+
+	for (size_t i = 0; i < m_Items.size(); ++i)
+	{
+		if (m_Items[i] == item)
+		{
+			m_Items[i] = nullptr;
+			break;
+		}
+	}
+}
+
+// TODO: Make this static?
+json Map::GetSpeechDataFromFile()
+{
+	json result;
+	std::ifstream inputStream;
+
+	inputStream.open("resources/speech.json");
+	if (inputStream.is_open())
+	{
+		std::string line;
+		std::stringstream stringStream;
+
+		while (std::getline(inputStream, line))
+		{
+			stringStream << line;
+		}
+		inputStream.close();
+
+		result = json::parse(stringStream.str());
+	}
+
+	return result;
 }

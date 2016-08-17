@@ -59,7 +59,7 @@ sf::Color ColorTransition::GetCurrentColor()
 	return result;
 }
 
-void ColorTransition::Swap()
+void ColorTransition::SwapAndRestart()
 {
 	sf::Color tempData = m_StartColor;
 	m_StartColor = m_EndColor;

@@ -70,7 +70,7 @@ sf::Transformable TransformableTransition::GetCurrentTransformable()
 	return result;
 }
 
-void TransformableTransition::Swap()
+void TransformableTransition::SwapAndRestart()
 {
 	sf::Transformable tempData = m_StartTransformable;
 	m_StartTransformable = m_EndTransformable;

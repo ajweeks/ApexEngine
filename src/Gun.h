@@ -12,11 +12,12 @@ class World;
 class BulletManager;
 class Game;
 class AmmoDrop;
+class Map;
 
 class Gun : public Entity, public ApexMouseListener
 {
 public:
-	Gun(World* world, sf::Vector2f position);
+	Gun(World* world, Map* map, sf::Vector2f position);
 	virtual ~Gun();
 
 	Gun(const Gun&) = delete;

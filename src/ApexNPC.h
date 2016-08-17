@@ -12,7 +12,7 @@
 class ApexNPC : public Mob, public Interactable
 {
 public:
-	ApexNPC(World* world, sf::Vector2f position, const nlohmann::json& info);
+	ApexNPC(World* world, Map* map, sf::Vector2f position, const nlohmann::json& info);
 	virtual ~ApexNPC();
 
 	ApexNPC(const ApexNPC&) = delete;

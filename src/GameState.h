@@ -29,6 +29,7 @@ public:
 	void Reset();
 
 private:
+	// LATER: Add more worlds? (underworld, aether, ...)
 	World* m_World = nullptr;
 
 };

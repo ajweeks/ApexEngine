@@ -16,9 +16,7 @@
 #include "HUD.h"
 #include "ApexNPC.h"
 #include "ApexMath.h"
-#include "Interactable.h"
 #include "Coin.h"
-#include "Building.h"
 
 #include <fstream>
 
@@ -27,23 +25,22 @@ using namespace nlohmann;
 const sf::Uint32 World::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 50;
 
 World::World(int worldIndex) :
-	ApexWindowListener(),
-	m_WorldIndex(worldIndex),
-	m_LightManager(worldIndex, this)
+	m_WorldIndex(worldIndex)
 {
 	m_DebugOverlay = new ApexDebug();
 	m_ShowingDebugOverlay = false;
 
 	m_BulletManager = new BulletManager();
 
-	CreateMap();
+	m_Map = new Map(this, "resources/worlds/" + std::to_string(m_WorldIndex) + "/");
 
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
 	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
 
-	//ReadBuildingData();
+	ReadBuildingData();
 
-	m_Player = new Player(this);
+	m_Player = new Player(this, m_Map);
+	m_Player->GetPhysicsActor()->SetPosition(m_Map->GetPlayerSpawnPosition());
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float aspectRatio = float(windowSize.x / windowSize.y);
@@ -58,58 +55,27 @@ World::World(int worldIndex) :
 
 	m_SpeechBubbleSpriteSheet = ApexSpriteSheet(TextureManager::GetTexture(TextureManager::SPEECH_BUBBLE), 16, 16);
 
-	if (!m_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
-	{
-		ApexOutputDebugString("Could not either load or compile color-sprite.frag\n");
-	}
-	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
-
 	m_SpeechLetterTransition.SetEaseType(ApexTransition::EaseType::LINEAR);
 }
 
 World::~World()
 {
-	if (m_Map != nullptr)
+	delete m_Map;
+
+	for (size_t i = 0; i < m_Maps.size(); ++i)
 	{
-		delete m_Map;
+		delete m_Maps[i];
 	}
+	m_Maps.clear();
+
 	delete m_Player;
 	delete m_Camera;
-	delete m_DebugOverlay;
-	delete m_BulletManager;
-	delete m_PauseScreen;
 	delete m_Minimap;
 	delete m_HUD;
 
-	for (size_t i = 0; i < m_Mobs.size(); i++)
-	{
-		if (m_Mobs[i] != nullptr)
-		{
-			delete m_Mobs[i];
-		}
-	}
-	m_Mobs.clear();
-
-	for (size_t i = 0; i < m_Items.size(); i++)
-	{
-		if (m_Items[i] != nullptr)
-		{
-			delete m_Items[i];
-		}
-	}
-	m_Items.clear();
-
-	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
-	{
-		delete m_ItemsToBeRemoved[i];
-	}
-	m_ItemsToBeRemoved.clear();
-
-	for (size_t i = 0; i < m_Buildings.size(); ++i)
-	{
-		delete m_Buildings[i];
-	}
-	m_Buildings.clear();
+	delete m_DebugOverlay;
+	delete m_BulletManager;
+	delete m_PauseScreen;
 }
 
 void World::Reset()
@@ -117,46 +83,22 @@ void World::Reset()
 	m_Player->Reset();
 	m_BulletManager->Reset();
 
-	for (size_t i = 0; i < m_Mobs.size(); i++)
-	{
-		delete m_Mobs[i];
-	}
-	m_Mobs.clear();
-	//m_Mobs.push_back(new Sheep(this, sf::Vector2f(400, 50)));
+	m_Map->Reset();
+	m_Map->CreatePhysicsActors(this);
 
-	json speechInfo = GetSpeechDataFromFile();
-	std::vector<json> characters = speechInfo["characters"].get<std::vector<json>>();
-	for (size_t i = 0; i < characters.size(); ++i)
+	for (size_t i = 0; i < m_Maps.size(); i++)
 	{
-		m_Mobs.push_back(new ApexNPC(this, sf::Vector2f(128.0f + 16.0f * i, 228.0f), characters[i]));
+		m_Maps[i]->Reset();
 	}
-
-	for (size_t i = 0; i < m_Items.size(); i++)
-	{
-		delete m_Items[i];
-	}
-	m_Items.clear();
-
-	m_Items.push_back(new Coin(this, sf::Vector2f(211, 151)));
-	m_Items.push_back(new Coin(this, sf::Vector2f(98, 262)));
-	m_Items.push_back(new Coin(this, sf::Vector2f(61, 250)));
 
 	ClearSpeechShowing();
-	m_HighlightedEntity = nullptr;
-
-	m_BuildingPlayerIsIn = nullptr;
-}
-
-void World::LoadShaders()
-{
-	m_LightManager.LoadShader();
 }
 
 void World::ReadBuildingData()
 {
 	std::ifstream fileInStream;
 
-	const std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
+	std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
 	const std::string fileName = "tiles.json";
 
 	int buildingIndex = 0;
@@ -172,50 +114,23 @@ void World::ReadBuildingData()
 		{
 			fileFound = true;
 
-			Building* building = new Building(this, fullPath, this);
-			m_Buildings.push_back(building);
+			Map* map = new Map(this, directoryPath + std::to_string(buildingIndex) + "/");
+			m_Maps.push_back(map);
 
 			++buildingIndex;
 		}
 	} while (fileFound);
+	assert(buildingIndex == m_Maps.size());
 }
 
-bool World::CreateBuilding(int buildingIndex)
+void World::CreateMapPhysicsActors(int mapIndex)
 {
-	assert(m_Buildings.size() == buildingIndex);
-
-	std::ifstream fileInStream;
-
-	const std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
-	const std::string fileName = "tiles.json";
-
-	const std::string fullPath = directoryPath + std::to_string(buildingIndex) + "/" + fileName;
-	fileInStream.open(fullPath);
-
-	if (fileInStream)
-	{
-		Building* building = new Building(this, fullPath, this);
-		m_Buildings.push_back(building);
-
-		return true;
-	}
-	return false;
+	m_Maps[mapIndex]->CreatePhysicsActors(this);
 }
 
-void World::DeleteBuilding(int buildingIndex)
+void World::DeleteMapPhysicsActors(int mapIndex)
 {
-	assert(buildingIndex == m_Buildings.size() - 1);
-
-	if (buildingIndex >= 0 && buildingIndex < int(m_Buildings.size()))
-	{
-		delete m_Buildings[buildingIndex];
-		m_Buildings.resize(m_Buildings.size() - 1);
-	}
-}
-
-void World::CreateMap()
-{
-	m_Map = new Map(this, "resources/worlds/" + std::to_string(m_WorldIndex) + "/tiles.json", this);
+	m_Maps[mapIndex]->DestroyPhysicsActors();
 }
 
 bool World::IsPaused() const
@@ -226,6 +141,12 @@ bool World::IsPaused() const
 void World::TogglePaused(bool pauseSounds)
 {
 	SetPaused(!m_Paused, pauseSounds);
+}
+
+Map* World::GetCurrentMap()
+{
+	if (m_CurrentMapShowingIndex == -1) return m_Map;
+	else return m_Maps[m_CurrentMapShowingIndex];
 }
 
 void World::SetPaused(bool paused, bool pauseSounds)
@@ -242,11 +163,6 @@ void World::SetPaused(bool paused, bool pauseSounds)
 	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
 }
 
-void World::LoadLights()
-{
-	m_LightManager.LoadLightData();
-}
-
 void World::Tick(sf::Time elapsed)
 {
 	if (m_Paused)
@@ -255,59 +171,43 @@ void World::Tick(sf::Time elapsed)
 		return;
 	}
 
-	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
+	if (APEX->IsFadingOut() && m_FadingOutTo != FadingOutTo::NONE)
 	{
-		delete m_ItemsToBeRemoved[i];
-	}
-	m_ItemsToBeRemoved.clear();
+		switch (m_FadingOutTo)
+		{
+		case FadingOutTo::ENTER_BUILDING:
+			m_Map->DestroyPhysicsActors();
+			CreateMapPhysicsActors(m_MapToTravelToIndex);
+			m_Player->GetPhysicsActor()->SetPosition(m_Maps[m_MapToTravelToIndex]->GetPlayerSpawnPosition());
+			m_CurrentMapShowingIndex = m_MapToTravelToIndex;
+			m_MapToTravelToIndex = -1;
+			break;
+		case FadingOutTo::EXIT_BUILDING:
+			DeleteMapPhysicsActors(m_CurrentMapShowingIndex);
+			m_Map->CreatePhysicsActors(this);
+			m_Player->GetPhysicsActor()->SetPosition(m_Map->GetPlayerSpawnPosition());
+			m_CurrentMapShowingIndex = -1;
+			break;
+		case FadingOutTo::NONE:
+		default:
+			break;
+		}
 
-	if (m_Map != nullptr)
-	{
-		m_Map->Tick(elapsed);
+		m_FadingOutTo = FadingOutTo::NONE;
+		return;
 	}
+
+
+	GetCurrentMap()->Tick(elapsed);
+
 	//m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
 	m_HUD->Tick(elapsed);
 
-	for (size_t i = 0; i < m_Mobs.size(); i++)
-	{
-		if (m_Mobs[i] != nullptr)
-		{
-			m_Mobs[i]->Tick(elapsed);
-		}
-	}
-
-	for (size_t i = 0; i < m_Items.size(); i++)
-	{
-		if (m_Items[i] != nullptr)
-		{
-			m_Items[i]->Tick(elapsed);
-		}
-	}
-
 	m_ParticleManager.Tick(elapsed);
 	if (m_ShowingDebugOverlay) m_DebugOverlay->Tick(elapsed);
-	m_LightManager.Tick(elapsed);
-
-	const float minDist = 28.0f;
-	float distanceToNearestEntity;
-	Entity* nearestEntity = GetNearestInteractableEntityTo(m_Player, distanceToNearestEntity);
-	if (distanceToNearestEntity != -1.0f && distanceToNearestEntity <= minDist)
-	{
-		m_HighlightedEntity = nearestEntity;
-	}
-	else
-	{
-		m_HighlightedEntity = nullptr;
-	}
-
-	// Somehow the player moved away while talking with someone, clear the speech bubble
-	if (m_HighlightedEntity == nullptr && IsShowingSpeechBubble())
-	{
-		ClearSpeechShowing();
-	}
 
 	m_SpeechLetterTransition.Tick(elapsed);
 	if (!m_CurrentSpeech.empty() &&
@@ -338,53 +238,12 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	sf::View cameraView = m_Camera->GetCurrentView();
 	target.setView(cameraView);
 
-	const bool playerIsInBuilding = m_BuildingPlayerIsIn != nullptr;
-	if (playerIsInBuilding)
-	{
-		m_BuildingPlayerIsIn->Draw(target, states);
-	}
-	else
-	{
-		m_Map->DrawBackground(target, states);
-	}
+	GetCurrentMap()->Draw(target, states);
 
 	m_BulletManager->Draw(target, states);
 	m_Player->Draw(target, states);
 
-	for (size_t i = 0; i < m_Mobs.size(); i++)
-	{
-		if (m_Mobs[i] != nullptr && m_Mobs[i] != m_HighlightedEntity)
-		{
-			m_Mobs[i]->Draw(target, states);
-		}
-	}
-
-	for (size_t i = 0; i < m_Items.size(); i++)
-	{
-		if (m_Items[i] != nullptr && m_Items[i] != m_HighlightedEntity)
-		{
-			m_Items[i]->Draw(target, states);
-		}
-	}
-
-	if (m_HighlightedEntity != nullptr)
-	{
-		states.shader = &m_OutlinedSpriteShader;
-		m_HighlightedEntity->Draw(target, states);
-		states.transform = states.Default.transform;
-		states.shader = states.Default.shader;
-	}
-
 	m_ParticleManager.Draw(target, states);
-
-	if (playerIsInBuilding)
-	{
-	}
-	else
-	{
-		m_Map->DrawForeground(target, states);
-		m_LightManager.Draw(target, states);
-	}
 
 	// Static elements
 	target.setView(target.getDefaultView());
@@ -469,11 +328,6 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.setView(cameraView);
 }
 
-void World::ToggleLightingEditor()
-{
-	m_LightManager.ToggleShowingEditor();
-}
-
 bool World::IsShowingSpeechBubble() const
 {
 	return !m_CurrentSpeech.empty();
@@ -495,14 +349,6 @@ void World::ClearSpeechShowing()
 	m_CurrentSpeech = "";
 }
 
-void World::InteractWithHighlightedItem()
-{
-	if (m_HighlightedEntity != nullptr)
-	{
-		dynamic_cast<Interactable*>(m_HighlightedEntity)->Interact();
-	}
-}
-
 void World::OnUnmappedKeypress(sf::Event::KeyEvent event)
 {
 	assert(m_Paused && m_PauseScreen != nullptr);
@@ -510,120 +356,27 @@ void World::OnUnmappedKeypress(sf::Event::KeyEvent event)
 	m_PauseScreen->OnUnmappedKeyPress(event);
 }
 
-void World::EnterBuilding(int buildingIndex)
+void World::EnterMap(int buildingIndex)
 {
-	CreateBuilding(buildingIndex);
-	m_BuildingPlayerIsIn = m_Buildings[buildingIndex];
-	delete m_Map;
-	m_Map = nullptr;
-	// TODO: Fade in/out here
+	APEX->StartFadeInOut();
+	m_FadingOutTo = FadingOutTo::ENTER_BUILDING;
+	m_MapToTravelToIndex = buildingIndex;
 }
 
-void World::ExitBuilding()
+void World::ExitMap()
 {
-	DeleteBuilding(m_Buildings.size() - 1);
-	m_BuildingPlayerIsIn = nullptr;
-	CreateMap();
-	// TODO: Fade in/out here
+	APEX->StartFadeInOut();
+	m_FadingOutTo = FadingOutTo::EXIT_BUILDING;
 }
 
-Entity* World::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
+int World::GetWorldIndex() const
 {
-	Entity* nearestSoFar = nullptr;
-	distance = -1.0f;
-
-	const sf::Vector2f sourcePos = sourceEntity->GetPhysicsActor()->GetPosition();
-	for (size_t i = 0; i < m_Mobs.size(); ++i)
-	{
-		Interactable* interactable = dynamic_cast<Interactable*>(m_Mobs[i]);
-		if (interactable)
-		{
-			const sf::Vector2f otherPos = m_Mobs[i]->GetPhysicsActor()->GetPosition();
-			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
-
-			if (distance == -1.0f || currentDistance < distance)
-			{
-				distance = currentDistance;
-				nearestSoFar = m_Mobs[i];
-			}
-		}
-	}
-	for (size_t i = 0; i < m_Items.size(); ++i)
-	{
-		Interactable* interactable = dynamic_cast<Interactable*>(m_Items[i]);
-		if (interactable)
-		{
-			const sf::Vector2f otherPos = m_Items[i]->GetPhysicsActor()->GetPosition();
-			const float currentDistance = ApexMath::Distance(sourcePos, otherPos);
-
-			if (distance == -1.0f || currentDistance < distance)
-			{
-				distance = currentDistance;
-				nearestSoFar = m_Items[i];
-			}
-		}
-	}
-
-	return nearestSoFar;
+	return m_WorldIndex;
 }
 
 void World::AddParticle(ApexParticle* spriteSheet)
 {
 	m_ParticleManager.AddParticle(spriteSheet);
-}
-
-void World::AddMob(Mob* mob)
-{
-	m_Mobs.push_back(mob);
-}
-
-void World::RemoveMob(Mob* mob)
-{
-	for (size_t i = 0; i < m_Mobs.size(); i++)
-	{
-		if (m_Mobs[i] == mob)
-		{
-			delete m_Mobs[i];
-			m_Mobs[i] = nullptr;
-			return;
-		}
-	}
-}
-
-void World::AddItem(Item* item)
-{
-	m_Items.push_back(item);
-}
-
-void World::RemoveItem(Item* item)
-{
-	for (size_t i = 0; i < m_Items.size(); i++)
-	{
-		if (m_Items[i] == item)
-		{
-			delete m_Items[i];
-			m_Items[i] = nullptr;
-			return;
-		}
-	}
-}
-
-void World::AddItemToBeRemoved(Item* item)
-{
-	for (size_t i = 0; i < m_ItemsToBeRemoved.size(); ++i)
-	{
-		if (m_ItemsToBeRemoved[i] == item) return;
-	}
-	m_ItemsToBeRemoved.push_back(item);
-
-	for (size_t i = 0; i < m_Items.size(); ++i)
-	{
-		if (m_Items[i] == item)
-		{
-			m_Items[i] = nullptr;
-			break;
-		}
-	}
 }
 
 void World::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
@@ -636,11 +389,6 @@ void World::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 
 void World::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & enableContact)
 {
-}
-
-void World::OnWindowResize(sf::Vector2u windowSize)
-{
-	m_LightManager.OnWindowResize(windowSize);
 }
 
 bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
@@ -666,7 +414,7 @@ bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 			}
 			else
 			{
-				InteractWithHighlightedItem();
+				GetCurrentMap()->InteractWithHighlightedItem();
 			}
 		} break;
 		}
@@ -676,29 +424,6 @@ bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 
 void World::OnKeyRelease(ApexKeyboard::Key key)
 {
-}
-
-json World::GetSpeechDataFromFile()
-{
-	json result;
-	std::ifstream inputStream;
-
-	inputStream.open("resources/speech.json");
-	if (inputStream.is_open())
-	{
-		std::string line;
-		std::stringstream stringStream;
-
-		while (std::getline(inputStream, line))
-		{
-			stringStream << line;
-		}
-		inputStream.close();
-
-		result = json::parse(stringStream.str());
-	}
-
-	return result;
 }
 
 unsigned int World::GetWidth() const

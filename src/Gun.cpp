@@ -11,8 +11,8 @@
 
 const float Gun::RELOAD_SECONDS = 0.8f;
 
-Gun::Gun(World* world, sf::Vector2f position) :
-	Entity(world, position, ActorID::GUN, this),
+Gun::Gun(World* world, Map* map, sf::Vector2f position) :
+	Entity(world, map, position, ActorID::GUN, this),
 	m_World(world)
 {
 	m_BulletManager = world->GetBulletManager();
@@ -146,7 +146,7 @@ void Gun::Shoot()
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
 	const sf::Vector2f playerVel = m_World->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
-	Bullet* newBullet = new Bullet(m_World, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
+	Bullet* newBullet = new Bullet(m_World, m_Map, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsInClip;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
 

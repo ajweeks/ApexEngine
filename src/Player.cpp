@@ -12,19 +12,18 @@
 
 const float Player::VEL = 550000.0f;
 
-Player::Player(World* world) :
-	Entity(world, sf::Vector2f(), ActorID::PLAYER, this),
+Player::Player(World* world, Map* map) :
+	Entity(world, map, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
 	m_World(world),
-	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32),
-	m_IntialPos(90.0f, 150.0f)
+	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32)
 {
 	m_Actor->AddCircleFixture(7.0f);
 	m_Actor->AddContactListener(this);
 
 	b2Filter collisionFilter;
 	collisionFilter.categoryBits = ActorID::PLAYER;
-	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::SHEEP;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::EXIT | ActorID::SHEEP;
 	m_Actor->SetCollisionFilter(collisionFilter);
 
 	ApexSpriteSheet::Sequence walkingSequence;
@@ -48,7 +47,6 @@ Player::~Player()
 
 void Player::Reset()
 {
-	m_Actor->SetPosition(m_IntialPos);
 	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
 	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
 	m_DirFacing = DirectionFacing::RIGHT;
@@ -76,7 +74,11 @@ void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	case ActorID::DOOR:
 	{
 		Tile* tile = static_cast<Tile*>(otherActor->GetUserPointer());
-		m_BuildingIndexToEnterNextFrame = tile->GetDoorID();
+		m_BuildingIndexToEnterNextFrame = tile->GetExtraInfo().buildingID;
+	} break;
+	case ActorID::EXIT:
+	{
+		m_ExitBuildingNextFrame = true;
 	} break;
 	}
 }
@@ -118,8 +120,15 @@ void Player::Tick(sf::Time elapsed)
 {
 	if (m_BuildingIndexToEnterNextFrame != -1)
 	{
-		m_World->EnterBuilding(m_BuildingIndexToEnterNextFrame);
+		m_World->EnterMap(m_BuildingIndexToEnterNextFrame);
 		m_BuildingIndexToEnterNextFrame = -1;
+		return;
+	}
+
+	if (m_ExitBuildingNextFrame)
+	{
+		m_World->ExitMap();
+		m_ExitBuildingNextFrame = false;
 		return;
 	}
 

@@ -51,7 +51,7 @@ float FloatTransition::GetCurrentTransitionData()
 	return result;
 }
 
-void FloatTransition::Swap()
+void FloatTransition::SwapAndRestart()
 {
 	float tempValue = m_StartValue;
 	m_StartValue = m_EndValue;

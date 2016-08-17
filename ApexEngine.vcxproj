@@ -155,267 +155,120 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ApexButton.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexButtonList.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexContactListener.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexDebugDraw.cpp" />
-    <ClCompile Include="ApexMouseListener.cpp" />
-    <ClCompile Include="ApexParticle.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexParticleManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexPauseScreen.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexSlider.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexWindowListener.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Building.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Coin.cpp" />
-    <ClCompile Include="ColorTransition.cpp" />
-    <ClCompile Include="DustParticle.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="FloatTransition.cpp" />
-    <ClCompile Include="AmmoDrop.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="HUD.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="IntTransition.cpp" />
-    <ClCompile Include="Item.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="World.cpp" />
-    <ClCompile Include="LightManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="LoadingState.cpp" />
-    <ClCompile Include="MainMenuState.cpp" />
-    <ClCompile Include="Minimap.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Mob.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexNPC.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="PhysicsActor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="PhysicsActorManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Sheep.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="ApexSpriteSheet.cpp" />
-    <ClCompile Include="ApexTransition.cpp" />
-    <ClCompile Include="ApexDebug.cpp" />
-    <ClCompile Include="ApexKeyboard.cpp" />
-    <ClCompile Include="ApexMouse.cpp" />
-    <ClCompile Include="ApexAudio.cpp" />
-    <ClCompile Include="BaseState.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="BulletManager.cpp" />
-    <ClCompile Include="CollapsibleElement.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="ApexMain.cpp" />
-    <ClCompile Include="GameState.cpp" />
-    <ClCompile Include="Gun.cpp" />
-    <ClCompile Include="ApexKeyListener.cpp" />
-    <ClCompile Include="Layer.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="StateManager.cpp" />
-    <ClCompile Include="TextureManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="TransformableTransition.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="src\AmmoDrop.cpp" />
+    <ClCompile Include="src\ApexAudio.cpp" />
+    <ClCompile Include="src\ApexButton.cpp" />
+    <ClCompile Include="src\ApexButtonList.cpp" />
+    <ClCompile Include="src\ApexContactListener.cpp" />
+    <ClCompile Include="src\ApexDebug.cpp" />
+    <ClCompile Include="src\ApexDebugDraw.cpp" />
+    <ClCompile Include="src\ApexKeyboard.cpp" />
+    <ClCompile Include="src\ApexKeyListener.cpp" />
+    <ClCompile Include="src\ApexMain.cpp" />
+    <ClCompile Include="src\ApexMouse.cpp" />
+    <ClCompile Include="src\ApexMouseListener.cpp" />
+    <ClCompile Include="src\ApexNPC.cpp" />
+    <ClCompile Include="src\ApexParticle.cpp" />
+    <ClCompile Include="src\ApexParticleManager.cpp" />
+    <ClCompile Include="src\ApexPauseScreen.cpp" />
+    <ClCompile Include="src\ApexSlider.cpp" />
+    <ClCompile Include="src\ApexSpriteSheet.cpp" />
+    <ClCompile Include="src\ApexTransition.cpp" />
+    <ClCompile Include="src\ApexWindowListener.cpp" />
+    <ClCompile Include="src\BaseState.cpp" />
+    <ClCompile Include="src\Bullet.cpp" />
+    <ClCompile Include="src\BulletManager.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Coin.cpp" />
+    <ClCompile Include="src\CollapsibleElement.cpp" />
+    <ClCompile Include="src\ColorTransition.cpp" />
+    <ClCompile Include="src\DustParticle.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\FloatTransition.cpp" />
+    <ClCompile Include="src\GameState.cpp" />
+    <ClCompile Include="src\Gun.cpp" />
+    <ClCompile Include="src\HUD.cpp" />
+    <ClCompile Include="src\IntTransition.cpp" />
+    <ClCompile Include="src\Item.cpp" />
+    <ClCompile Include="src\Layer.cpp" />
+    <ClCompile Include="src\LightManager.cpp" />
+    <ClCompile Include="src\LoadingState.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\MainMenuState.cpp" />
+    <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Minimap.cpp" />
+    <ClCompile Include="src\Mob.cpp" />
+    <ClCompile Include="src\ParticleEmitter.cpp" />
+    <ClCompile Include="src\PhysicsActor.cpp" />
+    <ClCompile Include="src\PhysicsActorManager.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\Sheep.cpp" />
+    <ClCompile Include="src\StateManager.cpp" />
+    <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\TransformableTransition.cpp" />
+    <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ApexButton.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexButtonList.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexContactListener.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexDebugDraw.h" />
-    <ClInclude Include="ApexMouseListener.h" />
-    <ClInclude Include="ApexParticle.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexParticleManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexPauseScreen.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexSlider.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexWindowListener.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Building.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Coin.h" />
-    <ClInclude Include="ColorTransition.h" />
-    <ClInclude Include="DustParticle.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="FloatTransition.h" />
-    <ClInclude Include="AmmoDrop.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="HUD.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Interactable.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="IntTransition.h" />
-    <ClInclude Include="Item.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="World.h" />
-    <ClInclude Include="LightManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="LoadingState.h" />
-    <ClInclude Include="MainMenuState.h" />
-    <ClInclude Include="Minimap.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Mob.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexNPC.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="PhysicsActor.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="PhysicsActorManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Sheep.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="ApexSpriteSheet.h" />
-    <ClInclude Include="ApexTransition.h" />
-    <ClInclude Include="ApexDebug.h" />
-    <ClInclude Include="ApexKeyboard.h" />
-    <ClInclude Include="ApexMath.h" />
-    <ClInclude Include="ApexMouse.h" />
-    <ClInclude Include="ApexAudio.h" />
-    <ClInclude Include="BaseState.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="BulletManager.h" />
-    <ClInclude Include="CollapsibleElement.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="enumerations.h" />
-    <ClInclude Include="ApexMain.h" />
-    <ClInclude Include="GameState.h" />
-    <ClInclude Include="Gun.h" />
-    <ClInclude Include="ApexKeyListener.h" />
-    <ClInclude Include="Layer.h" />
-    <ClInclude Include="logo.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
-    <ClInclude Include="StateManager.h" />
-    <ClInclude Include="TextureManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="TileSet.h" />
-    <ClInclude Include="TransformableTransition.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\AmmoDrop.h" />
+    <ClInclude Include="src\ApexAudio.h" />
+    <ClInclude Include="src\ApexButton.h" />
+    <ClInclude Include="src\ApexButtonList.h" />
+    <ClInclude Include="src\ApexContactListener.h" />
+    <ClInclude Include="src\ApexDebug.h" />
+    <ClInclude Include="src\ApexDebugDraw.h" />
+    <ClInclude Include="src\ApexKeyboard.h" />
+    <ClInclude Include="src\ApexKeyListener.h" />
+    <ClInclude Include="src\ApexMain.h" />
+    <ClInclude Include="src\ApexMath.h" />
+    <ClInclude Include="src\ApexMouse.h" />
+    <ClInclude Include="src\ApexMouseListener.h" />
+    <ClInclude Include="src\ApexNPC.h" />
+    <ClInclude Include="src\ApexParticle.h" />
+    <ClInclude Include="src\ApexParticleManager.h" />
+    <ClInclude Include="src\ApexPauseScreen.h" />
+    <ClInclude Include="src\ApexSlider.h" />
+    <ClInclude Include="src\ApexSpriteSheet.h" />
+    <ClInclude Include="src\ApexTransition.h" />
+    <ClInclude Include="src\ApexWindowListener.h" />
+    <ClInclude Include="src\BaseState.h" />
+    <ClInclude Include="src\Bullet.h" />
+    <ClInclude Include="src\BulletManager.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Coin.h" />
+    <ClInclude Include="src\CollapsibleElement.h" />
+    <ClInclude Include="src\ColorTransition.h" />
+    <ClInclude Include="src\DustParticle.h" />
+    <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\enumerations.h" />
+    <ClInclude Include="src\FloatTransition.h" />
+    <ClInclude Include="src\GameState.h" />
+    <ClInclude Include="src\Gun.h" />
+    <ClInclude Include="src\HUD.h" />
+    <ClInclude Include="src\Interactable.h" />
+    <ClInclude Include="src\IntTransition.h" />
+    <ClInclude Include="src\Item.h" />
+    <ClInclude Include="src\Layer.h" />
+    <ClInclude Include="src\LightManager.h" />
+    <ClInclude Include="src\LoadingState.h" />
+    <ClInclude Include="src\logo.h" />
+    <ClInclude Include="src\MainMenuState.h" />
+    <ClInclude Include="src\Map.h" />
+    <ClInclude Include="src\Minimap.h" />
+    <ClInclude Include="src\Mob.h" />
+    <ClInclude Include="src\ParticleEmitter.h" />
+    <ClInclude Include="src\PhysicsActor.h" />
+    <ClInclude Include="src\PhysicsActorManager.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Projectile.h" />
+    <ClInclude Include="src\Sheep.h" />
+    <ClInclude Include="src\StateManager.h" />
+    <ClInclude Include="src\TextureManager.h" />
+    <ClInclude Include="src\Tile.h" />
+    <ClInclude Include="src\TileSet.h" />
+    <ClInclude Include="src\TransformableTransition.h" />
+    <ClInclude Include="src\World.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\level\00\tiles.json" />

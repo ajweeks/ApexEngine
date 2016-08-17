@@ -19,7 +19,7 @@ public:
 	virtual void Tick(sf::Time elapsed) override;
 	virtual float GetCurrentTransitionData();
 
-	virtual void Swap() override; // Swap start and end data, and reset
+	virtual void SwapAndRestart() override; // Swap start and end data, and reset
 
 private:
 	float m_StartValue;

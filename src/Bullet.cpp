@@ -8,8 +8,8 @@
 const float Bullet::RADIUS = 2.0f;
 const sf::Color Bullet::FILL_COLOR = sf::Color(25, 40, 38);
 
-Bullet::Bullet(World* world, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity) :
-	Projectile(world, position + sf::Vector2f(-4.5f, -4.5f), ActorID::BULLET, this),
+Bullet::Bullet(World* world, Map* map, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity) :
+	Projectile(world, map, position + sf::Vector2f(-4.5f, -4.5f), ActorID::BULLET, this),
 	m_Direction(direction)
 {
 	m_Actor->AddCircleFixture(RADIUS);

@@ -78,6 +78,6 @@ void ApexButtonList::DrawBackground(sf::RenderTarget& target, sf::RenderStates s
 {
 	states.transform = m_CurrentlyHighlightedButtonBackground.GetCurrentTransformable().getTransform();
 	sf::RectangleShape bg(m_Buttons[m_CurrentlyHighlightedButtonIndex]->GetRectangle().getSize());
-	bg.setFillColor(sf::Color(150, 220, 110));
+	bg.setFillColor(ApexButton::BG_COLOR);
 	target.draw(bg, states);
 }

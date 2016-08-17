@@ -1,11 +1,12 @@
 
 #include "Layer.h"
 #include "PhysicsActor.h"
-#include "Building.h"
+#include "World.h"
 
 Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
-	std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener) :
-	m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
+	std::string name, bool visible, float opacity, Type type, int width, int height) :
+	m_World(world), m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), 
+	m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)
 {
 	const float tileSize = float(m_TileSet->m_TileSize);
 	const int numTiles = m_Tiles.size();
@@ -39,30 +40,6 @@ Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
 				currentQuad[1].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, tileSrcY * tileSize);
 				currentQuad[2].texCoords = sf::Vector2f((tileSrcX + 1) * tileSize, (tileSrcY + 1) * tileSize);
 				currentQuad[3].texCoords = sf::Vector2f(tileSrcX * tileSize, (tileSrcY + 1) * tileSize);
-
-				if (m_Tiles[tileIndex]->IsSolid())
-				{
-					PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), b2BodyType::b2_staticBody);
-					newActor->AddBoxFixture(tileSize, tileSize);
-					newActor->SetUserPointer(m_Tiles[tileIndex]);
-					newActor->AddContactListener(contactListener);
-
-					b2Filter collisionFilter;
-					if (m_Tiles[tileIndex]->IsDoorTile())
-					{
-						collisionFilter.categoryBits = ActorID::DOOR;
-						newActor->SetUserData(ActorID::DOOR);
-					}
-					else
-					{
-						collisionFilter.categoryBits = ActorID::WALL;
-						newActor->SetUserData(ActorID::WALL);
-					}
-					collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
-					newActor->SetCollisionFilter(collisionFilter);
-
-					m_Tiles[tileIndex]->SetPhysicsActor(newActor);
-				}
 			}
 		}
 	}
@@ -147,12 +124,69 @@ void Layer::Tick(sf::Time elapsed)
 {
 }
 
-void Layer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Layer::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	if (m_Visible)
 	{
 		states.texture = m_TileSet->m_Texture;
 		target.draw(m_Verticies, states);
+	}
+}
+
+void Layer::CreatePhysicsActors(ApexContactListener* contactListener)
+{
+	const float tileSize = float(m_TileSet->m_TileSize);
+	for (int y = 0; y < m_Height; ++y)
+	{
+		for (int x = 0; x < m_Width; ++x)
+		{
+			const int tileIndex = (x + y * m_Width);
+			if (m_Tiles[tileIndex]->IsSolid() ||
+				m_Tiles[tileIndex]->IsSensor())
+			{
+				PhysicsActor* newActor = new PhysicsActor(
+					sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize),
+					b2BodyType::b2_staticBody);
+				newActor->AddBoxFixture(tileSize, tileSize);
+				newActor->SetUserPointer(m_Tiles[tileIndex]);
+				newActor->AddContactListener(contactListener);
+				newActor->SetSensor(m_Tiles[tileIndex]->IsSensor());
+
+				b2Filter collisionFilter;
+				switch (m_Tiles[tileIndex]->GetType())
+				{
+				case Tile::Type::DOOR:
+				{
+					collisionFilter.categoryBits = ActorID::DOOR;
+					newActor->SetUserData(ActorID::DOOR);
+				} break;
+				case Tile::Type::EXIT:
+				{
+					collisionFilter.categoryBits = ActorID::EXIT;
+					newActor->SetUserData(ActorID::EXIT);
+				} break;
+				case Tile::Type::NORMAL:
+				default:
+				{
+					collisionFilter.categoryBits = ActorID::WALL;
+					newActor->SetUserData(ActorID::WALL);
+				} break;
+				}
+
+				collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
+				newActor->SetCollisionFilter(collisionFilter);
+
+				m_Tiles[tileIndex]->SetPhysicsActor(newActor);
+			}
+		}
+	}
+}
+
+void Layer::DestroyPhysicsActors()
+{
+	for (size_t i = 0; i < m_Tiles.size(); ++i)
+	{
+		m_Tiles[i]->DeletePhysicsActor();
 	}
 }
 

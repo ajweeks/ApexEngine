@@ -3,7 +3,6 @@
 #include "ApexMain.h"
 #include "ApexMath.h"
 #include "ApexMouse.h"
-#include "World.h"
 #include "ApexKeyboard.h"
 
 #include "JSON\json.hpp"
@@ -16,9 +15,12 @@
 
 using nlohmann::json;
 
-LightManager::LightManager(int worldIndex, World* world) :
+const std::string LightManager::LIGHTMAP_FILENAME = "lights.json";
+sf::Shader LightManager::s_LightingShader;
+
+LightManager::LightManager(World* world, const std::string& directory) :
 	ApexMouseListener(),
-	m_WorldIndex(worldIndex),
+	m_Directory(directory),
 	m_World(world)
 {
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
@@ -84,7 +86,7 @@ void LightManager::Tick(sf::Time elapsed)
 
 void LightManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	// TODO: Bake this render on startup and only update & redraw dynamic lights
+	// TODO: Bake this render on startup and only update & redraw dynamic lights (?)
 
 	sf::Transform prevTransform = states.transform;
 
@@ -96,13 +98,13 @@ void LightManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	screen.setFillColor(sf::Color::Black);
 	for (size_t i = 0; i < m_Lights.size(); ++i)
 	{
-		m_LightingShader.setParameter("u_blur", m_Lights[i].blur);
-		m_LightingShader.setParameter("u_color", m_Lights[i].color);
-		m_LightingShader.setParameter("u_opacity", m_Lights[i].opacity);
-		m_LightingShader.setParameter("u_position", m_Lights[i].position);
-		m_LightingShader.setParameter("u_radius", m_Lights[i].radius);
+		s_LightingShader.setParameter("u_blur", m_Lights[i].blur);
+		s_LightingShader.setParameter("u_color", m_Lights[i].color);
+		s_LightingShader.setParameter("u_opacity", m_Lights[i].opacity);
+		s_LightingShader.setParameter("u_position", m_Lights[i].position);
+		s_LightingShader.setParameter("u_radius", m_Lights[i].radius);
 
-		m_LightmapTexture.draw(screen, &m_LightingShader);
+		m_LightmapTexture.draw(screen, &s_LightingShader);
 	}
 
 	m_LightmapTexture.display();
@@ -148,21 +150,18 @@ void LightManager::DrawEditor(sf::RenderTarget& target, sf::RenderStates states)
 
 void LightManager::OnWindowResize(sf::Vector2u windowSize)
 {
-	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
+	s_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
 void LightManager::LoadLightData()
 {
 	std::ifstream fileStream;
-
-	const std::string directory = "resources/worlds/" + std::to_string(m_WorldIndex) + "/";
-	if (!std::experimental::filesystem::exists(directory)) {
-		ApexOutputDebugString("Directory not found: " + directory + "\n");
+	if (!std::experimental::filesystem::exists(m_Directory)) {
+		ApexOutputDebugString("Directory not found: " + m_Directory + "\n");
 		return;
 	}
 
-	const std::string fileName = "lights.json";
-	fileStream.open(directory + fileName);
+	fileStream.open(m_Directory + LIGHTMAP_FILENAME);
 	if (fileStream.is_open())
 	{
 		m_Lights.clear();
@@ -194,7 +193,7 @@ void LightManager::LoadLightData()
 	}
 	else
 	{
-		ApexOutputDebugString("Could not open " + directory + fileName + "\n");
+		ApexOutputDebugString("Could not open " + m_Directory + LIGHTMAP_FILENAME + "\n");
 	}
 
 	fileStream.close();
@@ -202,17 +201,16 @@ void LightManager::LoadLightData()
 
 void LightManager::SaveLightData()
 {
-	const std::string directory = "resources/worlds/" + std::to_string(m_WorldIndex) + "/";
-	if (!std::experimental::filesystem::exists(directory)) {
-		std::experimental::filesystem::create_directory(directory);
+	if (!std::experimental::filesystem::exists(m_Directory)) {
+		std::experimental::filesystem::create_directory(m_Directory);
 	}
 
 	const std::string fileName = "lights.json";
 	std::ofstream fileStream;
-	fileStream.open(directory + fileName);
+	fileStream.open(m_Directory + fileName);
 	if (!fileStream.is_open())
 	{
-		ApexOutputDebugString("Could not open " + directory + fileName + "\n");
+		ApexOutputDebugString("Could not open " + m_Directory + fileName + "\n");
 		fileStream.close();
 		return;
 	}
@@ -303,19 +301,19 @@ std::string LightManager::ColorToString(sf::Color color)
 
 void LightManager::LoadShader()
 {
-	if (!m_LightingShader.loadFromFile("resources/shaders/lighting.frag", sf::Shader::Fragment))
+	if (!s_LightingShader.loadFromFile("resources/shaders/lighting.frag", sf::Shader::Fragment))
 	{
 		ApexOutputDebugString("\n\n\nCould not compile lighting shader\n\n\n\n");
 	}
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
-	m_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
+	s_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
 }
 
-void LightManager::SetWorldIndex(int worldIndex)
-{
-	m_WorldIndex = worldIndex;
-	LoadLightData();
-}
+//void LightManager::SetWorldIndex(int worldIndex)
+//{
+//	m_WorldIndex = worldIndex;
+//	LoadLightData();
+//}
 
 void LightManager::SetShowingEditor(bool showingEditor)
 {

@@ -17,6 +17,7 @@
 #include "ApexContactListener.h"
 #include "TextureManager.h"
 #include "logo.h"
+#include "LightManager.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -106,10 +107,10 @@ ApexMain::ApexMain()
 
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 
-	sf::Color start = sf::Color::White;
+	sf::Color start = sf::Color::Black;
 	sf::Color end = sf::Color::White;
-	m_FadeTransition.Create(start, end, sf::seconds(1));
-	m_FadeTransition.SetFinished();
+	m_FadeInOutTransition.Create(start, end, sf::seconds(1));
+	m_FadeInOutTransition.SetFinished();
 }
 
 ApexMain::~ApexMain()
@@ -140,6 +141,7 @@ void ApexMain::Init()
 		ApexOutputDebugString("Couldn't load font pixelFJ8.ttf!\n");
 	}
 
+	LightManager::LoadShader();
 	ApexAudio::LoadSounds();
 }
 
@@ -362,7 +364,25 @@ void ApexMain::Tick(double& accumulator)
 		const sf::Time dt = sf::seconds(time);
 
 		m_StateManager->Tick(dt);
-		m_FadeTransition.Tick(dt);
+
+		if (m_FadingIn || m_FadingOut)
+		{
+			m_FadeInOutTransition.Tick(dt);
+			if (m_FadeInOutTransition.GetPercentComplete() >= 1.0f)
+			{
+				if (m_FadingIn)
+				{
+					m_FadingIn = false;
+					m_FadingOut = true;
+					m_FadeInOutTransition.SwapAndRestart();
+				}
+				else if (m_FadingOut)
+				{
+					m_FadingOut = false;
+				}
+			}
+		}
+
 		if (!m_PhysicsPaused)
 		{
 			m_PhysicsActorManager->Tick(dt);
@@ -388,7 +408,7 @@ void ApexMain::Draw()
 	m_CursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*m_Window)));
 	m_Window->draw(m_CursorSprite);
 
-	const sf::Color color = m_FadeTransition.GetCurrentColor();
+	const sf::Color color = m_FadeInOutTransition.GetCurrentColor();
 	if (color != sf::Color::White)
 	{
 		sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
@@ -496,6 +516,15 @@ StateManager* ApexMain::GetStateManager()
 sf::Vector2u ApexMain::GetWindowSize() const
 {
 	return m_Window->getSize();
+}
+
+sf::Vector2f ApexMain::StringToVector2f(const std::string& string)
+{
+	const int commaIndex = string.find(',');
+	sf::Vector2f result;
+	result.x = stof(string.substr(0, commaIndex));
+	result.y = stof(string.substr(commaIndex + 1));
+	return result;
 }
 
 std::string ApexMain::Vector2fToString(sf::Vector2f vec)
@@ -625,14 +654,34 @@ void ApexMain::SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeTyp
 	m_SlowMoData.Restart();
 }
 
-void ApexMain::SetColorFade(sf::Time length, sf::Color from, sf::Color to, ApexTransition::EaseType easeType)
+void ApexMain::StartFadeInOut(sf::Time length)
 {
-	sf::Color start;
-	start = from;
-	sf::Color end;
-	end = to;
-	m_FadeTransition.Create(start, end, length, easeType);
-	m_FadeTransition.Restart();
+	sf::Color start = sf::Color::White;
+	sf::Color end = sf::Color::Black;
+	m_FadeInOutTransition.Create(start, end, length);
+	m_FadeInOutTransition.Restart();
+	m_FadingIn = true;
+	m_FadingOut = false;
+}
+
+void ApexMain::StartFadeOut(sf::Time length)
+{
+	sf::Color start = sf::Color::Black;
+	sf::Color end = sf::Color::White;
+	m_FadeInOutTransition.Create(start, end, length);
+	m_FadeInOutTransition.Restart();
+	m_FadingIn = false;
+	m_FadingOut = true;
+}
+
+bool ApexMain::IsFadingIn() const
+{
+	return m_FadingIn;
+}
+
+bool ApexMain::IsFadingOut() const
+{
+	return m_FadingOut;
 }
 
 void ApexMain::DEBUGToggleGamePaused()

@@ -10,8 +10,8 @@
 
 using namespace nlohmann;
 
-ApexNPC::ApexNPC(World* world, sf::Vector2f position, const json& info) :
-	Mob(world, position, ActorID::NPC)
+ApexNPC::ApexNPC(World* world, Map* map, sf::Vector2f position, const json& info) :
+	Mob(world, map, position, ActorID::NPC)
 {
 	m_Actor->AddBoxFixture(10.0f, 20.0f);
 	m_Actor->SetSensor(true);

@@ -2,15 +2,20 @@
 #include "ApexButton.h"
 #include "ApexMain.h"
 #include "ApexMouse.h"
+
 #include <SFML\Graphics\Shader.hpp>
+
+const sf::Color ApexButton::FONT_COLOR = sf::Color(233, 242, 243);
+const sf::Color ApexButton::BG_COLOR = sf::Color(60, 100, 115);
+const sf::Color ApexButton::BG_HOVER_COLOR = sf::Color(BG_COLOR.r - 20, BG_COLOR.g - 20, BG_COLOR.b - 20);
 
 ApexButton::ApexButton(float left, float top, float width, float height, std::string text, unsigned int characterSize) :
 	ApexMouseListener()
 {
 	m_BoundingRect = sf::RectangleShape(sf::Vector2f(width, height));
 	m_BoundingRect.setPosition(left, top);
-	m_FillColour = sf::Color(150, 220, 110);
-	m_HoverFillColour = sf::Color(100, 180, 90);
+	m_FillColour = BG_COLOR;
+	m_HoverFillColour = BG_HOVER_COLOR;
 	m_BoundingRect.setFillColor(m_FillColour);
 
 	m_StringOptions.push_back(text);
@@ -19,7 +24,7 @@ ApexButton::ApexButton(float left, float top, float width, float height, std::st
 	m_Text.setCharacterSize(characterSize);
 	m_Text.setStyle(sf::Text::Bold);
 	m_Text.setPosition(left + width / 2.0f - 25 * text.length() / 2.0f, top + height / 2.0f - 24.0f);
-	m_TextColour = sf::Color(80, 15, 45);
+	m_TextColour = FONT_COLOR;
 	m_Text.setColor(m_TextColour);
 }
 
@@ -36,7 +41,7 @@ void ApexButton::Tick(sf::Time elapsed)
 
 void ApexButton::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	if (m_Hovering)
+	if (m_Hovering && m_ShowBackground)
 	{
 		states.transform.translate(0, 5.0f);
 	}
@@ -110,6 +115,17 @@ sf::RectangleShape ApexButton::GetRectangle() const
 	return m_BoundingRect;
 }
 
+void ApexButton::SetHovering(bool hovering)
+{
+	const bool wasHovering = m_Hovering;
+	if (wasHovering != hovering)
+	{
+		m_Hovering = hovering;
+		m_BoundingRect.setFillColor(m_Hovering ? m_HoverFillColour : m_FillColour);
+		APEX->SetCursor(m_Hovering ? ApexCursor::POINT : ApexCursor::NORMAL);
+	}
+}
+
 bool ApexButton::IsHovering() const
 {
 	return m_Hovering;
@@ -143,15 +159,4 @@ void ApexButton::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
 
 void ApexButton::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 {
-}
-
-void ApexButton::SetHovering(bool hovering)
-{
-	const bool wasHovering = m_Hovering;
-	if (wasHovering != hovering)
-	{
-		m_Hovering = hovering;
-		m_BoundingRect.setFillColor(m_Hovering ? m_HoverFillColour : m_FillColour);
-		APEX->SetCursor(m_Hovering ? ApexCursor::POINT : ApexCursor::NORMAL);
-	}
 }

@@ -7,8 +7,8 @@
 
 #include <Box2D\Dynamics\Contacts\b2Contact.h>
 
-Entity::Entity(World* world, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
-	m_World(world)
+Entity::Entity(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
+	m_World(world), m_Map(map)
 {
 	m_ShadowSprite = sf::Sprite(*TextureManager::GetTexture(TextureManager::SHADOW));
 
@@ -25,4 +25,9 @@ Entity::~Entity()
 PhysicsActor* Entity::GetPhysicsActor() const
 {
 	return m_Actor;
+}
+
+Map* Entity::GetMap() const
+{
+	return m_Map;
 }

@@ -5,7 +5,7 @@
 class Item : public Entity
 {
 public:
-	Item(World* world, sf::Vector2f position, ActorID actorID, void* userPointer, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
+	Item(World* world, Map* map, sf::Vector2f position, ActorID actorID, void* userPointer, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
 	virtual ~Item();
 
 	Item(const Item&) = delete;

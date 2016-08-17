@@ -30,7 +30,7 @@ public:
 
 	virtual void Tick(sf::Time elapsed);
 
-	virtual void Swap() = 0; // Swap start and end data, then reset
+	virtual void SwapAndRestart() = 0; 
 	virtual void Restart();
 	virtual void SetEaseType(EaseType easeType);
 	virtual void SetDuration(sf::Time duration);

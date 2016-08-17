@@ -47,343 +47,343 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\ApexMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StateManager.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="GameState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexDebug.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="CollapsibleElement.cpp">
-      <Filter>Source Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexAudio.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexKeyboard.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexMouse.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletManager.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Gun.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Projectile.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenuState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexMain.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ApexButton.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexKeyListener.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexMouseListener.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsActorManager.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsActor.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexDebugDraw.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexPauseScreen.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexSlider.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Mob.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
-    </ClCompile>
-    <ClCompile Include="Sheep.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexContactListener.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Minimap.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexWindowListener.cpp">
-      <Filter>Source Files\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexSpriteSheet.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="ApexParticle.cpp">
+    <ClCompile Include="src\ApexParticle.cpp">
       <Filter>Source Files\Graphics\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="ApexParticleManager.cpp">
+    <ClCompile Include="src\ApexParticleManager.cpp">
       <Filter>Source Files\Graphics\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="DustParticle.cpp">
-      <Filter>Source Files\Graphics\Particle</Filter>
+    <ClCompile Include="src\ApexDebug.cpp">
+      <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="LightManager.cpp">
-      <Filter>Source Files\Level</Filter>
+    <ClCompile Include="src\ApexDebugDraw.cpp">
+      <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
+    <ClCompile Include="src\ApexKeyListener.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApexKeyboard.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApexButton.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="ApexTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClCompile Include="src\ApexButtonList.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="FloatTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClCompile Include="src\ApexMouseListener.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="AmmoDrop.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+    <ClCompile Include="src\ApexMouse.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+    <ClCompile Include="src\ApexContactListener.cpp">
+      <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+    <ClCompile Include="src\ApexWindowListener.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="HUD.cpp">
-      <Filter>Source Files\Level</Filter>
+    <ClCompile Include="src\ApexAudio.cpp">
+      <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="ApexNPC.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+    <ClCompile Include="src\AmmoDrop.cpp">
+      <Filter>Source Files\Level\World</Filter>
     </ClCompile>
-    <ClCompile Include="IntTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClCompile Include="src\World.cpp">
+      <Filter>Source Files\Level\World</Filter>
     </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+    <ClCompile Include="src\Tile.cpp">
+      <Filter>Source Files\Level\World</Filter>
     </ClCompile>
-    <ClCompile Include="LoadingState.cpp">
+    <ClCompile Include="src\Map.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layer.cpp">
+      <Filter>Source Files\Level\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateManager.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="TransformableTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClCompile Include="src\MainMenuState.cpp">
+      <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="ColorTransition.cpp">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClCompile Include="src\LoadingState.cpp">
+      <Filter>Source Files\State</Filter>
     </ClCompile>
-    <ClCompile Include="ApexButtonList.cpp">
+    <ClCompile Include="src\GameState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApexSpriteSheet.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files\Level\World</Filter>
+    <ClCompile Include="src\ApexPauseScreen.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
-    <ClCompile Include="Layer.cpp">
-      <Filter>Source Files\Level\World</Filter>
+    <ClCompile Include="src\Mob.cpp">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClCompile>
-    <ClCompile Include="Building.cpp">
-      <Filter>Source Files\Level\World</Filter>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files\Level\World</Filter>
+    <ClCompile Include="src\Sheep.cpp">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files\Level\World</Filter>
+    <ClCompile Include="src\ApexNPC.cpp">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Coin.cpp">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bullet.cpp">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BulletManager.cpp">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Gun.cpp">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Projectile.cpp">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsActorManager.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsActor.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApexSlider.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CollapsibleElement.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ApexTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FloatTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformableTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleEmitter.cpp">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IntTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HUD.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Item.cpp">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Minimap.cpp">
+      <Filter>Source Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DustParticle.cpp">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enumerations.h">
+    <ClInclude Include="src\ApexMain.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="StateManager.h">
-      <Filter>Source Files\State</Filter>
+    <ClInclude Include="src\ApexMath.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="BaseState.h">
-      <Filter>Source Files\State</Filter>
+    <ClInclude Include="src\enumerations.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameState.h">
-      <Filter>Source Files\State</Filter>
+    <ClInclude Include="src\logo.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ApexDebug.h">
+    <ClInclude Include="src\ApexParticleManager.h">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexParticle.h">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexDebugDraw.h">
       <Filter>Source Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="CollapsibleElement.h">
+    <ClInclude Include="src\ApexDebug.h">
       <Filter>Source Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="ApexAudio.h">
+    <ClInclude Include="src\ApexKeyListener.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="ApexKeyboard.h">
+    <ClInclude Include="src\ApexKeyboard.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="ApexMouse.h">
+    <ClInclude Include="src\ApexButton.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexButtonList.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexMouse.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="logo.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\ApexMouseListener.h">
+      <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    <ClInclude Include="src\ApexContactListener.h">
+      <Filter>Source Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="BulletManager.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    <ClInclude Include="src\ApexWindowListener.h">
+      <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Gun.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    <ClInclude Include="src\ApexAudio.h">
+      <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    <ClInclude Include="src\AmmoDrop.h">
+      <Filter>Source Files\Level\World</Filter>
     </ClInclude>
-    <ClInclude Include="ApexMath.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\World.h">
+      <Filter>Source Files\Level\World</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuState.h">
+    <ClInclude Include="src\Tile.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Map.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layer.h">
+      <Filter>Source Files\Level\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateManager.h">
       <Filter>Source Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexMain.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexButton.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexKeyListener.h">
-      <Filter>Source Files\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexMouseListener.h">
-      <Filter>Source Files\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsActorManager.h">
-      <Filter>Source Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsActor.h">
-      <Filter>Source Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexDebugDraw.h">
-      <Filter>Source Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexPauseScreen.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexSlider.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Mob.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
-    </ClInclude>
-    <ClInclude Include="Sheep.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexContactListener.h">
-      <Filter>Source Files\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Minimap.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexWindowListener.h">
-      <Filter>Source Files\IO</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexSpriteSheet.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexParticleManager.h">
-      <Filter>Source Files\Graphics\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexParticle.h">
-      <Filter>Source Files\Graphics\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="DustParticle.h">
-      <Filter>Source Files\Graphics\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="FloatTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="AmmoDrop.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="HUD.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="ApexNPC.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
-    </ClInclude>
-    <ClInclude Include="Interactable.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="IntTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="Coin.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadingState.h">
+    <ClInclude Include="src\MainMenuState.h">
       <Filter>Source Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="TransformableTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClInclude Include="src\LoadingState.h">
+      <Filter>Source Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="ColorTransition.h">
-      <Filter>Source Files\Graphics\Transition</Filter>
+    <ClInclude Include="src\GameState.h">
+      <Filter>Source Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="ApexButtonList.h">
+    <ClInclude Include="src\BaseState.h">
+      <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexSpriteSheet.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="TileSet.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\ApexPauseScreen.h">
+      <Filter>Source Files\Level</Filter>
     </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\Mob.h">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClInclude>
-    <ClInclude Include="Layer.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\Player.h">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClInclude>
-    <ClInclude Include="Building.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\Sheep.h">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\ApexNPC.h">
+      <Filter>Source Files\Level\Entity\Mob</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Source Files\Level\World</Filter>
+    <ClInclude Include="src\Entity.h">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Coin.h">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bullet.h">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletManager.h">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Gun.h">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Projectile.h">
+      <Filter>Source Files\Level\Entity\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PhysicsActorManager.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PhysicsActor.h">
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexSlider.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureManager.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightManager.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CollapsibleElement.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FloatTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransformableTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleEmitter.h">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Interactable.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IntTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HUD.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Item.h">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Minimap.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TileSet.h">
+      <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DustParticle.h">
+      <Filter>Source Files\Graphics\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Source Files\Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

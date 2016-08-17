@@ -24,7 +24,6 @@ class b2World;
 // Global functions
 void ApexOutputDebugString(const std::string &string);
 
-
 std::vector<std::string> ApexSplit(const std::string& str);
 std::vector<std::string> ApexSplit(const std::string& str, const char& delim);
 
@@ -61,6 +60,7 @@ public:
 	StateManager* GetStateManager();
 	sf::Vector2u GetWindowSize() const;
 
+	static sf::Vector2f StringToVector2f(const std::string& string);
 	static std::string Vector2fToString(sf::Vector2f vec);
 
 	void AddKeyListener(ApexKeyListener* keyListener);
@@ -83,8 +83,10 @@ public:
 	sf::RenderWindow* GetWindow();
 
 	void SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType); // Call this with the amount of time to be in slow mo for
-
-	void SetColorFade(sf::Time length, sf::Color from, sf::Color to, ApexTransition::EaseType easeType = ApexTransition::EaseType::LINEAR);
+	void StartFadeInOut(sf::Time length = sf::seconds(0.8f));
+	void StartFadeOut(sf::Time length = sf::seconds(0.8f));
+	bool IsFadingIn() const;
+	bool IsFadingOut() const;
 
 	// Box2D overriden methods
 	virtual void BeginContact(b2Contact* contact);
@@ -139,5 +141,7 @@ private:
 	std::vector<ApexMouseListener*> m_MouseListeners;
 	std::vector<ApexWindowListener*> m_WindowListeners;
 
-	ColorTransition m_FadeTransition;
+	bool m_FadingIn = false;
+	bool m_FadingOut = false;
+	ColorTransition m_FadeInOutTransition;
 };

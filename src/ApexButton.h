@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ApexMouseListener.h"
+
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
@@ -9,6 +10,10 @@
 class ApexButton : public ApexMouseListener
 {
 public:
+	static const sf::Color FONT_COLOR;
+	static const sf::Color BG_COLOR;
+	static const sf::Color BG_HOVER_COLOR;
+
 	ApexButton(float left, float top, float width, float height, std::string text, unsigned int characterSize = 48);
 	virtual ~ApexButton();
 

@@ -22,5 +22,6 @@ enum ActorID
 	AMMO		= (1 << 5),
 	NPC			= (1 << 6),
 	COIN		= (1 << 7),
-	DOOR		= (1 << 8)
+	DOOR		= (1 << 8),
+	EXIT		= (1 << 9),
 };

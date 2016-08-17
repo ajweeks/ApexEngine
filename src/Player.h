@@ -9,6 +9,7 @@
 #include <SFML\Graphics\Sprite.hpp>
 
 class World;
+class Map;
 
 class Player : public Entity, public ApexKeyListener
 {
@@ -22,7 +23,7 @@ public:
 		LEFT, RIGHT
 	};
 
-	Player(World* world);
+	Player(World* world, Map* map);
 	virtual ~Player();
 
 	void Tick(sf::Time elapsed);
@@ -53,7 +54,6 @@ private:
 
 	DirectionFacing m_DirFacing;
 
-	sf::Vector2f m_IntialPos;
 	float m_SecondsElapsed = 0.0f;
 
 	World* m_World = nullptr;
@@ -61,4 +61,5 @@ private:
 	ApexSpriteSheet m_SpriteSheet;
 
 	int m_BuildingIndexToEnterNextFrame = -1;
+	bool m_ExitBuildingNextFrame = false;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ApexMouseListener.h"
+#include "World.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
@@ -10,27 +11,24 @@
 
 #include <vector>
 
-class World;
-
 class LightManager : public ApexMouseListener
 {
 public:
-	LightManager(int worldIndex, World* world);
+	LightManager(World* world, const std::string& directory);
 	virtual ~LightManager();
 
 	LightManager(const LightManager&) = delete;
 	LightManager& operator=(const LightManager&) = delete;
+
+	static void LoadShader();
 
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 	void OnWindowResize(sf::Vector2u windowSize);
 
-	void LoadShader();
 	void LoadLightData();
 	void SaveLightData();
-
-	void SetWorldIndex(int worldIndex);
 
 	void SetShowingEditor(bool showingEditor);
 	void ToggleShowingEditor();
@@ -41,6 +39,8 @@ public:
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent) {};
 
 private:
+	static const std::string LIGHTMAP_FILENAME;
+
 	static sf::Color StringToColor(std::string string);
 	static std::string ColorToString(sf::Color color);
 	static sf::Vector2f StringToVector2f(std::string string);
@@ -48,6 +48,8 @@ private:
 
 	void DrawEditor(sf::RenderTarget& target, sf::RenderStates states);
 
+	static sf::Shader s_LightingShader;
+	
 	struct ApexLight
 	{
 		float blur;
@@ -60,12 +62,11 @@ private:
 	std::vector<ApexLight> m_Lights;
 	sf::RenderTexture m_LightmapTexture;
 	sf::Sprite m_LightmapSprite;
-
 	sf::Color m_AmbientColor;
 
-	sf::Shader m_LightingShader;
+	std::string m_Directory;
 
-	int m_WorldIndex;
+	int m_BuildingIndex;
 	World* m_World = nullptr;
 
 	// Editor variables:

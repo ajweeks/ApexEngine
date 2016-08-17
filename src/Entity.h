@@ -11,11 +11,12 @@
 
 class PhysicsActor;
 class World;
+class Map;
 
 class Entity : public ApexContactListener
 {
 public:
-	Entity(World* world, sf::Vector2f position, ActorID id, void* userPointer = nullptr, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
+	Entity(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer = nullptr, b2BodyType bodyType = b2BodyType::b2_dynamicBody);
 	virtual ~Entity();
 
 	Entity& operator=(const Entity&) = delete;
@@ -30,8 +31,11 @@ public:
 
 	PhysicsActor* GetPhysicsActor() const;
 
+	Map* GetMap() const;
+
 protected:
 	World* m_World = nullptr;
+	Map* m_Map = nullptr;
 	PhysicsActor* m_Actor = nullptr;
 	sf::Sprite m_ShadowSprite;
 

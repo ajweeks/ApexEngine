@@ -3,8 +3,8 @@
 #include "PhysicsActor.h"
 #include "enumerations.h"
 
-Tile::Tile(int ID, bool isSolid, int doorID)
-	: m_ID(ID), m_IsSolid(isSolid), m_DoorID(doorID)
+Tile::Tile(int ID, bool isSolid, bool isSensor, Type type)
+	: m_ID(ID), m_IsSolid(isSolid),m_IsSensor(isSensor),  m_Type(type)
 {
 }
 
@@ -26,14 +26,29 @@ bool Tile::IsSolid() const
 	return m_IsSolid;
 }
 
-bool Tile::IsDoorTile() const
+bool Tile::IsSensor() const
 {
-	return m_DoorID != -1;
+	return m_IsSensor;
 }
 
-int Tile::GetDoorID() const
+int Tile::GetBuildingID() const
 {
-	return m_DoorID;
+	return m_ExtraInfo.buildingID;
+}
+
+Tile::Type Tile::GetType() const
+{
+	return m_Type;
+}
+
+Tile::ExtraInfo Tile::GetExtraInfo() const
+{
+	return m_ExtraInfo;
+}
+
+void Tile::SetExtraInfo(ExtraInfo extraInfo)
+{
+	m_ExtraInfo = extraInfo;
 }
 
 void Tile::SetPhysicsActor(PhysicsActor* actor)
@@ -42,15 +57,21 @@ void Tile::SetPhysicsActor(PhysicsActor* actor)
 	m_Actor->AddContactListener(this);
 }
 
+void Tile::DeletePhysicsActor()
+{
+	if (m_Actor != nullptr)
+	{
+		delete m_Actor;
+		m_Actor	= nullptr;
+	}
+}
+
 void Tile::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
 	switch (otherActor->GetUserData())
 	{
 	case ActorID::PLAYER:
 	{
-		if (IsDoorTile())
-		{
-		}
 	} break;
 	}
 }

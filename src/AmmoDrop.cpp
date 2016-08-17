@@ -4,12 +4,13 @@
 #include "World.h"
 #include "Player.h"
 #include "ApexMain.h"
+#include "Map.h"
 
 const float AmmoDrop::WIDTH = 26.0f;
 const float AmmoDrop::HEIGHT = 26.0f;
 
-AmmoDrop::AmmoDrop(World* world, sf::Vector2f position, int bulletCount) :
-	Item(world, position, ActorID::AMMO, this, b2BodyType::b2_staticBody),
+AmmoDrop::AmmoDrop(World* world, Map* map, sf::Vector2f position, int bulletCount) :
+	Item(world, map, position, ActorID::AMMO, this, b2BodyType::b2_staticBody),
 	m_BulletCount(bulletCount)
 {
 	m_Actor->AddBoxFixture(WIDTH, HEIGHT);
@@ -52,7 +53,7 @@ void AmmoDrop::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	{
 	case ActorID::PLAYER:
 	{
-		m_World->AddItemToBeRemoved(this);
+		m_Map->AddItemToBeRemoved(this);
 	} break;
 	}
 }

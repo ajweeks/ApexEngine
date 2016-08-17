@@ -3,9 +3,10 @@
 #include "TextureManager.h"
 #include "PhysicsActor.h"
 #include "World.h"
+#include "Map.h"
 
-Coin::Coin(World* world, sf::Vector2f position) :
-	Item(world, position, ActorID::COIN, this)
+Coin::Coin(World* world, Map* map, sf::Vector2f position) :
+	Item(world, map, position, ActorID::COIN, this)
 {
 	m_Actor->AddBoxFixture(16, 16);
 	m_Actor->SetSensor(true);
@@ -36,7 +37,7 @@ void Coin::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	{
 	case ActorID::PLAYER:
 	{
-		m_World->AddItemToBeRemoved(this);
+		m_Map->AddItemToBeRemoved(this);
 	} break;
 	}
 }

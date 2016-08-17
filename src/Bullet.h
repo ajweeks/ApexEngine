@@ -10,7 +10,7 @@ class BulletManager;
 class Bullet : public Projectile
 {
 public:
-	Bullet(World* world, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity = sf::Vector2f());
+	Bullet(World* world, Map* map, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity = sf::Vector2f());
 	virtual ~Bullet();
 
 	Bullet(const Bullet&) = delete;

@@ -5,12 +5,13 @@
 #include "World.h"
 #include "ApexMath.h"
 #include "DustParticle.h"
+#include "Map.h"
 
 const float Sheep::WIDTH = 15.0f;
 const float Sheep::HEIGHT = 15.0f;
 
-Sheep::Sheep(World* world, sf::Vector2f position) :
-	Mob(world, position, ActorID::SHEEP)
+Sheep::Sheep(World* world, Map* map, sf::Vector2f position) :
+	Mob(world, map, position, ActorID::SHEEP)
 {
 	m_Actor->AddBoxFixture(15, 15);
 	m_Actor->AddContactListener(this);
@@ -48,7 +49,7 @@ void Sheep::Tick(sf::Time elapsed)
 {
 	if (m_IsDead)
 	{
-		m_World->RemoveMob(this);
+		m_Map->RemoveMob(this);
 		return;
 	}
 

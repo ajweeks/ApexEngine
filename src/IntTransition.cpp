@@ -51,7 +51,7 @@ int IntTransition::GetCurrentTransitionData()
 	return result;
 }
 
-void IntTransition::Swap()
+void IntTransition::SwapAndRestart()
 {
 	int tempValue = m_StartValue;
 	m_StartValue = m_EndValue;

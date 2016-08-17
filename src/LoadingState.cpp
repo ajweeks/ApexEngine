@@ -82,7 +82,7 @@ void LoadingState::Tick(sf::Time elapsed)
 		m_TimeToShowLogo -= elapsed;
 		if (m_TimeToShowLogo <= sf::Time::Zero)
 		{
-			m_FadeTransition.Swap();
+			m_FadeTransition.SwapAndRestart();
 			m_AnimState = AnimationState::FADE_OUT;
 		}
 		else
@@ -107,7 +107,7 @@ void LoadingState::Tick(sf::Time elapsed)
 		if (m_FadeTransition.GetPercentComplete() >= 1.0f)
 		{
 			m_AnimState = AnimationState::FINAL_BLACK;
-			m_BufferTime = sf::seconds(0.4f);
+			m_BufferTime = sf::seconds(0.5f);
 		}
 		else
 		{
@@ -117,7 +117,7 @@ void LoadingState::Tick(sf::Time elapsed)
 	case AnimationState::FINAL_BLACK:
 	{
 		m_BufferTime -= elapsed;
-		if (m_BufferTime < sf::Time::Zero)
+		if (m_BufferTime <= sf::Time::Zero)
 		{
 			APEX->GetStateManager()->SetState(new MainMenuState());
 			return;

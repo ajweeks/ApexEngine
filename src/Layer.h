@@ -15,7 +15,7 @@
 class World;
 class LevelTile;
 
-class Layer : public sf::Drawable
+class Layer
 {
 public:
 	enum class Type
@@ -24,23 +24,25 @@ public:
 	};
 
 	Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
-		std::string name, bool visible, float opacity, Type type, int width, int height, ApexContactListener* contactListener);
+		std::string name, bool visible, float opacity, Type type, int width, int height);
 	virtual ~Layer();
 
 	Layer(const Layer&) = delete;
 	Layer& operator=(const Layer&) = delete;
 
 	void Tick(sf::Time elapsed);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void Draw(sf::RenderTarget& target, sf::RenderStates states);
+
+	void CreatePhysicsActors(ApexContactListener* contactListener);
+	void DestroyPhysicsActors();
 
 	int GetTileSize() const;
-
 	const std::string& GetName() const;
 
 	static Type ParseLayerTypeString(std::string layerTypeString);
 
 private:
-	//void CreatePhysicsActors();
+	World* m_World;
 
 	std::vector<Tile*> m_Tiles;
 	sf::VertexArray m_Verticies;

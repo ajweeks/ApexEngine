@@ -5,6 +5,7 @@
 #include "ApexKeyboard.h"
 #include "ApexAudio.h"
 #include "World.h"
+#include "Map.h"
 
 GameState::GameState() :
 	BaseState(StateType::GAME)
@@ -59,7 +60,7 @@ bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		} break;
 		case ApexKeyboard::DEBUG_TOGGLE_LIGHT_EDITOR:
 		{
-			m_World->ToggleLightingEditor();
+			m_World->GetCurrentMap()->ToggleLightingEditor();
 		} break;
 		case ApexKeyboard::DEBUG_RESTART:
 		{

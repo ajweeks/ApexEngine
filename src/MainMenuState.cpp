@@ -39,7 +39,7 @@ MainMenuState::MainMenuState()
 	titlePos.y += 1.5f;
 	m_TitleShadowSprite.setPosition(titlePos);
 
-	APEX->SetColorFade(sf::seconds(1.5f), sf::Color::Black, sf::Color::White);
+	APEX->StartFadeOut();
 }
 
 MainMenuState::~MainMenuState()
@@ -53,21 +53,47 @@ void MainMenuState::Tick(sf::Time elapsed)
 	const float y = (cos(512.25f + time * 1.31f) + 1.0f) / 2.0f;
 	m_VignetteShader.setParameter("u_center", x / 4.0f + 0.3f, y / 6.0f + 0.4f);
 
-	m_Buttons.Tick(elapsed);
-	if (m_Buttons.GetButton(int(Buttons::PLAY))->IsPressed())
+	if (APEX->IsFadingOut())
 	{
-		APEX->GetStateManager()->SetState(new GameState());
-		return;
+		switch (m_FadingOutTo)
+		{
+		case FadingOutTo::GAME:
+		{
+			APEX->GetStateManager()->SetState(new GameState());
+			return;
+		} break;
+		case FadingOutTo::QUIT:
+		{
+			APEX->Quit();
+			return;
+		} break;
+		case FadingOutTo::NONE:
+		default:
+		{
+		} break;
+		}
 	}
 
-	if (m_Buttons.GetButton(int(Buttons::QUIT))->IsPressed())
+	if (m_FadingOutTo == FadingOutTo::NONE)
 	{
-		APEX->Quit();
-		return;
-	}
+		m_Buttons.Tick(elapsed);
+		if (m_Buttons.GetButton(int(Buttons::PLAY))->IsPressed())
+		{
+			APEX->StartFadeInOut(sf::seconds(0.5f));
+			m_FadingOutTo = FadingOutTo::GAME;
+			return;
+		}
 
-	const float secondsElapsed = APEX->GetTimeElapsed().asSeconds();
-	m_TitleShadowSprite.move(0.0f, sin(secondsElapsed * 0.8f) * 0.065f);
+		if (m_Buttons.GetButton(int(Buttons::QUIT))->IsPressed())
+		{
+			APEX->StartFadeInOut(sf::seconds(0.4f));
+			m_FadingOutTo = FadingOutTo::QUIT;
+			return;
+		}
+
+		const float secondsElapsed = APEX->GetTimeElapsed().asSeconds();
+		m_TitleShadowSprite.move(0.0f, sin(secondsElapsed * 0.8f) * 0.065f);
+	}
 }
 
 void MainMenuState::Draw(sf::RenderTarget& target)
