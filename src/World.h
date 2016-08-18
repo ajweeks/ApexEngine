@@ -88,6 +88,7 @@ private:
 	void ReadBuildingData();
 	void CreateMapPhysicsActors(int mapIndex);
 	void DeleteMapPhysicsActors(int mapIndex);
+	void DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states);
 
 	static const sf::Uint32 MILLISECONDS_PER_SPEECH_BUBBLE_LETTER;
 
@@ -97,7 +98,6 @@ private:
 	int m_WorldIndex;
 
 	Map* m_Map = nullptr;
-
 	std::vector<Map*> m_Maps; // Buildings
 	size_t m_CurrentMapShowingIndex = -1;
 	size_t m_MapToTravelToIndex = -1;

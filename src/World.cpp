@@ -253,66 +253,7 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	if (!m_CurrentSpeech.empty())
 	{
-		const unsigned int SPEECH_FONT_SIZE = 48;
-		const sf::Color SPEECH_FONT_COLOR = sf::Color(25, 25, 10);
-		const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
-		std::string speechString = m_CurrentSpeech.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
-		sf::Text speechText(m_CurrentSpeech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
-
-		const sf::FloatRect bounds = speechText.getLocalBounds();
-		speechText.setString(speechString);
-
-		// Draw the speech bubble as nine differently scaled parts of a rectangle
-		const sf::Vector2f defaultScale(5.0f, 5.0f);
-		const float frameWidth = m_SpeechBubbleSpriteSheet.GetFrameWidth() * defaultScale.x;
-		const float frameHeight = m_SpeechBubbleSpriteSheet.GetFrameHeight() * defaultScale.y;
-		const sf::Vector2f speechBubbleSize(bounds.width + frameWidth * 2, bounds.height + frameHeight * 2);
-		assert(speechBubbleSize.x >= frameWidth * 2);
-		assert(speechBubbleSize.y >= frameHeight * 2);
-		const sf::Vector2f interiorSize(speechBubbleSize - sf::Vector2f(frameWidth * 2, frameHeight * 2));
-		const sf::Vector2f interiorScale(interiorSize.x / frameWidth * defaultScale.x, interiorSize.y / frameHeight * defaultScale.y);
-		const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
-		const sf::Vector2f speechTopLeft(windowSize.x / 2.0f - speechBubbleSize.x / 2.0f, windowSize.y - speechBubbleSize.y * 1.1f);
-
-		// Draw all four corners (since they are never scaled)
-		states.transform.translate(speechTopLeft);
-		m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 0); // Top left
-
-		states.transform.translate(speechBubbleSize.x - frameWidth, 0);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 0); // Top right
-
-		states.transform.translate(0, speechBubbleSize.y - frameHeight);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 2); // Bottom right
-
-		states.transform.translate(-(speechBubbleSize.x - frameWidth), 0);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 2); // Bottom left
-
-		states.transform.translate(frameWidth, -(speechBubbleSize.y - frameHeight));
-		m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale.x, defaultScale.y);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 0); // Top middle
-
-		states.transform.translate(0, speechBubbleSize.y - frameHeight);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 2); // Bottom middle
-
-		states.transform.translate(-frameWidth, -(speechBubbleSize.y - frameHeight) + frameHeight);
-		m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale.x, interiorScale.y);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 1); // Left middle
-
-		states.transform.translate(speechBubbleSize.x - frameWidth, 0);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 1); // Right middle
-
-		states.transform.translate(-(speechBubbleSize.x - frameWidth) + frameWidth, 0);
-		m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale);
-		m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 1); // Middle middle
-
-		speechText.setColor(SPEECH_SHADOW_COLOR);
-		states.transform.translate(defaultScale);
-		target.draw(speechText, states);
-
-		speechText.setColor(SPEECH_FONT_COLOR);
-		states.transform.translate(-defaultScale);
-		target.draw(speechText, states);
+		DrawSpeechBubble(target, states);
 	}
 
 	if (m_ShowingDebugOverlay)
@@ -326,6 +267,70 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	}
 
 	target.setView(cameraView);
+}
+
+void World::DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states)
+{
+	const unsigned int SPEECH_FONT_SIZE = 48;
+	const sf::Color SPEECH_FONT_COLOR = sf::Color(25, 25, 10);
+	const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
+	std::string speechString = m_CurrentSpeech.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
+	sf::Text speechText(m_CurrentSpeech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
+
+	const sf::FloatRect bounds = speechText.getLocalBounds();
+	speechText.setString(speechString);
+
+	// Draw the speech bubble as nine differently scaled parts of a rectangle
+	const sf::Vector2f defaultScale(5.0f, 5.0f);
+	const float frameWidth = m_SpeechBubbleSpriteSheet.GetFrameWidth() * defaultScale.x;
+	const float frameHeight = m_SpeechBubbleSpriteSheet.GetFrameHeight() * defaultScale.y;
+	const sf::Vector2f speechBubbleSize(bounds.width + frameWidth * 2, bounds.height + frameHeight * 2);
+	assert(speechBubbleSize.x >= frameWidth * 2);
+	assert(speechBubbleSize.y >= frameHeight * 2);
+	const sf::Vector2f interiorSize(speechBubbleSize - sf::Vector2f(frameWidth * 2, frameHeight * 2));
+	const sf::Vector2f interiorScale(interiorSize.x / frameWidth * defaultScale.x, interiorSize.y / frameHeight * defaultScale.y);
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+	const sf::Vector2f speechTopLeft(windowSize.x / 2.0f - speechBubbleSize.x / 2.0f, windowSize.y - speechBubbleSize.y * 1.1f);
+
+	// Draw all four corners (since they are never scaled)
+	states.transform.translate(speechTopLeft);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 0); // Top left
+
+	states.transform.translate(speechBubbleSize.x - frameWidth, 0);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 0); // Top right
+
+	states.transform.translate(0, speechBubbleSize.y - frameHeight);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 2); // Bottom right
+
+	states.transform.translate(-(speechBubbleSize.x - frameWidth), 0);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 2); // Bottom left
+
+	states.transform.translate(frameWidth, -(speechBubbleSize.y - frameHeight));
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale.x, defaultScale.y);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 0); // Top middle
+
+	states.transform.translate(0, speechBubbleSize.y - frameHeight);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 2); // Bottom middle
+
+	states.transform.translate(-frameWidth, -(speechBubbleSize.y - frameHeight) + frameHeight);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale.x, interiorScale.y);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 1); // Left middle
+
+	states.transform.translate(speechBubbleSize.x - frameWidth, 0);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 1); // Right middle
+
+	states.transform.translate(-(speechBubbleSize.x - frameWidth) + frameWidth, 0);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale);
+	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 1); // Middle middle
+
+	speechText.setColor(SPEECH_SHADOW_COLOR);
+	states.transform.translate(defaultScale);
+	target.draw(speechText, states);
+
+	speechText.setColor(SPEECH_FONT_COLOR);
+	states.transform.translate(-defaultScale);
+	target.draw(speechText, states);
 }
 
 bool World::IsShowingSpeechBubble() const
