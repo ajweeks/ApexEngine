@@ -26,8 +26,6 @@
 
 #include <Box2D\Dynamics\Contacts\b2Contact.h>
 
-const int ApexMain::INITAL_WINDOW_WIDTH = 2080;
-const int ApexMain::INITAL_WINDOW_HEIGHT = 1216;
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
 
 const bool ApexMain::USE_V_SYNC = true;
@@ -148,7 +146,20 @@ void ApexMain::Init()
 void ApexMain::CreateApexWindow(bool fullscreen)
 {
 	if (m_Window != nullptr) delete m_Window;
-	m_Window = new sf::RenderWindow(sf::VideoMode(INITAL_WINDOW_WIDTH, INITAL_WINDOW_HEIGHT), WINDOW_TITLE, (fullscreen ? sf::Style::Fullscreen : sf::Style::Close));
+	if (fullscreen)
+	{
+		const sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
+		unsigned int windowWidth = fullscreenMode.width;
+		unsigned int windowHeight = fullscreenMode.height;
+		m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, fullscreenMode.bitsPerPixel), WINDOW_TITLE, sf::Style::Fullscreen);
+	}
+	else
+	{
+		const sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+		unsigned int windowWidth = (unsigned int)(desktopMode.width * 0.6f);
+		unsigned int windowHeight = (unsigned int)(desktopMode.height * 0.6f);
+		m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, desktopMode.bitsPerPixel), WINDOW_TITLE, sf::Style::Close);
+	}
 	m_Window->setVerticalSyncEnabled(USE_V_SYNC);
 	m_Window->setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
 	m_Window->setMouseCursorVisible(false);
