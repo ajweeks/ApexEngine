@@ -1,8 +1,8 @@
 
-uniform const vec2 u_resolution;
-uniform const vec4 u_color;
-uniform const sampler2D u_texture;
-uniform const float u_thickness = 0.005;
+uniform vec2 u_resolution;
+uniform vec4 u_color;
+uniform sampler2D u_texture;
+uniform float u_thickness = 0.005;
 
 // Draws all non-transparent pixels as u_color
 void main()

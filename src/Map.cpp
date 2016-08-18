@@ -190,7 +190,7 @@ Map::Map(World* world, std::string directory) :
 
 	if (!m_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
 	{
-		ApexOutputDebugString("Could not either load or compile color-sprite.frag\n");
+		ApexOutputDebugString("\n\n\n\tCould not either load or compile outline_sprite.frag\n\n\n\n");
 	}
 	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
 }
