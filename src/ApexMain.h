@@ -62,6 +62,8 @@ public:
 
 	static sf::Vector2f StringToVector2f(const std::string& string);
 	static std::string Vector2fToString(sf::Vector2f vec);
+	static std::string ColorToString(sf::Color color);
+	static sf::Color StringToColor(std::string string);
 
 	void AddKeyListener(ApexKeyListener* keyListener);
 	void RemoveKeyListener(ApexKeyListener* keyListener);
@@ -101,8 +103,6 @@ private:
 	void LoadCursorTextures();
 	void DEBUGToggleGamePaused();
 
-	static const int INITAL_WINDOW_WIDTH;
-	static const int INITAL_WINDOW_HEIGHT;
 	static const std::string WINDOW_TITLE;
 
 	static const bool USE_V_SYNC;

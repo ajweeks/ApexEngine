@@ -41,25 +41,21 @@ public:
 private:
 	static const std::string LIGHTMAP_FILENAME;
 
-	static sf::Color StringToColor(std::string string);
-	static std::string ColorToString(sf::Color color);
-	static sf::Vector2f StringToVector2f(std::string string);
-	static std::string Vector2fToString(sf::Vector2f vector);
-
 	void DrawEditor(sf::RenderTarget& target, sf::RenderStates states);
 
 	static sf::Shader s_LightingShader;
+	static bool s_LoadedLightingShader;
 	
 	struct ApexLight
 	{
 		float blur;
 		sf::Color color;
-		bool flickers;
+		bool flickers; // Not currently supported! (TODO: Add dynamic lights)
 		float opacity;
 		sf::Vector2f position;
 		float radius;
 	};
-	std::vector<ApexLight> m_Lights;
+	std::vector<ApexLight> m_StaticLights;
 	sf::RenderTexture m_LightmapTexture;
 	sf::Sprite m_LightmapSprite;
 	sf::Color m_AmbientColor;
@@ -68,6 +64,8 @@ private:
 
 	int m_BuildingIndex;
 	World* m_World = nullptr;
+
+	bool m_NeedUpdate = true;
 
 	// Editor variables:
 	bool m_IsShowingEditor;

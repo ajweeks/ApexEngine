@@ -2,28 +2,44 @@
   "ambient": "rgba(195, 210, 222, 55)",
   "lights": [
     {
-      "blur": 0.12,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "104, 199.685",
-      "radius": 47.6
-    },
-    {
       "blur": 0.11,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "224.6, 407.284",
-      "radius": 33
+      "position": "79.20,210.56",
+      "radius": 17
     },
     {
-      "blur": 0.07,
+      "blur": 0.06,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "288.2, 199.631",
-      "radius": 36.2
+      "position": "103.80,412.48",
+      "radius": 21
+    },
+    {
+      "blur": 0.1,
+      "color": "rgb(255, 255, 255)",
+      "flickers": false,
+      "opacity": 0.8,
+      "position": "269.20,193.43",
+      "radius": 36.8
+    },
+    {
+      "blur": 0.09,
+      "color": "rgb(255, 255, 255)",
+      "flickers": false,
+      "opacity": 0.8,
+      "position": "398.40,412.80",
+      "radius": 42.2
+    },
+    {
+      "blur": 0.08,
+      "color": "rgb(255, 255, 255)",
+      "flickers": false,
+      "opacity": 0.8,
+      "position": "235.60,419.40",
+      "radius": 19.2
     }
   ]
 }

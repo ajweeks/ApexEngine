@@ -94,23 +94,6 @@ sf::Color SetAlpha(sf::Color color, sf::Uint8 alpha)
 
 ApexMain::ApexMain()
 {
-	if (!sf::Shader::isAvailable())
-	{
-		throw std::exception("Sorry, your graphics card doesn't support shaders");
-	}
-
-	TextureManager::Initialize();
-	ApexKeyboard::LoadKeybindingsFromFile();
-
-	m_SlowMoData.Create(0.01f, 1.0f, sf::seconds(0.1f), ApexTransition::EaseType::QUADRATIC_IN_OUT);
-	m_SlowMoData.SetFinished();
-
-	srand(static_cast<unsigned>(time(0))); // Seed random number generator
-
-	sf::Color start = sf::Color::Black;
-	sf::Color end = sf::Color::White;
-	m_FadeInOutTransition.Create(start, end, sf::seconds(1));
-	m_FadeInOutTransition.SetFinished();
 }
 
 ApexMain::~ApexMain()
@@ -124,12 +107,32 @@ ApexMain::~ApexMain()
 
 void ApexMain::Init()
 {
+	if (!sf::Shader::isAvailable())
+	{
+		throw std::exception("Sorry, your graphics card doesn't support shaders");
+	}
+
 	m_WindowIsFullscreen = false;
 	CreateApexWindow(m_WindowIsFullscreen);
+
+	TextureManager::Initialize();
+	ApexKeyboard::LoadKeybindingsFromFile();
+	LightManager::LoadShader();
+	ApexAudio::LoadSounds();
+
+	srand(static_cast<unsigned>(time(0))); // Seed random number generator
+
+	m_SlowMoData.Create(0.01f, 1.0f, sf::seconds(0.1f), ApexTransition::EaseType::QUADRATIC_IN_OUT);
+	m_SlowMoData.SetFinished();
+	
+	sf::Color start = sf::Color::Black;
+	sf::Color end = sf::Color::White;
+	m_FadeInOutTransition.Create(start, end, sf::seconds(1));
+	m_FadeInOutTransition.SetFinished();
+
 	LoadCursorTextures();
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
-
 	m_StateManager = new StateManager(new LoadingState());
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
@@ -140,9 +143,6 @@ void ApexMain::Init()
 	{
 		ApexOutputDebugString("Couldn't load font pixelFJ8.ttf!\n");
 	}
-
-	LightManager::LoadShader();
-	ApexAudio::LoadSounds();
 }
 
 void ApexMain::CreateApexWindow(bool fullscreen)
@@ -545,6 +545,46 @@ void ApexMain::AddKeyListener(ApexKeyListener* keyListener)
 		}
 	}
 	m_KeyListeners.push_back(keyListener);
+}
+
+
+// Accepts strings in form "rgb(255, 255, 255)" and "rgba(255, 255, 255, 255)"
+sf::Color ApexMain::StringToColor(std::string string)
+{
+	sf::Color result;
+
+	if (string.substr(0, 4).compare("rgba") == 0)
+	{
+		std::string colorValue = string.substr(5, string.length() - 5 - 1);
+		colorValue.erase(std::remove_if(colorValue.begin(), colorValue.end(), isspace), colorValue.end()); // remove whitespace
+		std::vector<std::string> colors = ApexSplit(colorValue, ',');
+		result.r = stoi(colors[0]);
+		result.g = stoi(colors[1]);
+		result.b = stoi(colors[2]);
+		result.a = stoi(colors[3]);
+	}
+	else if (string.substr(0, 3).compare("rgb") == 0)
+	{
+		std::string colorValue = string.substr(4, string.length() - 4 - 1);
+		colorValue.erase(std::remove_if(colorValue.begin(), colorValue.end(), isspace), colorValue.end()); // remove whitespace
+		std::vector<std::string> colors = ApexSplit(colorValue, ',');
+		result.r = stoi(colors[0]);
+		result.g = stoi(colors[1]);
+		result.b = stoi(colors[2]);
+		result.a = 255;
+	}
+	else
+	{
+		ApexOutputDebugString("Could not convert string to color: " + string + "\n");
+	}
+
+	return result;
+}
+
+std::string ApexMain::ColorToString(sf::Color color)
+{
+	if (color.a == 255)	return "rgb(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ")";
+	return "rgba(" + std::to_string(color.r) + ", " + std::to_string(color.g) + ", " + std::to_string(color.b) + ", " + std::to_string(color.a) + ")";
 }
 
 void ApexMain::RemoveKeyListener(ApexKeyListener * keyListener)

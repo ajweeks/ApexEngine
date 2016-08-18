@@ -353,6 +353,8 @@ void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		states.transform = states.Default.transform;
 		states.shader = states.Default.shader;
 	}
+
+	m_LightManager.Draw(target, states);
 }
 
 Entity* Map::GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance)
