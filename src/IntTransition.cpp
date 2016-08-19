@@ -12,7 +12,6 @@ IntTransition::IntTransition(int start, int end, sf::Time totalTime, EaseType ea
 	ApexTransition(totalTime, easeType),
 	m_StartValue(start), m_EndValue(end)
 {
-	assert(totalTime.asSeconds() > 0.0f);
 }
 
 IntTransition::~IntTransition()

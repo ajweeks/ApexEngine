@@ -34,17 +34,17 @@ void ApexTransition::Tick(sf::Time elapsed)
 	}
 }
 
-sf::Vector2f ApexTransition::Lerp(sf::Vector2f start, sf::Vector2f delta, float t)
+sf::Vector2f ApexTransition::Lerp(sf::Vector2f start, sf::Vector2f delta, float t) const
 {
 	return sf::Vector2f(Lerp(start.x, delta.x, t), Lerp(start.y, delta.y, t));
 }
 
-int ApexTransition::Lerp(int start, int delta, float t)
+int ApexTransition::Lerp(int start, int delta, float t) const
 {
 	return int(Lerp(float(start), float(delta), t));
 }
 
-float ApexTransition::Lerp(float start, float delta, float t)
+float ApexTransition::Lerp(float start, float delta, float t) const
 {
 	assert(t >= 0.0f && t <= 1.0f);
 
@@ -126,6 +126,11 @@ void ApexTransition::SetDuration(sf::Time duration)
 void ApexTransition::SetFinished()
 {
 	m_TimeElapsed = m_TotalTime;
+}
+
+bool ApexTransition::IsFinished() const
+{
+	return m_TimeElapsed >= m_TotalTime;
 }
 
 float ApexTransition::GetPercentComplete() const

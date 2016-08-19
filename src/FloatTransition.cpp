@@ -12,7 +12,6 @@ FloatTransition::FloatTransition(float start, float end, sf::Time totalTime, Eas
 	ApexTransition(totalTime, easeType),
 	m_StartValue(start), m_EndValue(end)
 {
-	assert(totalTime.asSeconds() > 0.0f);
 }
 
 FloatTransition::~FloatTransition()

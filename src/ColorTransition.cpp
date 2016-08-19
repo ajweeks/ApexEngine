@@ -12,7 +12,6 @@ ColorTransition::ColorTransition(sf::Color start, sf::Color end, sf::Time totalT
 	ApexTransition(totalTime, easeType),
 	m_StartColor(start), m_EndColor(end)
 {
-	assert(totalTime.asSeconds() > 0.0f);
 }
 
 ColorTransition::~ColorTransition()

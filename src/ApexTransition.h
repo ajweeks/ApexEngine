@@ -35,13 +35,14 @@ public:
 	virtual void SetEaseType(EaseType easeType);
 	virtual void SetDuration(sf::Time duration);
 	virtual void SetFinished();
+	virtual bool IsFinished() const;
 
 	float GetPercentComplete() const;
 
 protected:
-	sf::Vector2f Lerp(sf::Vector2f start, sf::Vector2f delta, float t);
-	int Lerp(int start, int delta, float t);
-	float Lerp(float start, float delta, float t); // t must be in range [0.0f, 1.0f]
+	sf::Vector2f Lerp(sf::Vector2f start, sf::Vector2f delta, float t) const;
+	int Lerp(int start, int delta, float t) const;
+	float Lerp(float start, float delta, float t) const; // t must be in range [0.0f, 1.0f]
 
 	sf::Time m_TotalTime;
 	sf::Time m_TimeElapsed;
