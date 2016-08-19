@@ -40,6 +40,11 @@ public:
 
 	static ApexMain* GetSingleton();
 
+	static sf::Vector2f StringToVector2f(const std::string& string);
+	static std::string Vector2fToString(sf::Vector2f vec);
+	static std::string ColorToString(sf::Color color);
+	static sf::Color StringToColor(std::string string);
+
 	void Init();
 
 	void Run();
@@ -49,28 +54,16 @@ public:
 	// Returns the mouse coords relative to the game window, or (-1, -1) if mouse is outside of window
 	sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
 	bool IsMouseInWindow() const;
-
 	void SetCursor(ApexCursor cursorType);
-
-	static sf::Font FontOpenSans;
-	static sf::Font FontPixelFJ8;
-
 	void TakeScreenshot();
 
 	StateManager* GetStateManager();
 	sf::Vector2u GetWindowSize() const;
 
-	static sf::Vector2f StringToVector2f(const std::string& string);
-	static std::string Vector2fToString(sf::Vector2f vec);
-	static std::string ColorToString(sf::Color color);
-	static sf::Color StringToColor(std::string string);
-
 	void AddKeyListener(ApexKeyListener* keyListener);
 	void RemoveKeyListener(ApexKeyListener* keyListener);
-
 	void AddMouseListener(ApexMouseListener* mouseListener);
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
-
 	void AddWindowListener(ApexWindowListener* windowListener);
 	void RemoveWindowListener(ApexWindowListener* windowListener);
 
@@ -85,8 +78,8 @@ public:
 	sf::RenderWindow* GetWindow();
 
 	void SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType); // Call this with the amount of time to be in slow mo for
-	void StartFadeInOut(sf::Time length = sf::seconds(0.8f));
-	void StartFadeOut(sf::Time length = sf::seconds(0.8f));
+	void StartFadeInOut(sf::Time length = FADE_IN_OUT_TIME);
+	void StartFadeOut(sf::Time length = FADE_IN_OUT_TIME);
 	bool IsFadingIn() const;
 	bool IsFadingOut() const;
 
@@ -96,6 +89,9 @@ public:
 	virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
 	virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
+	static sf::Font FontOpenSans;
+	static sf::Font FontPixelFJ8;
+
 private:
 	void CreateApexWindow(bool fullscreen);
 	void Tick(double& accumulator);
@@ -103,8 +99,8 @@ private:
 	void LoadCursorTextures();
 	void DEBUGToggleGamePaused();
 
+	static const sf::Time FADE_IN_OUT_TIME;
 	static const std::string WINDOW_TITLE;
-
 	static const bool USE_V_SYNC;
 
 	static ApexMain* m_Singleton;

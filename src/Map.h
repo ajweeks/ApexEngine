@@ -3,8 +3,6 @@
 #include "ApexContactListener.h"
 #include "LightManager.h"
 
-#include <JSON\json.hpp>
-
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 
@@ -23,7 +21,7 @@ class Map
 {
 public:
 	Map();
-	Map(World* world, std::string directory);
+	Map(World* world, int buildingIndex, std::string directory);
 	virtual ~Map();
 
 	Map(const Map&) = delete;
@@ -33,6 +31,8 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 	void Reset();
+
+	static void LoadShaders();
 
 	int GetTilesWide() const;
 	int GetTilesHigh() const;
@@ -59,10 +59,14 @@ private:
 	// Extra chars is filled with all characters after one past the begin string 
 	//		eg.  StringBeginsWith("door_1", "door", e) -> e = "1"
 	bool StringBeginsWith(const std::string& string, const std::string& begin, std::string& extraChars);
-	nlohmann::json GetSpeechDataFromFile();
+	void ReadNPCDataFromFile();
+
+	static sf::Shader s_OutlinedSpriteShader;
 
 	int m_TilesWide;
 	int m_TilesHigh;
+
+	int m_BuildingIndex;
 
 	LightManager m_LightManager;
 
@@ -71,7 +75,6 @@ private:
 	Layer* m_ForegroundLayer = nullptr;
 
 	Entity* m_HighlightedEntity = nullptr;
-	sf::Shader m_OutlinedSpriteShader;
 
 	std::vector<Mob*> m_Mobs;
 	std::vector<Mob*> m_MobsToBeRemoved;

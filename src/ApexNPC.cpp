@@ -10,13 +10,14 @@
 
 using namespace nlohmann;
 
-ApexNPC::ApexNPC(World* world, Map* map, sf::Vector2f position, const json& info) :
-	Mob(world, map, position, ActorID::NPC)
+ApexNPC::ApexNPC(World* world, Map* map, const json& info) :
+	Mob(world, map, sf::Vector2f(), ActorID::NPC)
 {
 	m_Actor->AddBoxFixture(10.0f, 20.0f);
 	m_Actor->SetSensor(true);
 
-	m_Name = info["name"].get<std::string>();
+	m_Spawnpoint = ApexMain::StringToVector2f(info["spawn_point"]["position"].get<std::string>());
+	m_Actor->SetPosition(m_Spawnpoint);
 
 	std::vector<json> statements = info["statements"].get<std::vector<json>>();
 	for (size_t i = 0; i < statements.size(); ++i)
@@ -48,6 +49,7 @@ ApexNPC::ApexNPC(World* world, Map* map, sf::Vector2f position, const json& info
 	}
 
 	m_Sprite.setTexture(*TextureManager::GetTexture(TextureManager::NPC));
+	m_Name = info["name"].get<std::string>();
 	m_NameText = sf::Text(m_Name, APEX->FontPixelFJ8, 32);
 	m_NameText.setColor(sf::Color::White);
 }
@@ -79,40 +81,43 @@ std::string ApexNPC::GetCurrentSpeech() const
 
 void ApexNPC::Interact()
 {
+	if (m_ShouldStop)
+	{
+		m_ShouldStop = false;
+		m_World->ClearSpeechShowing();
+		++m_CurrentStatementIndex;
+		return;
+	}
+	else if (m_ShouldRepeat)
+	{
+		if (m_World->IsShowingSpeechBubble())
+		{
+			m_World->ClearSpeechShowing();
+		}
+		else
+		{
+			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		}
+		return;
+	}
+
 	switch (m_Statements[m_CurrentStatementIndex].type)
 	{
 	case Statement::Type::REPEAT:
 	{
-		if (m_World->IsShowingSpeechBubble())
-		{
-			m_World->ClearSpeechShowing();
-		}
-		else
-		{
-			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
-			return;
-		}
+		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_ShouldRepeat = true;
 	} break;
 	case Statement::Type::END:
 	{
-		if (m_World->IsShowingSpeechBubble())
-		{
-			m_World->ClearSpeechShowing();
-			++m_CurrentStatementIndex;
-			if (m_CurrentStatementIndex == m_Statements.size()) --m_CurrentStatementIndex;
-		}
-		else
-		{
-			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
-			return;
-		}
+		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_ShouldStop = true;
 	} break;
 	case Statement::Type::NORMAL:
 	{
 		if (m_CurrentStatementIndex == m_Statements.size() - 1) // We've said all we have to say
 		{
 			m_World->ClearSpeechShowing(); // *drops mic*
-			return;
 		}
 
 		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);

@@ -208,6 +208,7 @@
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TransformableTransition.cpp" />
+    <ClCompile Include="src\Vector2fTransition.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +269,7 @@
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\TileSet.h" />
     <ClInclude Include="src\TransformableTransition.h" />
+    <ClInclude Include="src\Vector2fTransition.h" />
     <ClInclude Include="src\World.h" />
   </ItemGroup>
   <ItemGroup>

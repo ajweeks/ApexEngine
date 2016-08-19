@@ -87,7 +87,6 @@ void LightManager::Tick(sf::Time elapsed)
 
 void LightManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	// TODO: Bake this render on startup and only update & redraw dynamic lights (?)
 	if (m_NeedUpdate)
 	{
 		m_NeedUpdate = false;

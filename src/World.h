@@ -9,6 +9,8 @@
 #include "ApexKeyListener.h"
 #include "ApexParticleManager.h"
 #include "IntTransition.h"
+#include "TransformableTransition.h"
+#include "Vector2fTransition.h"
 #include "ApexKeyboard.h"
 
 #include <SFML\System\Time.hpp>
@@ -82,15 +84,20 @@ private:
 		ENTER_BUILDING, EXIT_BUILDING, NONE
 	};
 
-
 	void SetPaused(bool paused, bool pauseSounds);
 
 	void ReadBuildingData();
 	void CreateMapPhysicsActors(int mapIndex);
 	void DeleteMapPhysicsActors(int mapIndex);
 	void DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states);
+	void CalculateSpeechBubbleInteriorSize();
 
 	static const sf::Uint32 MILLISECONDS_PER_SPEECH_BUBBLE_LETTER;
+	static const sf::Uint32 MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION;
+
+	static const float SPEECH_BUBBLE_HIDE_SCALE;
+	static const float SPEECH_BUBBLE_HIDE_Y_OFFSET;
+	static const ApexTransition::EaseType SPEECH_BUBBLE_EASE_TYPE;
 
 	int m_Width;
 	int m_Height;
@@ -115,8 +122,25 @@ private:
 	BulletManager* m_BulletManager = nullptr;
 	ApexPauseScreen* m_PauseScreen = nullptr;
 
+	struct SpeechElement
+	{
+		std::string speechString;
+		sf::Text speechText;
+		sf::FloatRect bounds;
+
+		sf::Vector2f scale;
+		float frameWidth;
+		float frameHeight;
+		Vector2fTransition interiorSize;
+		sf::Vector2f speechBubbleSize;
+		sf::Vector2f interiorScale;
+		sf::Vector2f speechTopLeft;
+	};
+
+	bool m_IsHidingSpeechBubble;
+	TransformableTransition m_SpeechBubbleTransition;
+	SpeechElement m_CurrentSpeech;
 	ApexSpriteSheet m_SpeechBubbleSpriteSheet;
-	std::string m_CurrentSpeech;
 
 	IntTransition m_SpeechLetterTransition;
 	FadingOutTo m_FadingOutTo = FadingOutTo::NONE;

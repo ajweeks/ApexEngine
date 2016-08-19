@@ -18,6 +18,7 @@
 #include "TextureManager.h"
 #include "logo.h"
 #include "LightManager.h"
+#include "Map.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -26,8 +27,8 @@
 
 #include <Box2D\Dynamics\Contacts\b2Contact.h>
 
+const sf::Time ApexMain::FADE_IN_OUT_TIME = sf::seconds(0.35f);
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
-
 const bool ApexMain::USE_V_SYNC = true;
 
 ApexMain* ApexMain::m_Singleton = nullptr;
@@ -115,8 +116,9 @@ void ApexMain::Init()
 
 	TextureManager::Initialize();
 	ApexKeyboard::LoadKeybindingsFromFile();
-	LightManager::LoadShader();
 	ApexAudio::LoadSounds();
+	LightManager::LoadShader();
+	Map::LoadShaders();
 
 	srand(static_cast<unsigned>(time(0))); // Seed random number generator
 
@@ -125,7 +127,7 @@ void ApexMain::Init()
 	
 	sf::Color start = sf::Color::Black;
 	sf::Color end = sf::Color::White;
-	m_FadeInOutTransition.Create(start, end, sf::seconds(1));
+	m_FadeInOutTransition.Create(start, end, FADE_IN_OUT_TIME);
 	m_FadeInOutTransition.SetFinished();
 
 	LoadCursorTextures();
@@ -478,7 +480,7 @@ void ApexMain::LoadCursorTextures()
 	m_CursorTextures[int(ApexCursor::NORMAL)] = TextureManager::GetTexture(TextureManager::CURSOR_NORMAL);
 	m_CursorTextures[int(ApexCursor::POINT)] = TextureManager::GetTexture(TextureManager::CURSOR_POINTER);
 
-	m_CursorSprite.setTexture(*m_CursorTextures[int(ApexCursor::NORMAL)]);
+	m_CursorSprite = sf::Sprite(*m_CursorTextures[int(ApexCursor::NORMAL)]);
 }
 
 void ApexMain::SetCursor(ApexCursor cursorType)

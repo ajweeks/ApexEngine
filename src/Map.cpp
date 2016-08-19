@@ -14,13 +14,18 @@
 #include "Layer.h"
 #include "LightManager.h"
 
+#include <JSON\json.hpp>
+
 #include <fstream>
+
+sf::Shader Map::s_OutlinedSpriteShader;
 
 using json = nlohmann::json;
 
-Map::Map(World* world, std::string directory) :
+Map::Map(World* world, int buildingIndex, std::string directory) :
 	m_LightManager(world, directory),
-	m_World(world)
+	m_World(world),
+	m_BuildingIndex(buildingIndex)
 {
 	const std::string fileName = "tiles.json";
 	const std::string filePath = directory + fileName;
@@ -187,12 +192,6 @@ Map::Map(World* world, std::string directory) :
 		delete tileAtlas[i];
 	}
 	tileAtlas.clear();
-
-	if (!m_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
-	{
-		ApexOutputDebugString("\n\n\n\tCould not either load or compile outline_sprite.frag\n\n\n\n");
-	}
-	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255));
 }
 
 Map::~Map()
@@ -236,6 +235,8 @@ Map::~Map()
 
 void Map::Reset()
 {
+	DestroyPhysicsActors();
+
 	for (size_t i = 0; i < m_Items.size(); i++)
 	{
 		delete m_Items[i];
@@ -258,14 +259,18 @@ void Map::Reset()
 	}
 	m_MobsToBeRemoved.clear();
 
-	json speechInfo = GetSpeechDataFromFile();
-	std::vector<json> characters = speechInfo["characters"].get<std::vector<json>>();
-	for (size_t i = 0; i < characters.size(); ++i)
-	{
-		m_Mobs.push_back(new ApexNPC(m_World, this, sf::Vector2f(128.0f + 16.0f * i, 228.0f), characters[i]));
-	}
+	ReadNPCDataFromFile();
 
 	m_HighlightedEntity = nullptr;
+}
+
+void Map::LoadShaders()
+{
+	if (!s_OutlinedSpriteShader.loadFromFile("resources/shaders/outline_sprite.frag", sf::Shader::Fragment))
+	{
+		ApexOutputDebugString("\n\n\n\tCould not either load or compile outline_sprite.frag\n\n\n\n");
+	}
+	s_OutlinedSpriteShader.setParameter("u_color", sf::Color(255, 255, 255, 210));
 }
 
 void Map::Tick(sf::Time elapsed)
@@ -348,7 +353,7 @@ void Map::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	if (m_HighlightedEntity != nullptr)
 	{
-		states.shader = &m_OutlinedSpriteShader;
+		states.shader = &s_OutlinedSpriteShader;
 		m_HighlightedEntity->Draw(target, states);
 		states.transform = states.Default.transform;
 		states.shader = states.Default.shader;
@@ -532,13 +537,12 @@ void Map::AddItemToBeRemoved(Item* item)
 	}
 }
 
-// TODO: Make this static?
-json Map::GetSpeechDataFromFile()
+void Map::ReadNPCDataFromFile()
 {
-	json result;
+	json speechInfo;
 	std::ifstream inputStream;
 
-	inputStream.open("resources/speech.json");
+	inputStream.open("resources/npcs.json");
 	if (inputStream.is_open())
 	{
 		std::string line;
@@ -550,8 +554,15 @@ json Map::GetSpeechDataFromFile()
 		}
 		inputStream.close();
 
-		result = json::parse(stringStream.str());
-	}
+		speechInfo = json::parse(stringStream.str());
 
-	return result;
+		std::vector<json> characters = speechInfo["characters"].get<std::vector<json>>();
+		for (size_t i = 0; i < characters.size(); ++i)
+		{
+			if (speechInfo["characters"][i]["spawn_point"]["building"].get<int>() == m_BuildingIndex) // They spawn on this map
+			{
+				m_Mobs.push_back(new ApexNPC(m_World, this, characters[i]));
+			}
+		}
+	}
 }

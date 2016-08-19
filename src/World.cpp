@@ -23,6 +23,11 @@
 using namespace nlohmann;
 
 const sf::Uint32 World::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 50;
+const sf::Uint32 World::MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION = 450;
+
+const float World::SPEECH_BUBBLE_HIDE_SCALE = 0.75f;
+const float World::SPEECH_BUBBLE_HIDE_Y_OFFSET = 250.0f;
+const ApexTransition::EaseType World::SPEECH_BUBBLE_EASE_TYPE = ApexTransition::EaseType::EXPONENTIAL_IN_OUT;
 
 World::World(int worldIndex) :
 	m_WorldIndex(worldIndex)
@@ -32,7 +37,7 @@ World::World(int worldIndex) :
 
 	m_BulletManager = new BulletManager();
 
-	m_Map = new Map(this, "resources/worlds/" + std::to_string(m_WorldIndex) + "/");
+	m_Map = new Map(this, -1, "resources/worlds/" + std::to_string(m_WorldIndex) + "/");
 
 	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
 	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
@@ -40,7 +45,7 @@ World::World(int worldIndex) :
 	ReadBuildingData();
 
 	m_Player = new Player(this, m_Map);
-	m_Player->GetPhysicsActor()->SetPosition(m_Map->GetPlayerSpawnPosition());
+	m_Player->GetPhysicsActor()->SetPosition(GetCurrentMap()->GetPlayerSpawnPosition());
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float aspectRatio = float(windowSize.x / windowSize.y);
@@ -54,7 +59,6 @@ World::World(int worldIndex) :
 	m_HUD = new HUD(this);
 
 	m_SpeechBubbleSpriteSheet = ApexSpriteSheet(TextureManager::GetTexture(TextureManager::SPEECH_BUBBLE), 16, 16);
-
 	m_SpeechLetterTransition.SetEaseType(ApexTransition::EaseType::LINEAR);
 }
 
@@ -84,14 +88,21 @@ void World::Reset()
 	m_BulletManager->Reset();
 
 	m_Map->Reset();
-	m_Map->CreatePhysicsActors(this);
 
 	for (size_t i = 0; i < m_Maps.size(); i++)
 	{
 		m_Maps[i]->Reset();
 	}
 
-	ClearSpeechShowing();
+	GetCurrentMap()->CreatePhysicsActors(this);
+	m_Player->GetPhysicsActor()->SetPosition(GetCurrentMap()->GetPlayerSpawnPosition());
+
+	m_IsHidingSpeechBubble = false;
+	m_CurrentSpeech.speechText.setString("");
+	m_CurrentSpeech.speechString.clear();
+	m_CurrentSpeech.interiorSize.SetFinished();
+	m_SpeechLetterTransition.SetFinished();
+	m_SpeechBubbleTransition.SetFinished();
 }
 
 void World::ReadBuildingData()
@@ -114,7 +125,7 @@ void World::ReadBuildingData()
 		{
 			fileFound = true;
 
-			Map* map = new Map(this, directoryPath + std::to_string(buildingIndex) + "/");
+			Map* map = new Map(this, buildingIndex, directoryPath + std::to_string(buildingIndex) + "/");
 			m_Maps.push_back(map);
 
 			++buildingIndex;
@@ -200,7 +211,6 @@ void World::Tick(sf::Time elapsed)
 
 	GetCurrentMap()->Tick(elapsed);
 
-	//m_Minimap->Tick(elapsed);
 	m_Player->Tick(elapsed);
 	m_Camera->Tick(elapsed, this);
 	m_BulletManager->Tick(elapsed);
@@ -209,17 +219,49 @@ void World::Tick(sf::Time elapsed)
 	m_ParticleManager.Tick(elapsed);
 	if (m_ShowingDebugOverlay) m_DebugOverlay->Tick(elapsed);
 
-	m_SpeechLetterTransition.Tick(elapsed);
-	if (!m_CurrentSpeech.empty() &&
-		m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
+	m_CurrentSpeech.interiorSize.Tick(elapsed);
+	if (!m_CurrentSpeech.interiorSize.IsFinished())
 	{
-		if (!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_1) &&
-			!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_2) &&
-			!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_3))
+		CalculateSpeechBubbleInteriorSize();
+	}
+	m_SpeechBubbleTransition.Tick(elapsed);
+	if (m_IsHidingSpeechBubble)
+	{
+		if (m_SpeechBubbleTransition.IsFinished())
 		{
-			int rand = std::rand() % 3;
-			ApexAudio::PlaySoundEffect(rand == 0 ? ApexAudio::Sound::TYPING_1 :
-				rand == 1 ? ApexAudio::Sound::TYPING_2 : ApexAudio::Sound::TYPING_3);
+			m_CurrentSpeech.speechString.clear();
+			m_CurrentSpeech.speechText.setString("");
+			sf::Vector2f start;
+			sf::Vector2f end;
+			m_CurrentSpeech.interiorSize.Create(start, end, sf::milliseconds(MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION));
+			m_CurrentSpeech.interiorSize.SetFinished();
+			m_IsHidingSpeechBubble = false;
+		}
+	}
+	if (m_SpeechBubbleTransition.IsFinished())
+	{
+		m_SpeechLetterTransition.Tick(elapsed);
+		if (IsShowingSpeechBubble() &&
+			m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
+		{
+			if (!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_1) &&
+				!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_2) &&
+				!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_3))
+			{
+				const char currentSoundPronouncing = m_CurrentSpeech.speechString[m_SpeechLetterTransition.GetCurrentTransitionData()];
+				if (currentSoundPronouncing >= 'a' && currentSoundPronouncing < 'j')
+				{
+					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_1);
+				}
+				else if (currentSoundPronouncing >= 'j' && currentSoundPronouncing < 'r')
+				{
+					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_2);
+				}
+				else
+				{
+					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_3);
+				}
+			}
 		}
 	}
 
@@ -248,10 +290,9 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	// Static elements
 	target.setView(target.getDefaultView());
 
-	//m_Minimap->Draw(target, states);
 	m_HUD->Draw(target, states);
 
-	if (!m_CurrentSpeech.empty())
+	if (IsShowingSpeechBubble())
 	{
 		DrawSpeechBubble(target, states);
 	}
@@ -271,87 +312,155 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 void World::DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states)
 {
-	const unsigned int SPEECH_FONT_SIZE = 48;
 	const sf::Color SPEECH_FONT_COLOR = sf::Color(25, 25, 10);
 	const sf::Color SPEECH_SHADOW_COLOR = sf::Color(204, 197, 173);
-	std::string speechString = m_CurrentSpeech.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
-	sf::Text speechText(m_CurrentSpeech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
 
-	const sf::FloatRect bounds = speechText.getLocalBounds();
-	speechText.setString(speechString);
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+
+	std::string speechString = m_CurrentSpeech.speechString.substr(0, m_SpeechLetterTransition.GetCurrentTransitionData() + 1);
+	m_CurrentSpeech.speechText.setString(speechString);
+
+	const sf::Vector2f interiorSize = m_CurrentSpeech.interiorSize.GetCurrentTransitionData();
+	m_CurrentSpeech.interiorScale = sf::Vector2f(
+		interiorSize.x / m_CurrentSpeech.frameWidth * m_CurrentSpeech.scale.x,
+		interiorSize.y / m_CurrentSpeech.frameHeight * m_CurrentSpeech.scale.y);
+
+	const sf::Transformable speechBubbleTransformable = m_SpeechBubbleTransition.GetCurrentTransformable();
+	states.transform.scale(speechBubbleTransformable.getScale(), 
+		sf::Vector2f(windowSize.x / 2.0f, windowSize.y));
+	states.transform.translate(speechBubbleTransformable.getPosition());
+
+	const float innerWidth = interiorSize.x;
+	const float innerHeight = interiorSize.y;
 
 	// Draw the speech bubble as nine differently scaled parts of a rectangle
-	const sf::Vector2f defaultScale(5.0f, 5.0f);
-	const float frameWidth = m_SpeechBubbleSpriteSheet.GetFrameWidth() * defaultScale.x;
-	const float frameHeight = m_SpeechBubbleSpriteSheet.GetFrameHeight() * defaultScale.y;
-	const sf::Vector2f speechBubbleSize(bounds.width + frameWidth * 2, bounds.height + frameHeight * 2);
-	assert(speechBubbleSize.x >= frameWidth * 2);
-	assert(speechBubbleSize.y >= frameHeight * 2);
-	const sf::Vector2f interiorSize(speechBubbleSize - sf::Vector2f(frameWidth * 2, frameHeight * 2));
-	const sf::Vector2f interiorScale(interiorSize.x / frameWidth * defaultScale.x, interiorSize.y / frameHeight * defaultScale.y);
-	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
-	const sf::Vector2f speechTopLeft(windowSize.x / 2.0f - speechBubbleSize.x / 2.0f, windowSize.y - speechBubbleSize.y * 1.1f);
-
 	// Draw all four corners (since they are never scaled)
-	states.transform.translate(speechTopLeft);
-	m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(m_CurrentSpeech.scale);
+	states.transform.translate(m_CurrentSpeech.speechTopLeft);
+	const sf::Transform topLeftTransform = states.transform;
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 0); // Top left
-
-	states.transform.translate(speechBubbleSize.x - frameWidth, 0);
+	
+	states.transform.translate(innerWidth + m_CurrentSpeech.frameWidth, 0);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 0); // Top right
-
-	states.transform.translate(0, speechBubbleSize.y - frameHeight);
+	
+	states.transform.translate(0, innerHeight + m_CurrentSpeech.frameHeight);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 2); // Bottom right
-
-	states.transform.translate(-(speechBubbleSize.x - frameWidth), 0);
+	
+	states.transform.translate(-(innerWidth + m_CurrentSpeech.frameWidth), 0);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 2); // Bottom left
 
-	states.transform.translate(frameWidth, -(speechBubbleSize.y - frameHeight));
-	m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale.x, defaultScale.y);
+	// Stetch all other sections accordingly
+	states.transform = topLeftTransform;
+	states.transform.translate(m_CurrentSpeech.frameWidth, 0);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(m_CurrentSpeech.interiorScale.x, m_CurrentSpeech.scale.y);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 0); // Top middle
 
-	states.transform.translate(0, speechBubbleSize.y - frameHeight);
+	states.transform.translate(0, innerHeight + m_CurrentSpeech.frameHeight);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 2); // Bottom middle
 
-	states.transform.translate(-frameWidth, -(speechBubbleSize.y - frameHeight) + frameHeight);
-	m_SpeechBubbleSpriteSheet.SetSpriteScale(defaultScale.x, interiorScale.y);
+	states.transform.translate(-m_CurrentSpeech.frameWidth, -innerHeight);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(m_CurrentSpeech.scale.x, m_CurrentSpeech.interiorScale.y);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 0, 1); // Left middle
 
-	states.transform.translate(speechBubbleSize.x - frameWidth, 0);
+	states.transform.translate(innerWidth + m_CurrentSpeech.frameWidth, 0);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 2, 1); // Right middle
 
-	states.transform.translate(-(speechBubbleSize.x - frameWidth) + frameWidth, 0);
-	m_SpeechBubbleSpriteSheet.SetSpriteScale(interiorScale);
+	states.transform.translate(-innerWidth, 0);
+	m_SpeechBubbleSpriteSheet.SetSpriteScale(m_CurrentSpeech.interiorScale);
 	m_SpeechBubbleSpriteSheet.Draw(target, states, 1, 1); // Middle middle
 
-	speechText.setColor(SPEECH_SHADOW_COLOR);
-	states.transform.translate(defaultScale);
-	target.draw(speechText, states);
+	if (m_SpeechBubbleTransition.IsFinished())
+	{
+		states.transform = topLeftTransform;
+		states.transform.translate(m_CurrentSpeech.frameWidth, m_CurrentSpeech.frameHeight);
+		
+		m_CurrentSpeech.speechText.setColor(SPEECH_SHADOW_COLOR);
+		states.transform.translate(m_CurrentSpeech.scale);
+		target.draw(m_CurrentSpeech.speechText, states); // Text shadow
 
-	speechText.setColor(SPEECH_FONT_COLOR);
-	states.transform.translate(-defaultScale);
-	target.draw(speechText, states);
-}
-
-bool World::IsShowingSpeechBubble() const
-{
-	return !m_CurrentSpeech.empty();
+		m_CurrentSpeech.speechText.setColor(SPEECH_FONT_COLOR);
+		states.transform.translate(-m_CurrentSpeech.scale);
+		target.draw(m_CurrentSpeech.speechText, states); // Text
+	}
 }
 
 void World::SetCurrentSpeechShowing(const std::string& speech)
 {
-	m_CurrentSpeech = speech;
+	assert(!speech.empty());
+	const bool wasShowingSpeech = IsShowingSpeechBubble();
+	const sf::Vector2f previousInteriorSize = m_CurrentSpeech.interiorSize.GetCurrentTransitionData();
+
+	const unsigned int SPEECH_FONT_SIZE = 48;
+
+	m_CurrentSpeech.speechString = speech;
+	m_CurrentSpeech.speechText = sf::Text(speech, APEX->FontPixelFJ8, SPEECH_FONT_SIZE);
+	m_CurrentSpeech.bounds = m_CurrentSpeech.speechText.getLocalBounds();
+	m_CurrentSpeech.speechText.setString("");
+	m_CurrentSpeech.scale = sf::Vector2f(5.0f, 5.0f);
+
+	m_CurrentSpeech.frameWidth = m_SpeechBubbleSpriteSheet.GetFrameWidth() * m_CurrentSpeech.scale.x;
+	m_CurrentSpeech.frameHeight = m_SpeechBubbleSpriteSheet.GetFrameHeight() * m_CurrentSpeech.scale.y;
+
+	m_CurrentSpeech.speechBubbleSize = sf::Vector2f(
+		m_CurrentSpeech.bounds.width + m_CurrentSpeech.frameWidth * 2,
+		m_CurrentSpeech.bounds.height + m_CurrentSpeech.frameHeight * 2);
+
+	sf::Vector2f interiorStartSize = previousInteriorSize;
+	sf::Vector2f interiorEndSize = sf::Vector2f(m_CurrentSpeech.bounds.width, m_CurrentSpeech.bounds.height);
+	m_CurrentSpeech.interiorSize.Create(interiorStartSize, interiorEndSize,
+		sf::milliseconds(MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION), SPEECH_BUBBLE_EASE_TYPE);
+	if (previousInteriorSize.x == 0 || previousInteriorSize.y == 0)
+	{
+		m_CurrentSpeech.interiorSize.SetFinished();
+	}
+	CalculateSpeechBubbleInteriorSize();
 
 	const size_t stringLength = speech.length();
 	m_SpeechLetterTransition.Create(0, stringLength, sf::milliseconds(MILLISECONDS_PER_SPEECH_BUBBLE_LETTER * stringLength));
 	m_SpeechLetterTransition.Restart();
 
+	sf::Transformable speechBubbleTransformableStart;
+	sf::Transformable speechBubbleTransformableEnd;
+	if (!wasShowingSpeech)
+	{
+		speechBubbleTransformableStart.setScale(SPEECH_BUBBLE_HIDE_SCALE, SPEECH_BUBBLE_HIDE_SCALE);
+		speechBubbleTransformableStart.setPosition(0, SPEECH_BUBBLE_HIDE_Y_OFFSET);
+	}
+
+	m_SpeechBubbleTransition.Create(speechBubbleTransformableStart, speechBubbleTransformableEnd, 
+		sf::milliseconds(MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION), SPEECH_BUBBLE_EASE_TYPE);
+	m_SpeechBubbleTransition.Restart();
+
 	m_Player->StopMoving();
+}
+
+void World::CalculateSpeechBubbleInteriorSize()
+{
+	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
+
+	const sf::Vector2f interiorSize = m_CurrentSpeech.interiorSize.GetCurrentTransitionData();
+	m_CurrentSpeech.interiorScale = sf::Vector2f(
+		interiorSize.x / m_CurrentSpeech.frameWidth * m_CurrentSpeech.scale.x,
+		interiorSize.y / m_CurrentSpeech.frameHeight * m_CurrentSpeech.scale.y);
+	m_CurrentSpeech.speechTopLeft = sf::Vector2f(
+		windowSize.x / 2.0f - (interiorSize.x + m_CurrentSpeech.frameWidth * 2) / 2.0f,
+		windowSize.y - (interiorSize.y + m_CurrentSpeech.frameHeight * 2) * 1.1f);
+}
+
+bool World::IsShowingSpeechBubble() const
+{
+	return !m_CurrentSpeech.speechString.empty();
 }
 
 void World::ClearSpeechShowing()
 {
-	m_CurrentSpeech = "";
+	sf::Transformable start;
+	sf::Transformable end;
+	start.setScale(SPEECH_BUBBLE_HIDE_SCALE, SPEECH_BUBBLE_HIDE_SCALE);
+	start.setPosition(0, SPEECH_BUBBLE_HIDE_Y_OFFSET);
+	m_SpeechBubbleTransition.Create(start, end, sf::milliseconds(MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION), SPEECH_BUBBLE_EASE_TYPE);
+	m_SpeechBubbleTransition.SwapAndRestart();
+	m_IsHidingSpeechBubble = true;
 }
 
 void World::OnUnmappedKeypress(sf::Event::KeyEvent event)
@@ -412,10 +521,29 @@ bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		} break;
 		case ApexKeyboard::INTERACT:
 		{
-			if (!m_CurrentSpeech.empty() &&
-				m_SpeechLetterTransition.GetPercentComplete() < 1.0f)
+			if (IsShowingSpeechBubble())
 			{
-				m_SpeechLetterTransition.SetFinished();
+				bool skipped = false;
+				if (!m_CurrentSpeech.interiorSize.IsFinished())
+				{
+					m_CurrentSpeech.interiorSize.SetFinished();
+					skipped = true;
+				}
+				if (!m_SpeechBubbleTransition.IsFinished())
+				{
+					m_SpeechBubbleTransition.SetFinished();
+					skipped = true;
+				}
+				if (!m_SpeechLetterTransition.IsFinished())
+				{
+					m_SpeechLetterTransition.SetFinished();
+					skipped = true;
+				}
+
+				if (!skipped)
+				{
+					GetCurrentMap()->InteractWithHighlightedItem();
+				}
 			}
 			else
 			{

@@ -7,12 +7,10 @@
 
 #include <JSON\json.hpp>
 
-#include <string>
-
 class ApexNPC : public Mob, public Interactable
 {
 public:
-	ApexNPC(World* world, Map* map, sf::Vector2f position, const nlohmann::json& info);
+	ApexNPC(World* world, Map* map, const nlohmann::json& info);
 	virtual ~ApexNPC();
 
 	ApexNPC(const ApexNPC&) = delete;
@@ -39,10 +37,13 @@ private:
 		int answerIndex;
 	};
 
-	std::string m_Name;
 	std::vector<Statement> m_Statements;
 	int m_CurrentStatementIndex;
 
-	sf::Sprite m_Sprite;
+	bool m_ShouldStop;
+	bool m_ShouldRepeat;
+	std::string m_Name;
 	sf::Text m_NameText;
+	sf::Vector2f m_Spawnpoint;
+	sf::Sprite m_Sprite;
 };

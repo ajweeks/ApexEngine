@@ -25,11 +25,6 @@ bool ApexAudio::LoadSounds()
 	return true;
 }
 
-bool ApexAudio::IsSoundEffectPlaying(Sound sound)
-{
-	return m_SoundEffects[int(sound)].m_Sound.getStatus() == sf::Sound::Playing;
-}
-
 void ApexAudio::LoadSound(Sound sound, const std::string& filePath)
 {
 	if (!m_SoundEffects[int(sound)].m_Buffer.loadFromFile(filePath))
@@ -48,6 +43,11 @@ void ApexAudio::LoadMusicTrack(Music track, const std::string& filePath, bool lo
 		return;
 	}
 	m_MusicTracks[int(track)].setLoop(loop);
+}
+
+bool ApexAudio::IsSoundEffectPlaying(Sound sound)
+{
+	return m_SoundEffects[int(sound)].m_Sound.getStatus() == sf::Sound::Playing;
 }
 
 void ApexAudio::PlaySoundEffect(Sound sound)

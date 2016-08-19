@@ -209,6 +209,9 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files\Level</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vector2fTransition.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ApexMain.h">
@@ -384,6 +387,9 @@
     </ClInclude>
     <ClInclude Include="src\Camera.h">
       <Filter>Source Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector2fTransition.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

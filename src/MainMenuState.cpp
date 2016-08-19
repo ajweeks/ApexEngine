@@ -79,14 +79,14 @@ void MainMenuState::Tick(sf::Time elapsed)
 		m_Buttons.Tick(elapsed);
 		if (m_Buttons.GetButton(int(Buttons::PLAY))->IsPressed())
 		{
-			APEX->StartFadeInOut(sf::seconds(0.5f));
+			APEX->StartFadeInOut();
 			m_FadingOutTo = FadingOutTo::GAME;
 			return;
 		}
 
 		if (m_Buttons.GetButton(int(Buttons::QUIT))->IsPressed())
 		{
-			APEX->StartFadeInOut(sf::seconds(0.4f));
+			APEX->StartFadeInOut();
 			m_FadingOutTo = FadingOutTo::QUIT;
 			return;
 		}

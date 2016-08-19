@@ -222,7 +222,8 @@ void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 void Player::DrawShadow(sf::RenderTarget& target, sf::RenderStates states)
 {
-	states.transform.translate(-13, 0);
+	static const float halfShadowImageWidth = TextureManager::GetTexture(TextureManager::SHADOW)->getSize().x / 2.0f;
+	states.transform.translate(-halfShadowImageWidth, 0);
 	target.draw(m_ShadowSprite, states);
 }
 
