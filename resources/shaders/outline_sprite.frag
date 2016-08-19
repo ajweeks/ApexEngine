@@ -2,7 +2,7 @@
 uniform vec2 u_resolution;
 uniform vec4 u_color;
 uniform sampler2D u_texture;
-uniform float u_thickness = 0.005;
+uniform float u_thickness = 0.008;
 
 // Draws all non-transparent pixels as u_color
 void main()
@@ -22,7 +22,7 @@ void main()
 		// If one of the neighboring pixels is in the sprite, we are an outline
 		if ((pixelLeft.a + pixelRight.a + pixelTop.a + pixelBottom.a) > 0.0)
 		{
-			c = vec4(1.0) *  u_color;
+			c = u_color;
 		}	
 	}
 	
