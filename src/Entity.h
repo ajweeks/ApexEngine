@@ -29,6 +29,9 @@ public:
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)  override {};
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override {};
 
+	virtual void CreatePhysicsActor();
+	virtual void DeletePhysicsActor();
+
 	PhysicsActor* GetPhysicsActor() const;
 
 	Map* GetMap() const;
@@ -40,5 +43,9 @@ protected:
 	sf::Sprite m_ShadowSprite;
 
 private:
+	sf::Vector2f m_Position;
+	b2BodyType m_BodyType;
+	int m_UserData;
+	void* m_UserPointer;
 
 };

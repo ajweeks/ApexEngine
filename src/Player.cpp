@@ -18,14 +18,6 @@ Player::Player(World* world, Map* map) :
 	m_World(world),
 	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32)
 {
-	m_Actor->AddCircleFixture(7.0f);
-	m_Actor->AddContactListener(this);
-
-	b2Filter collisionFilter;
-	collisionFilter.categoryBits = ActorID::PLAYER;
-	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::EXIT | ActorID::SHEEP;
-	m_Actor->SetCollisionFilter(collisionFilter);
-
 	ApexSpriteSheet::Sequence walkingSequence;
 	walkingSequence.pingPongs = true;
 	walkingSequence.framesLong = 3;
@@ -47,8 +39,10 @@ Player::~Player()
 
 void Player::Reset()
 {
-	m_Actor->SetLinearVelocity(sf::Vector2f(0.0f, 0.0f));
-	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
+	if (m_Actor != nullptr)
+	{
+		StopMoving();
+	}
 	m_DirFacing = DirectionFacing::RIGHT;
 }
 
@@ -61,6 +55,19 @@ void Player::StopMoving()
 {
 	m_Actor->SetLinearVelocity(sf::Vector2f());
 	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
+}
+
+void Player::CreatePhysicsActor()
+{
+	Entity::CreatePhysicsActor();
+	m_Actor->AddCircleFixture(7.0f);
+	m_Actor->AddContactListener(this);
+
+	b2Filter collisionFilter;
+	collisionFilter.categoryBits = ActorID::PLAYER;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::EXIT | ActorID::SHEEP;
+	m_Actor->SetCollisionFilter(collisionFilter);
+
 }
 
 void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)

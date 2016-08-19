@@ -21,6 +21,8 @@ public:
 
 	std::string GetCurrentSpeech() const;
 
+	virtual void CreatePhysicsActor(ApexContactListener* b2ContactListener) override;
+
 	virtual void Interact() override;
 
 private:

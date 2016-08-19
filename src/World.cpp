@@ -45,7 +45,6 @@ World::World(int worldIndex) :
 	ReadBuildingData();
 
 	m_Player = new Player(this, m_Map);
-	m_Player->GetPhysicsActor()->SetPosition(GetCurrentMap()->GetPlayerSpawnPosition());
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float aspectRatio = float(windowSize.x / windowSize.y);
@@ -95,6 +94,7 @@ void World::Reset()
 	}
 
 	GetCurrentMap()->CreatePhysicsActors(this);
+	m_Player->CreatePhysicsActor();
 	m_Player->GetPhysicsActor()->SetPosition(GetCurrentMap()->GetPlayerSpawnPosition());
 
 	m_IsHidingSpeechBubble = false;
@@ -264,15 +264,6 @@ void World::Tick(sf::Time elapsed)
 			}
 		}
 	}
-
-#if 0
-	// Rainbow outline
-	const float time = APEX->GetTimeElapsed().asSeconds();
-	const sf::Uint8 outlineR = sf::Uint8((sin(time * 15.0f + 1.2f) + 1.0f) * 127);
-	const sf::Uint8 outlineG = sf::Uint8((cos(time * 20.5f) + 1.0f) * 127);
-	const sf::Uint8 outlineB = sf::Uint8((sin(time * 12.0f + 0.5f) + 1.0f) * 127);
-	m_OutlinedSpriteShader.setParameter("u_color", sf::Color(outlineR, outlineG, outlineB));
-#endif
 }
 
 void World::Draw(sf::RenderTarget& target, sf::RenderStates states)

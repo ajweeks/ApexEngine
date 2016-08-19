@@ -420,6 +420,11 @@ void Map::CreatePhysicsActors(ApexContactListener* contactListener)
 	m_BackgroundLayer->CreatePhysicsActors(contactListener);
 	m_MidgroundLayer->CreatePhysicsActors(contactListener);
 	m_ForegroundLayer->CreatePhysicsActors(contactListener);
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		m_Mobs[i]->CreatePhysicsActor(contactListener);
+	}
 }
 
 void Map::DestroyPhysicsActors()
@@ -427,6 +432,11 @@ void Map::DestroyPhysicsActors()
 	m_BackgroundLayer->DestroyPhysicsActors();
 	m_MidgroundLayer->DestroyPhysicsActors();
 	m_ForegroundLayer->DestroyPhysicsActors();
+
+	for (size_t i = 0; i < m_Mobs.size(); i++)
+	{
+		m_Mobs[i]->DeletePhysicsActor();
+	}
 }
 
 sf::Vector2f Map::GetPlayerSpawnPosition() const

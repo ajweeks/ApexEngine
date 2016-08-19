@@ -13,11 +13,7 @@ using namespace nlohmann;
 ApexNPC::ApexNPC(World* world, Map* map, const json& info) :
 	Mob(world, map, sf::Vector2f(), ActorID::NPC)
 {
-	m_Actor->AddBoxFixture(10.0f, 20.0f);
-	m_Actor->SetSensor(true);
-
 	m_Spawnpoint = ApexMain::StringToVector2f(info["spawn_point"]["position"].get<std::string>());
-	m_Actor->SetPosition(m_Spawnpoint);
 
 	std::vector<json> statements = info["statements"].get<std::vector<json>>();
 	for (size_t i = 0; i < statements.size(); ++i)
@@ -77,6 +73,17 @@ void ApexNPC::Draw(sf::RenderTarget& target, sf::RenderStates states)
 std::string ApexNPC::GetCurrentSpeech() const
 {
 	return m_Statements[m_CurrentStatementIndex].statement;
+}
+
+void ApexNPC::CreatePhysicsActor(ApexContactListener* contactListener)
+{
+	if (m_Actor == nullptr)
+	{
+		Mob::CreatePhysicsActor(contactListener);
+		m_Actor->AddBoxFixture(10.0f, 20.0f);
+		m_Actor->SetSensor(true);
+		m_Actor->SetPosition(m_Spawnpoint);
+	}
 }
 
 void ApexNPC::Interact()

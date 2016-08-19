@@ -19,6 +19,8 @@ public:
 	
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override {};
 
+	virtual void CreatePhysicsActor(ApexContactListener* contactListener);
+
 private:
 
 };

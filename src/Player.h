@@ -35,6 +35,8 @@ public:
 
 	void StopMoving();
 
+	virtual void CreatePhysicsActor() override;
+
 	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
