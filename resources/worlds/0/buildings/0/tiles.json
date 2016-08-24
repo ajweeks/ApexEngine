@@ -85,17 +85,14 @@
                 },
              "104":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "105":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "106":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "112":
@@ -128,17 +125,14 @@
                 },
              "120":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "121":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "122":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "128":
@@ -171,17 +165,14 @@
                 },
              "136":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "137":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "138":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "144":
@@ -214,17 +205,14 @@
                 },
              "152":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "153":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "154":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "16":
@@ -261,12 +249,10 @@
                 },
              "168":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "169":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "17":
@@ -275,7 +261,6 @@
                 },
              "170":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "18":
@@ -356,6 +341,7 @@
                 },
              "5":
                 {
+                 "id":"coin",
                  "solid":false
                 },
              "64":
@@ -393,12 +379,10 @@
                 },
              "73":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "74":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "8":
@@ -435,12 +419,10 @@
                 },
              "88":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "89":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "9":
@@ -449,7 +431,6 @@
                 },
              "90":
                 {
-                 "id":"bed",
                  "solid":true
                 },
              "96":
@@ -497,17 +478,14 @@
                 },
              "104":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "105":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "106":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "112":
@@ -540,17 +518,14 @@
                 },
              "120":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "121":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "122":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "128":
@@ -583,17 +558,14 @@
                 },
              "136":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "137":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "138":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "144":
@@ -626,17 +598,14 @@
                 },
              "152":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "153":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "154":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "16":
@@ -673,12 +642,10 @@
                 },
              "168":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "169":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "17":
@@ -687,7 +654,6 @@
                 },
              "170":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "18":
@@ -768,6 +734,7 @@
                 },
              "5":
                 {
+                 "id":"string",
                  "solid":"bool"
                 },
              "64":
@@ -805,12 +772,10 @@
                 },
              "73":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "74":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "8":
@@ -847,12 +812,10 @@
                 },
              "88":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "89":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "9":
@@ -861,7 +824,6 @@
                 },
              "90":
                 {
-                 "id":"string",
                  "solid":"bool"
                 },
              "96":

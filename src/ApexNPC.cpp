@@ -11,7 +11,7 @@
 using namespace nlohmann;
 
 ApexNPC::ApexNPC(World* world, Map* map, const json& info) :
-	Mob(world, map, sf::Vector2f(), ActorID::NPC)
+	Mob(world, map, sf::Vector2f(), ActorID::NPC, this)
 {
 	m_Spawnpoint = ApexMain::StringToVector2f(info["spawn_point"]["position"].get<std::string>());
 

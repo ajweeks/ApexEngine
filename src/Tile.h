@@ -2,14 +2,16 @@
 
 #include "ApexContactListener.h"
 
+#include <string>
+
 class PhysicsActor;
 
-class Tile : ApexContactListener
+class Tile : public ApexContactListener
 {
 public:
 	enum class Type
 	{
-		NORMAL, DOOR, EXIT, BUILDING, BED,
+		NORMAL, DOOR, EXIT, BUILDING,
 		NONE
 	};
 	struct ExtraInfo
@@ -29,8 +31,10 @@ public:
 	int GetBuildingID() const;
 	Type GetType() const;
 	ExtraInfo GetExtraInfo() const;
+	std::string GetStringID() const;
 
 	void SetExtraInfo(ExtraInfo extraInfo);
+	void SetStringID(const std::string& stringID);
 
 	void SetPhysicsActor(PhysicsActor* actor);
 	void DeletePhysicsActor();
@@ -43,6 +47,7 @@ private:
 	bool m_IsSolid;
 	bool m_IsSensor;
 	int m_ID;
+	std::string m_StringID;
 	Type m_Type;
 	ExtraInfo m_ExtraInfo;
 	PhysicsActor* m_Actor = nullptr;

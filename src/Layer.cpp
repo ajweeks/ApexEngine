@@ -144,9 +144,7 @@ void Layer::CreatePhysicsActors(ApexContactListener* contactListener)
 			if (m_Tiles[tileIndex]->IsSolid() ||
 				m_Tiles[tileIndex]->IsSensor())
 			{
-				PhysicsActor* newActor = new PhysicsActor(
-					sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize),
-					b2BodyType::b2_staticBody);
+				PhysicsActor* newActor = new PhysicsActor(sf::Vector2f((x + 0.5f) * tileSize, (y + 0.5f) * tileSize), b2BodyType::b2_staticBody);
 				newActor->AddBoxFixture(tileSize, tileSize);
 				newActor->SetUserPointer(m_Tiles[tileIndex]);
 				newActor->AddContactListener(contactListener);
@@ -198,6 +196,16 @@ int Layer::GetTileSize() const
 const std::string& Layer::GetName() const
 {
 	return m_Name;
+}
+
+std::vector<Tile*> Layer::GetTiles() const
+{
+	return m_Tiles;
+}
+
+TileSet* Layer::GetTileSet() const
+{
+	return m_TileSet;
 }
 
 Layer::Type Layer::ParseLayerTypeString(std::string string)

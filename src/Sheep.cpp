@@ -11,7 +11,7 @@ const float Sheep::WIDTH = 15.0f;
 const float Sheep::HEIGHT = 15.0f;
 
 Sheep::Sheep(World* world, Map* map, sf::Vector2f position) :
-	Mob(world, map, position, ActorID::SHEEP)
+	Mob(world, map, position, ActorID::SHEEP, this)
 {
 	m_Actor->AddBoxFixture(15, 15);
 	m_Actor->AddContactListener(this);

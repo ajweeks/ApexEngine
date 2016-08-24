@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include "Mob.h"
 #include "ApexSpriteSheet.h"
 #include "Gun.h"
 #include "ApexKeyListener.h"
@@ -11,7 +11,7 @@
 class World;
 class Map;
 
-class Player : public Entity, public ApexKeyListener
+class Player : public Mob, public ApexKeyListener
 {
 public:
 	enum AnimationSequence

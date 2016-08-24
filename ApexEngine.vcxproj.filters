@@ -212,6 +212,9 @@
     <ClCompile Include="src\Vector2fTransition.cpp">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClCompile>
+    <ClCompile Include="src\Bed.cpp">
+      <Filter>Source Files\Level\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ApexMain.h">
@@ -390,6 +393,10 @@
     </ClInclude>
     <ClInclude Include="src\Vector2fTransition.h">
       <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\Bed.h">
+      <Filter>Source Files\Level\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

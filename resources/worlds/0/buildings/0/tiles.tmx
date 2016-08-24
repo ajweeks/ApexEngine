@@ -32,6 +32,7 @@
   </tile>
   <tile id="5">
    <properties>
+    <property name="id" value="coin"/>
     <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
@@ -182,13 +183,11 @@
   </tile>
   <tile id="73">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="74">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -229,19 +228,16 @@
   </tile>
   <tile id="88">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="89">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="90">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -282,19 +278,16 @@
   </tile>
   <tile id="104">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="105">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="106">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -335,19 +328,16 @@
   </tile>
   <tile id="120">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="121">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="122">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -388,19 +378,16 @@
   </tile>
   <tile id="136">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="137">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="138">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -441,19 +428,16 @@
   </tile>
   <tile id="152">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="153">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="154">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
@@ -494,19 +478,16 @@
   </tile>
   <tile id="168">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="169">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="170">
    <properties>
-    <property name="id" value="bed"/>
     <property name="solid" type="bool" value="true"/>
    </properties>
   </tile>

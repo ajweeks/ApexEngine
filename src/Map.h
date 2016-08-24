@@ -55,9 +55,10 @@ public:
 	void InteractWithHighlightedItem();
 
 private:
+	void ReadJSONFile();
 	Entity* GetNearestInteractableEntityTo(Entity* sourceEntity, float& distance);
 	// Extra chars is filled with all characters after one past the begin string 
-	//		eg.  StringBeginsWith("door_1", "door", e) -> e = "1"
+	//		eg.  StringBeginsWith("door_1", "door", ex) -> ex = "1"
 	bool StringBeginsWith(const std::string& string, const std::string& begin, std::string& extraChars);
 	void ReadNPCDataFromFile();
 
@@ -68,12 +69,14 @@ private:
 
 	int m_BuildingIndex;
 
+	std::string m_Directory;
+
 	LightManager m_LightManager;
 
 	Layer* m_BackgroundLayer = nullptr;
-	Layer* m_MidgroundLayer = nullptr;
 	Layer* m_ForegroundLayer = nullptr;
 
+	Player* m_Player;
 	Entity* m_HighlightedEntity = nullptr;
 
 	std::vector<Mob*> m_Mobs;

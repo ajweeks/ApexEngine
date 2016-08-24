@@ -38,23 +38,25 @@ public:
 
 	int GetTileSize() const;
 	const std::string& GetName() const;
+	std::vector<Tile*> GetTiles() const;
+	TileSet* GetTileSet() const;
 
 	static Type ParseLayerTypeString(std::string layerTypeString);
 
 private:
 	World* m_World;
+	TileSet* m_TileSet;
 
 	std::vector<Tile*> m_Tiles;
 	sf::VertexArray m_Verticies;
 
+	sf::Time m_Elapsed;
+
 	std::string m_Name;
-	bool m_Visible;
 	int m_Width;
 	int m_Height;
 	Type m_Type;
+	// Not yet supported:
+	bool m_Visible;
 	float m_Opacity;
-
-	TileSet* m_TileSet;
-
-	sf::Time m_Elapsed;
 };

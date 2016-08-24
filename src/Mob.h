@@ -8,7 +8,7 @@
 class Mob : public Entity
 {
 public:
-	Mob(World* world, Map* map, sf::Vector2f position, ActorID id);
+	Mob(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer);
 	virtual ~Mob();
 
 	Mob(const Mob&) = delete;

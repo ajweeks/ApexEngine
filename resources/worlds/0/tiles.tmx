@@ -919,13 +919,13 @@
   <tile id="178">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="179">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="180">
@@ -991,37 +991,37 @@
   <tile id="192">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="193">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="194">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="195">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="196">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="197">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="198">
@@ -1077,37 +1077,37 @@
   <tile id="208">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="209">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="210">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="211">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="212">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="213">
    <properties>
     <property name="id" value="building_0"/>
-    <property name="solid" type="bool" value="true"/>
+    <property name="solid" type="bool" value="false"/>
    </properties>
   </tile>
   <tile id="214">

@@ -17,6 +17,8 @@ public:
 
 	void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
 
+	virtual void CreatePhysicsActor() override;
+
 private:
 	ApexSpriteSheet m_SpriteSheet;
 

@@ -24,4 +24,5 @@ enum ActorID
 	COIN		= (1 << 7),
 	DOOR		= (1 << 8),
 	EXIT		= (1 << 9),
+	BED			= (1 << 10)
 };

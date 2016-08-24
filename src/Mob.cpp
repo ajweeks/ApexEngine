@@ -2,8 +2,8 @@
 #include "Mob.h"
 #include "PhysicsActor.h"
 
-Mob::Mob(World* world, Map* map, sf::Vector2f position, ActorID id) :
-	Entity(world, map, position, id, this)
+Mob::Mob(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer) :
+	Entity(world, map, position, id, userPointer)
 {
 }
 

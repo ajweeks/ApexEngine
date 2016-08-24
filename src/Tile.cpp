@@ -46,9 +46,19 @@ Tile::ExtraInfo Tile::GetExtraInfo() const
 	return m_ExtraInfo;
 }
 
+std::string Tile::GetStringID() const
+{
+	return m_StringID;
+}
+
 void Tile::SetExtraInfo(ExtraInfo extraInfo)
 {
 	m_ExtraInfo = extraInfo;
+}
+
+void Tile::SetStringID(const std::string& stringID)
+{
+	m_StringID = stringID;
 }
 
 void Tile::SetPhysicsActor(PhysicsActor* actor)

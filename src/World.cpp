@@ -22,8 +22,8 @@
 
 using namespace nlohmann;
 
-const sf::Uint32 World::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 50;
-const sf::Uint32 World::MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION = 450;
+const sf::Uint32 World::MILLISECONDS_PER_SPEECH_BUBBLE_LETTER = 40;
+const sf::Uint32 World::MILLISECONDS_OF_SPEECH_BUBBLE_ANIMATION = 350;
 
 const float World::SPEECH_BUBBLE_HIDE_SCALE = 0.75f;
 const float World::SPEECH_BUBBLE_HIDE_Y_OFFSET = 250.0f;
@@ -38,9 +38,6 @@ World::World(int worldIndex) :
 	m_BulletManager = new BulletManager();
 
 	m_Map = new Map(this, -1, "resources/worlds/" + std::to_string(m_WorldIndex) + "/");
-
-	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
-	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
 
 	ReadBuildingData();
 
@@ -64,7 +61,6 @@ World::World(int worldIndex) :
 World::~World()
 {
 	delete m_Map;
-
 	for (size_t i = 0; i < m_Maps.size(); ++i)
 	{
 		delete m_Maps[i];
@@ -87,11 +83,13 @@ void World::Reset()
 	m_BulletManager->Reset();
 
 	m_Map->Reset();
-
 	for (size_t i = 0; i < m_Maps.size(); i++)
 	{
 		m_Maps[i]->Reset();
 	}
+
+	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
+	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
 
 	GetCurrentMap()->CreatePhysicsActors(this);
 	m_Player->CreatePhysicsActor();
@@ -272,10 +270,7 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.setView(cameraView);
 
 	GetCurrentMap()->Draw(target, states);
-
 	m_BulletManager->Draw(target, states);
-	m_Player->Draw(target, states);
-
 	m_ParticleManager.Draw(target, states);
 
 	// Static elements

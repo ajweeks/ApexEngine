@@ -13,7 +13,7 @@
 const float Player::VEL = 550000.0f;
 
 Player::Player(World* world, Map* map) :
-	Entity(world, map, sf::Vector2f(), ActorID::PLAYER, this),
+	Mob(world, map, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
 	m_World(world),
 	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32)
