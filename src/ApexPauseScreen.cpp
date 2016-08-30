@@ -57,6 +57,7 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 	const float volumeBarHeight = height * 0.25f;
 	top += height * 0.5f;
 	m_MusicVolumeSlider = new ApexSlider(volumeBarWidth, volumeBarHeight, centerX - volumeBarWidth / 2, top);
+	m_MusicVolumeSlider->SetValue(m_Options.musicVolume);
 
 	top += height * 0.8f;
 	m_SoundVolumeText = sf::Text("Sound Volume:", font, fontSize);
@@ -65,6 +66,7 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 
 	top += height * 0.5f;
 	m_SoundVolumeSlider = new ApexSlider(volumeBarWidth, volumeBarHeight, centerX - volumeBarWidth / 2, top);
+	m_SoundVolumeSlider->SetValue(m_Options.soundVolume);
 
 	// Keybindings screen
 	int vkCode;
@@ -153,11 +155,23 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 			return;
 		}
 
+		const float prevMusicVolumeValue = m_MusicVolumeSlider->GetValue();
 		m_MusicVolumeSlider->Tick(elapsed);
-		ApexAudio::SetAllMusicVolume(m_MusicVolumeSlider->GetValue());
+		const float newMusicVolumeValue = m_MusicVolumeSlider->GetValue();
+		if (prevMusicVolumeValue != newMusicVolumeValue)
+		{
+			ApexAudio::SetAllMusicVolume(newMusicVolumeValue);
+			m_Options.musicVolume = newMusicVolumeValue;
+		}
 
+		const float prevSoundVolumeValue = m_SoundVolumeSlider->GetValue();
 		m_SoundVolumeSlider->Tick(elapsed);
-		ApexAudio::SetAllSoundsVolume(m_SoundVolumeSlider->GetValue());
+		const float newSoundVolumeValue = m_SoundVolumeSlider->GetValue();
+		if (prevSoundVolumeValue != newSoundVolumeValue)
+		{
+			ApexAudio::SetAllSoundsVolume(newSoundVolumeValue);
+			m_Options.soundVolume = newSoundVolumeValue;
+		}
 		const bool soundVolumeSliderBeingBragged = m_SoundVolumeSlider->BeingDragged();
 		if (m_SoundVolumeSliderWasBeingDragged && !soundVolumeSliderBeingBragged)
 		{

@@ -21,6 +21,9 @@ public:
 
 	virtual void SwapAndRestart() override; // Swap start and end data, and reset
 
+	sf::Transformable GetStartTransformable() const;
+	sf::Transformable GetEndTransformable() const;
+
 private:
 	sf::Transformable m_StartTransformable;
 	sf::Transformable m_EndTransformable;

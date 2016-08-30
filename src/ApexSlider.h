@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ApexMouseListener.h"
+#include "TransformableTransition.h"
+#include "ColorTransition.h"
 
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\System\Time.hpp>
@@ -18,6 +20,7 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
+	void SetValue(float value);
 	float GetValue() const;
 	bool BeingDragged() const;
 
@@ -26,8 +29,20 @@ public:
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent) {};
 
 private:
+	static const float GRIP_MOVE_MS_PER_PIXEL;
+	static const sf::Int32 GRIP_COLOR_TRANSITION_MS;
+	static const ApexTransition::EaseType GRIP_MOVE_EASE_TYPE;
+	// The grip's relative size to the bg rect
+	static const float GRIP_REL_WIDTH;
+	static const float GRIP_REL_HEIGHT;
+
+	void CreateGripTransformableTransition(float endPosX, float endPosY, bool instant = false);
+	void CreateGripTransformableTransition(sf::Vector2f endPos, bool instant = false);
+
 	sf::RectangleShape m_BackgroundRectangle;
 	sf::RectangleShape m_GripRectangle;
+	TransformableTransition m_GripTransformableTransition;
+	ColorTransition m_GripColorTransition;
 	sf::Color m_BackgroundColor;
 	sf::Color m_BackgroundColorHover;
 	sf::Color m_GripColor;

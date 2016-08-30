@@ -78,3 +78,13 @@ void TransformableTransition::SwapAndRestart()
 	m_TimeElapsed = sf::Time::Zero;
 }
 
+sf::Transformable TransformableTransition::GetStartTransformable() const
+{
+	return m_StartTransformable;
+}
+
+sf::Transformable TransformableTransition::GetEndTransformable() const
+{
+	return m_EndTransformable;
+}
+
