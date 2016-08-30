@@ -17,26 +17,26 @@ void TextureManager::Initialize()
 
 	s_Textures.resize(Texture::_LAST_ELEMENT, nullptr);
 
-	LoadTexture(Texture::LIQWIDICE_GAMES_LOGO_SCREEN, "resources/title-card.png");
+	LoadTexture(Texture::LIQWIDICE_GAMES_LOGO_SCREEN, "resources/images/title-card.png");
 
-	LoadTexture(Texture::GENERAL_TILES, "resources/tiles.png");
+	LoadTexture(Texture::GENERAL_TILES, "resources/images/tiles.png");
 
-	LoadTexture(Texture::DUST_PARTICLE, "resources/dust-explosion.png");
-	LoadTexture(Texture::PLAYER, "resources/player.png");
-	LoadTexture(Texture::SHADOW, "resources/shadow.png");
+	LoadTexture(Texture::PLAYER, "resources/images/player.png");
+	LoadTexture(Texture::DUST_PARTICLE, "resources/images/dust-explosion.png");
+	LoadTexture(Texture::SHADOW, "resources/images/shadow.png");
 
-	LoadTexture(Texture::CURSOR_NORMAL, "resources/cursor-normal-x2.png");
-	LoadTexture(Texture::CURSOR_POINTER, "resources/cursor-point-x2.png");
+	LoadTexture(Texture::CURSOR_NORMAL, "resources/images/cursor-normal-x2.png");
+	LoadTexture(Texture::CURSOR_POINTER, "resources/images/cursor-point-x2.png");
 
-	LoadTexture(Texture::AMMO, "resources/ammo.png");
-	LoadTexture(Texture::COIN, "resources/coin.png");
+	LoadTexture(Texture::AMMO, "resources/images/ammo.png");
+	LoadTexture(Texture::COIN, "resources/images/coin.png");
 
-	LoadTexture(Texture::TITLE_COLOR, "resources/title-color.png");
-	LoadTexture(Texture::TITLE_SHADOW, "resources/title-shadow.png");
+	LoadTexture(Texture::TITLE_COLOR, "resources/images/title-color.png");
+	LoadTexture(Texture::TITLE_SHADOW, "resources/images/title-shadow.png");
 
-	LoadTexture(Texture::SPEECH_BUBBLE, "resources/speech-bubble.png");
+	LoadTexture(Texture::SPEECH_BUBBLE, "resources/images/speech-bubble.png");
 
-	LoadTexture(Texture::NPC, "resources/npc.png");
+	LoadTexture(Texture::NPC, "resources/images/npc.png");
 
 	s_initialized = true;
 }
