@@ -18,12 +18,12 @@
       "radius": 21
     },
     {
-      "blur": 0.1,
+      "blur": 0.09,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "269.20,193.43",
-      "radius": 36.8
+      "position": "280.27,193.60",
+      "radius": 27.8
     },
     {
       "blur": 0.09,
