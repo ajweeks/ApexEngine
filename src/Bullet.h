@@ -19,7 +19,7 @@ public:
 	virtual void Tick(sf::Time elapsed);
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
+	virtual void BeginContact(ApexContact* contact) override;
 
 private:
 	static const float RADIUS;

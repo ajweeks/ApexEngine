@@ -47,9 +47,9 @@ void AmmoDrop::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.draw(m_Sprite, states);
 }
 
-void AmmoDrop::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void AmmoDrop::BeginContact(ApexContact* contact)
 {
-	switch (otherActor->GetUserData())
+	switch (contact->actorB->GetUserData())
 	{
 	case ActorID::PLAYER:
 	{

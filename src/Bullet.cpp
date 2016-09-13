@@ -50,7 +50,7 @@ void Bullet::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.draw(m_Circle, states);
 }
 
-void Bullet::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Bullet::BeginContact(ApexContact* contact)
 {
-	if (!otherActor->IsSensor()) m_BulletManager->AddBulletToBeRemoved(this);
+	if (!contact->fixtureB->IsSensor()) m_BulletManager.AddBulletToBeRemoved(this);
 }

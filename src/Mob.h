@@ -17,9 +17,9 @@ public:
 	virtual void Tick(sf::Time elapsed) = 0;
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) = 0;
 	
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override {};
+	virtual void BeginContact(ApexContact* contact) override {};
 
-	virtual void CreatePhysicsActor(ApexContactListener* contactListener);
+	virtual void CreatePhysicsActor() override;
 
 private:
 

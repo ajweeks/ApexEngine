@@ -27,9 +27,10 @@ void Coin::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	m_SpriteSheet.Draw(target, states);
 }
 
-void Coin::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 {
-	switch (otherActor->GetUserData())
+void Coin::BeginContact(ApexContact* contact)
+{
+	switch (contact->actorB->GetUserData())
 	{
 	case ActorID::PLAYER:
 	{

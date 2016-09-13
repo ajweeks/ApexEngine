@@ -70,9 +70,9 @@ void Player::CreatePhysicsActor()
 
 }
 
-void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Player::BeginContact(ApexContact* contact)
 {
-	switch (otherActor->GetUserData())
+	switch (contact->actorA->GetUserData())
 	{
 	case ActorID::COIN:
 	{
@@ -80,8 +80,6 @@ void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	} break;
 	case ActorID::DOOR:
 	{
-		Tile* tile = static_cast<Tile*>(otherActor->GetUserPointer());
-		m_BuildingIndexToEnterNextFrame = tile->GetExtraInfo().buildingID;
 	} break;
 	case ActorID::EXIT:
 	{
@@ -90,11 +88,11 @@ void Player::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	}
 }
 
-void Player::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Player::EndContact(ApexContact* contact)
 {
 }
 
-void Player::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact)
+void Player::PreSolve(ApexContact* contact, bool& enableContact)
 {
 }
 

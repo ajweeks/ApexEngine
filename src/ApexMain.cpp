@@ -770,89 +770,82 @@ ApexMain* ApexMain::GetSingleton()
 
 void ApexMain::BeginContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Fixture* fixtureB = contact->GetFixtureB();
+	ApexContact apexContact;
+	apexContact.fixtureA = contact->GetFixtureA();
+	apexContact.fixtureB = contact->GetFixtureB();
+	apexContact.actorA =reinterpret_cast<PhysicsActor*>(apexContact.fixtureA->GetUserData());
+	apexContact.actorB = reinterpret_cast<PhysicsActor*>(apexContact.fixtureB->GetUserData());
 
-	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	if (apexContact.fixtureA->GetUserData() != nullptr && apexContact.fixtureB->GetUserData() != nullptr)
 	{
-		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		void* fixtureABodyUserData = apexContact.fixtureA->GetBody()->GetUserData();
+		if (fixtureABodyUserData != nullptr) // Fixture A is a contact listener
 		{
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
-			contactListener->BeginContact(
-				reinterpret_cast<PhysicsActor*>(fixtureA->GetUserData()),
-				reinterpret_cast<PhysicsActor*>(fixtureB->GetUserData()));
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureABodyUserData);
+			contactListener->BeginContact(&apexContact);
 		}
-	}
 
-	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
-	{
-		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
+		void* fixtureBBodyUserData = apexContact.fixtureB->GetBody()->GetUserData();
+		if (fixtureBBodyUserData != nullptr) // Fixture B is a contact listener
 		{
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
-			contactListener->BeginContact(
-				reinterpret_cast<PhysicsActor*>(fixtureB->GetUserData()),
-				reinterpret_cast<PhysicsActor*>(fixtureA->GetUserData()));
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureBBodyUserData);
+			contactListener->BeginContact(&apexContact);
 		}
 	}
 }
 
 void ApexMain::EndContact(b2Contact* contact)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Fixture* fixtureB = contact->GetFixtureB();
+	ApexContact apexContact;
+	apexContact.fixtureA = contact->GetFixtureA();
+	apexContact.fixtureB = contact->GetFixtureB();
+	apexContact.actorA = reinterpret_cast<PhysicsActor*>(apexContact.fixtureA->GetUserData());
+	apexContact.actorB = reinterpret_cast<PhysicsActor*>(apexContact.fixtureB->GetUserData());
 
-	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	if (apexContact.fixtureA->GetUserData() != nullptr && apexContact.fixtureB->GetUserData() != nullptr)
 	{
-		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		void* fixtureABodyUserData = apexContact.fixtureA->GetBody()->GetUserData();
+		if (fixtureABodyUserData != nullptr) // Fixture A is a contact listener
 		{
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
-			contactListener->EndContact(
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()));
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureABodyUserData);
+			contactListener->EndContact(&apexContact);
+		}
+
+		void* fixtureBBodyUserData = apexContact.fixtureB->GetBody()->GetUserData();
+		if (fixtureBBodyUserData != nullptr) // Fixture B is a contact listener
+		{
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureBBodyUserData);
+			contactListener->EndContact(&apexContact);
 		}
 	}
 
-	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
-	{
-		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
-		{
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
-			contactListener->EndContact(
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()));
-		}
-	}
 }
 
 void ApexMain::PreSolve(b2Contact* contact, const b2Manifold* oldManifold)
 {
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Fixture* fixtureB = contact->GetFixtureB();
+	ApexContact apexContact;
+	apexContact.fixtureA = contact->GetFixtureA();
+	apexContact.fixtureB = contact->GetFixtureB();
+	apexContact.actorA = reinterpret_cast<PhysicsActor*>(apexContact.fixtureA->GetUserData());
+	apexContact.actorB = reinterpret_cast<PhysicsActor*>(apexContact.fixtureB->GetUserData());
 
-	if (fixtureA->GetBody()->GetUserData() != nullptr) // Fixture A is a contact listener
+	if (apexContact.fixtureA->GetUserData() != nullptr && apexContact.fixtureB->GetUserData() != nullptr)
 	{
-		if (fixtureA->GetUserData() != nullptr && fixtureB->GetUserData() != nullptr)
+		void* fixtureABodyUserData = apexContact.fixtureA->GetBody()->GetUserData();
+		if (fixtureABodyUserData != nullptr) // Fixture A is a contact listener
 		{
 			bool enableContact = true;
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureA->GetBody()->GetUserData());
-			contactListener->PreSolve(
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
-				enableContact);
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureABodyUserData);
+			contactListener->PreSolve(&apexContact, enableContact);
 			contact->SetEnabled(enableContact);
 		}
-	}
 
-	if (fixtureB->GetBody()->GetUserData() != nullptr) // Fixture B is a contact listener
-	{
-		if (fixtureB->GetUserData() != nullptr && fixtureA->GetUserData() != nullptr)
+		void* fixtureBBodyUserData = apexContact.fixtureB->GetBody()->GetUserData();
+		if (fixtureBBodyUserData != nullptr) // Fixture B is a contact listener
 		{
 			bool enableContact = true;
-			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureB->GetBody()->GetUserData());
-			contactListener->PreSolve(
-				reinterpret_cast<PhysicsActor *>(fixtureB->GetUserData()),
-				reinterpret_cast<PhysicsActor *>(fixtureA->GetUserData()),
-				enableContact);
+			ApexContactListener* contactListener = reinterpret_cast<ApexContactListener*>(fixtureBBodyUserData);
+			contactListener->PreSolve(&apexContact, enableContact);
 			contact->SetEnabled(enableContact);
 		}
 	}

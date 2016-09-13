@@ -6,6 +6,7 @@
 #include "ApexMath.h"
 #include "DustParticle.h"
 #include "Map.h"
+#include "ApexContact.h"
 
 const float Sheep::WIDTH = 15.0f;
 const float Sheep::HEIGHT = 15.0f;
@@ -105,9 +106,9 @@ void Sheep::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	m_BgRect.setFillColor(pColor);
 }
 
-void Sheep::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Sheep::BeginContact(ApexContact* contact)
 {
-	switch (otherActor->GetUserData())
+	switch (contact->actorB->GetUserData())
 	{
 	case int(ActorID::WALL):
 	{
@@ -132,10 +133,10 @@ void Sheep::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
 	}
 }
 
-void Sheep::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Sheep::EndContact(ApexContact* contact)
 {
 }
 
-void Sheep::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact)
+void Sheep::PreSolve(ApexContact* contact, bool& enableContact)
 {
 }

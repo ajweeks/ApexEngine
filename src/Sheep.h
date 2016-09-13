@@ -18,9 +18,9 @@ public:
 	virtual void Tick(sf::Time elapsed);
 	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
-	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
-	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
+	virtual void BeginContact(ApexContact* contact) override;
+	virtual void EndContact(ApexContact* contact) override;
+	virtual void PreSolve(ApexContact* contact, bool& enableContact) override;
 
 private:
 	static const float WIDTH;

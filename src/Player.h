@@ -37,9 +37,9 @@ public:
 
 	virtual void CreatePhysicsActor() override;
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
-	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) override;
-	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) override;
+	virtual void BeginContact(ApexContact* contact) override;
+	virtual void EndContact(ApexContact* contact) override;
+	virtual void PreSolve(ApexContact* contact, bool& enableContact) override;
 
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
@@ -58,7 +58,6 @@ private:
 
 	float m_SecondsElapsed = 0.0f;
 
-	World* m_World = nullptr;
 
 	ApexSpriteSheet m_SpriteSheet;
 

@@ -479,15 +479,15 @@ void World::AddParticle(ApexParticle* spriteSheet)
 	m_ParticleManager.AddParticle(spriteSheet);
 }
 
-void World::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void World::BeginContact(ApexContact* contact)
 {
 }
 
-void World::EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void World::EndContact(ApexContact* contact)
 {
 }
 
-void World::PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool & enableContact)
+void World::PreSolve(ApexContact* contact, bool & enableContact)
 {
 }
 

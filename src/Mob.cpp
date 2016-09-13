@@ -11,12 +11,11 @@ Mob::~Mob()
 {
 }
 
-void Mob::CreatePhysicsActor(ApexContactListener* contactListener)
+void Mob::CreatePhysicsActor()
 {
 	if (m_Actor == nullptr)
 	{
 		Entity::CreatePhysicsActor();
-		m_Actor->AddContactListener(contactListener);
 	}
 }
 

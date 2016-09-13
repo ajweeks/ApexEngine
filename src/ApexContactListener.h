@@ -1,6 +1,6 @@
 #pragma once
 
-class PhysicsActor;
+#include "ApexContact.h"
 
 class ApexContactListener
 {
@@ -11,9 +11,9 @@ public:
 	ApexContactListener(const ApexContactListener&) = delete;
 	ApexContactListener& operator=(const ApexContactListener&) = delete;
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor) {};
-	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) {};
-	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) {};
+	virtual void BeginContact(ApexContact* contact) {};
+	virtual void EndContact(ApexContact* contact) {};
+	virtual void PreSolve(ApexContact* contact, bool& enableContact) {};
 
 private:
 

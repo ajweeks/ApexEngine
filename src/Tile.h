@@ -39,9 +39,9 @@ public:
 	void SetPhysicsActor(PhysicsActor* actor);
 	void DeletePhysicsActor();
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
-	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor) {};
-	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact) {};
+	virtual void BeginContact(ApexContact* contact);
+	virtual void EndContact(ApexContact* contact) {};
+	virtual void PreSolve(ApexContact* contact, bool& enableContact) {};
 
 private:
 	bool m_IsSolid;

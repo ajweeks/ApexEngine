@@ -71,9 +71,9 @@ public:
 
 	Map* GetCurrentMap();
 
-	virtual void BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
-	virtual void EndContact(PhysicsActor* thisActor, PhysicsActor* otherActor);
-	virtual void PreSolve(PhysicsActor* thisActor, PhysicsActor* otherActor, bool& enableContact);
+	virtual void BeginContact(ApexContact* contact);
+	virtual void EndContact(ApexContact* contact);
+	virtual void PreSolve(ApexContact* contact, bool& enableContact);
 
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;

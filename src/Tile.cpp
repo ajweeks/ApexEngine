@@ -76,9 +76,9 @@ void Tile::DeletePhysicsActor()
 	}
 }
 
-void Tile::BeginContact(PhysicsActor* thisActor, PhysicsActor* otherActor)
+void Tile::BeginContact(ApexContact* contact)
 {
-	switch (otherActor->GetUserData())
+	switch (contact->actorB->GetUserData())
 	{
 	case ActorID::PLAYER:
 	{
