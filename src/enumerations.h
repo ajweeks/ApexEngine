@@ -14,7 +14,6 @@ enum class ApexCursor
 
 enum ActorID
 {
-	WALL		= (1 << 0),
 	PLAYER		= (1 << 1),
 	BULLET		= (1 << 2),
 	GUN			= (1 << 3),
@@ -24,5 +23,7 @@ enum ActorID
 	COIN		= (1 << 7),
 	DOOR		= (1 << 8),
 	EXIT		= (1 << 9),
-	BED			= (1 << 10)
+	BED			= (1 << 10),
+	BUILDING	= (1 << 11),
+	SOLID_BLOCK = (1 << 12)
 };
