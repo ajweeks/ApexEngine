@@ -37,9 +37,6 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
-	unsigned int GetWidth() const;
-	unsigned int GetHeight() const;
-
 	void Reset();
 
 	Player* GetPlayer();
@@ -70,6 +67,9 @@ public:
 	int GetWorldIndex() const;
 
 	Map* GetCurrentMap();
+	void ToggleLightingEnabled();
+	void SetLightingEnabled(bool enabled);
+	bool IsLightingEnabled() const;
 
 	virtual void BeginContact(ApexContact* contact);
 	virtual void EndContact(ApexContact* contact);
@@ -86,7 +86,7 @@ private:
 
 	void SetPaused(bool paused, bool pauseSounds);
 
-	void ReadBuildingData();
+	void CreateMaps();
 	void CreateMapPhysicsActors(int mapIndex);
 	void DeleteMapPhysicsActors(int mapIndex);
 	void DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states);
@@ -99,9 +99,8 @@ private:
 	static const float SPEECH_BUBBLE_HIDE_Y_OFFSET;
 	static const ApexTransition::EaseType SPEECH_BUBBLE_EASE_TYPE;
 
-	int m_Width;
-	int m_Height;
-
+	bool m_LightingEnabled;
+	
 	int m_WorldIndex;
 
 	Map* m_Map = nullptr;

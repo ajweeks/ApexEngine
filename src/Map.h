@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 
-class Entity;
 class Building;
+class Entity;
+class Layer;
 class World;
 class Mob;
 class Item;
-class Layer;
 struct TileSet;
 
 class Map

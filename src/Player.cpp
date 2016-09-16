@@ -9,26 +9,35 @@
 #include "AmmoDrop.h"
 #include "ApexAudio.h"
 #include "PhysicsActor.h"
+#include "Building.h"
+#include "Map.h"
 
-const float Player::VEL = 550000.0f;
+const float Player::VEL = 500000.0f;
+const float Player::WIDTH = 12.0f;
+const float Player::HEIGHT = 28.0f;
 
 Player::Player(World& world, Map& map) :
 	Mob(world, map, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
-	m_World(world),
-	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 16, 32)
+	m_SpriteSheet(TextureManager::GetTexture(TextureManager::PLAYER), 20, 32)
 {
-	ApexSpriteSheet::Sequence walkingSequence;
-	walkingSequence.pingPongs = true;
-	walkingSequence.framesLong = 3;
-	walkingSequence.msPerFrame = 90;
-	walkingSequence.startFrameIndex = sf::Vector2i(0, 0);
-	m_SpriteSheet.AddSequence(AnimationSequence::WALKING, walkingSequence);
-	
-	ApexSpriteSheet::Sequence standingSequence;
-	standingSequence.framesLong = 1;
-	standingSequence.startFrameIndex = sf::Vector2i(1, 0);
-	m_SpriteSheet.AddSequence(AnimationSequence::STANDING, standingSequence);
+	ApexSpriteSheet::Sequence walkingDownSequence;
+	walkingDownSequence.framesLong = 4;
+	walkingDownSequence.msPerFrame = 120;
+	walkingDownSequence.startFrameIndex = sf::Vector2i(0, 0);
+	m_SpriteSheet.AddSequence(AnimationSequence::WALKING_DOWN, walkingDownSequence);
+
+	ApexSpriteSheet::Sequence walkingUpSequence;
+	walkingUpSequence.framesLong = 4;
+	walkingUpSequence.msPerFrame = 120;
+	walkingUpSequence.startFrameIndex = sf::Vector2i(4, 0);
+	m_SpriteSheet.AddSequence(AnimationSequence::WALKING_UP, walkingUpSequence);
+
+	ApexSpriteSheet::Sequence walkingSidewaysSequence;
+	walkingSidewaysSequence.framesLong = 4;
+	walkingSidewaysSequence.msPerFrame = 120;
+	walkingSidewaysSequence.startFrameIndex = sf::Vector2i(0, 1);
+	m_SpriteSheet.AddSequence(AnimationSequence::WALKING_SIDEWAYS, walkingSidewaysSequence);
 
 	Reset();
 }
@@ -51,23 +60,30 @@ sf::Vector2f Player::GetPosition() const
 	return m_Actor->GetPosition();
 }
 
+int Player::GetDoorIndexTouching() const
+{
+	return m_DoorIndexTouching;
+}
+
 void Player::StopMoving()
 {
 	m_Actor->SetLinearVelocity(sf::Vector2f());
-	m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING);
+	m_StandingStill = true;
+	m_SpriteSheet.SetFrameIndex(0);
 }
 
 void Player::CreatePhysicsActor()
 {
-	Entity::CreatePhysicsActor();
-	m_Actor->AddCircleFixture(7.0f);
+	Mob::CreatePhysicsActor();
+	m_BodyFixture = m_Actor->AddBoxFixture(WIDTH, HEIGHT, true, b2Vec2(0.0f, -19.0f));
+	m_FootFixture = m_Actor->AddCircleFixture(2.6f, false, b2Vec2(0.0f, -6.8f), 1.0f, 0.0f);
 	m_Actor->AddContactListener(this);
 
 	b2Filter collisionFilter;
 	collisionFilter.categoryBits = ActorID::PLAYER;
-	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::DOOR | ActorID::EXIT | ActorID::SHEEP;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::BED | ActorID::BUILDING | ActorID::DOOR | ActorID::EXIT | 
+		ActorID::SHEEP | ActorID::COIN | ActorID::SOLID_BLOCK;
 	m_Actor->SetCollisionFilter(collisionFilter);
-
 }
 
 void Player::BeginContact(ApexContact* contact)
@@ -78,8 +94,13 @@ void Player::BeginContact(ApexContact* contact)
 	{
 		ApexAudio::PlaySoundEffect(ApexAudio::Sound::COIN_PICKUP);
 	} break;
-	case ActorID::DOOR:
+	case ActorID::BUILDING:
 	{
+		Building* building = static_cast<Building*>(contact->actorA->GetUserPointer());
+		if (contact->fixtureB == m_FootFixture && contact->fixtureA == building->GetDoorFixture())
+		{
+			m_DoorIndexTouching = building->GetIndex();
+		}
 	} break;
 	case ActorID::EXIT:
 	{
@@ -90,6 +111,13 @@ void Player::BeginContact(ApexContact* contact)
 
 void Player::EndContact(ApexContact* contact)
 {
+	switch (contact->actorA->GetUserData())
+	{
+	case ActorID::BUILDING:
+	{
+		m_DoorIndexTouching = -1;
+	} break;
+	}
 }
 
 void Player::PreSolve(ApexContact* contact, bool& enableContact)
@@ -103,13 +131,40 @@ bool Player::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		switch (key) 
 		{
 		case ApexKeyboard::MOVE_LEFT:
+		{
+			if (!m_World.IsShowingSpeechBubble())
+			{
+				m_StandingStill = false;
+			}
+		} break;
 		case ApexKeyboard::MOVE_RIGHT:
+		{
+			if (!m_World.IsShowingSpeechBubble())
+			{
+				m_StandingStill = false;
+			}
+		} break;
 		case ApexKeyboard::MOVE_UP:
+		{
+			if (!m_World.IsShowingSpeechBubble())
+			{
+				m_StandingStill = false;
+			}
+		} break;
 		case ApexKeyboard::MOVE_DOWN:
 		{
 			if (!m_World.IsShowingSpeechBubble())
 			{
-				m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
+				m_StandingStill = false;
+			}
+		} break;
+		case ApexKeyboard::INTERACT:
+		{
+			if (m_DoorIndexTouching != -1 && !m_Map.GetBuildings()[m_DoorIndexTouching]->IsDoorLocked())
+			{
+				m_BuildingIndexToEnterNextFrame = m_DoorIndexTouching;
+				m_DoorIndexTouching = -1;
+				return true;
 			}
 		} break;
 		}
@@ -119,6 +174,11 @@ bool Player::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 
 void Player::OnKeyRelease(ApexKeyboard::Key key)
 {
+}
+
+sf::Vector2f Player::GetBottomMiddlePoint()
+{
+	return m_Actor->GetPosition() + sf::Vector2f(0, HEIGHT / 2.0f);
 }
 
 void Player::Tick(sf::Time elapsed)
@@ -142,7 +202,10 @@ void Player::Tick(sf::Time elapsed)
 		HandleMovement(elapsed);
 	}
 
-	m_SpriteSheet.Tick(elapsed);
+	if (!m_StandingStill)
+	{
+		m_SpriteSheet.Tick(elapsed);
+	}
 }
 
 void Player::HandleMovement(sf::Time elapsed)
@@ -152,32 +215,38 @@ void Player::HandleMovement(sf::Time elapsed)
 	const float dVel = VEL * dt;
 	sf::Vector2f newVel = m_Actor->GetLinearVelocity();
 
-	if (m_SpriteSheet.GetCurrentSequenceIndex() != AnimationSequence::STANDING &&
+	if (!m_StandingStill &&
 		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_RIGHT) &&
 		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_LEFT) &&
 		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_UP) &&
 		!ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_DOWN))
 	{
-		m_SpriteSheet.SetCurrentSequence(AnimationSequence::STANDING, false);
+		StopMoving();
 	}
 
+	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_UP))
+	{
+		newVel.y -= dVel;
+		m_DirFacing = DirectionFacing::UP;
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING_UP, false);
+	}
+	else if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_DOWN))
+	{
+		newVel.y += dVel;
+		m_DirFacing = DirectionFacing::DOWN;
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING_DOWN, false);
+	}
 	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_RIGHT))
 	{
 		newVel.x += dVel;
 		m_DirFacing = DirectionFacing::RIGHT;
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING_SIDEWAYS, false);
 	}
-	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_LEFT))
+	else if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_LEFT))
 	{
 		newVel.x -= dVel;
 		m_DirFacing = DirectionFacing::LEFT;
-	}
-	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_UP))
-	{
-		newVel.y -= dVel;
-	}
-	if (ApexKeyboard::IsKeyDown(ApexKeyboard::MOVE_DOWN))
-	{
-		newVel.y += dVel;
+		m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING_SIDEWAYS, false);
 	}
 
 	m_Actor->SetLinearVelocity(newVel);
@@ -219,10 +288,9 @@ void Player::ClampPosition()
 void Player::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	const float centerX = m_Actor->GetPosition().x;
-	const float centerY = m_Actor->GetPosition().y - 8.0f;
+	const float centerY = m_Actor->GetPosition().y - 20.0f;
 
 	states.transform.translate(centerX, centerY);
-
 	DrawShadow(target, states);
 	DrawBody(target, states);
 }

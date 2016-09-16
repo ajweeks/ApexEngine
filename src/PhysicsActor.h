@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <Box2D\Dynamics\b2Fixture.h>
 
 #include <SFML\System\Vector2.hpp>
@@ -17,8 +16,8 @@ public:
 	PhysicsActor(const PhysicsActor&) = delete;
 	PhysicsActor& operator=(const PhysicsActor&) = delete;
 
-	b2Fixture* AddBoxFixture(float width, float height, float resitiution = 0.8f, float friction = 0.7f, float density = 1.0f);
-	b2Fixture* AddCircleFixture(float radius, sf::Vector2f offset = sf::Vector2f(0, 0), float resitiution = 0.8f,
+	b2Fixture* AddBoxFixture(float width, float height, bool isSensor = false, const b2Vec2& center = b2Vec2(0.0f, 0.0f), float resitiution = 0.8f, float friction = 0.7f, float density = 1.0f);
+	b2Fixture* AddCircleFixture(float radius, bool isSensor = false, const b2Vec2& offset = b2Vec2(0.0f, 0.0f), float resitiution = 0.8f,
 		float friction = 0.7f, float density = 1.0f);
 
 	void SetUserData(int userData);
@@ -62,9 +61,6 @@ public:
 	void SetActive(bool active);
 	bool IsActive() const;
 
-	void SetSensor(bool sensor);
-	bool IsSensor() const;
-
 	void SetCollisionFilter(const b2Filter& collisionFilter);
 	b2Filter GetCollisionFilter() const;
 
@@ -77,10 +73,10 @@ public:
 	void ApplyLinearImpulse(sf::Vector2f impulse, sf::Vector2f offsetPoint);
 	void ApplyAngularImpulse(float impulse);
 
-	static const int SCALE;
-private:
+	b2Fixture* GetFixtureList() const;
 
-	bool m_IsSensor = false;
+	static const float SCALE;
+private:
 	int m_UserData = 0;
 	void* m_UserPointer = nullptr;
 

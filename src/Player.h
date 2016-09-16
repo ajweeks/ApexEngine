@@ -16,11 +16,11 @@ class Player : public Mob, public ApexKeyListener
 public:
 	enum AnimationSequence
 	{
-		STANDING, WALKING
+		WALKING_DOWN, WALKING_UP, WALKING_SIDEWAYS
 	};
 	enum DirectionFacing
 	{
-		LEFT, RIGHT
+		LEFT, RIGHT, UP, DOWN
 	};
 
 	Player(World& world, Map& map);
@@ -32,6 +32,8 @@ public:
 	void Reset();
 
 	sf::Vector2f GetPosition() const;
+	
+	int GetDoorIndexTouching() const;
 
 	void StopMoving();
 
@@ -44,6 +46,8 @@ public:
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
 	virtual void OnKeyRelease(ApexKeyboard::Key key) override;
 
+	virtual sf::Vector2f GetBottomMiddlePoint() override;
+
 private:
 	void ClampPosition();
 	void HandleMovement(sf::Time elapsed);
@@ -54,13 +58,20 @@ private:
 	static const float MAX_VEL;
 	static const float FRICTION;
 
+	static const float WIDTH;
+	static const float HEIGHT;
+
 	DirectionFacing m_DirFacing;
+	bool m_StandingStill;
 
 	float m_SecondsElapsed = 0.0f;
 
+	b2Fixture* m_FootFixture = nullptr;
+	b2Fixture* m_BodyFixture = nullptr;
 
 	ApexSpriteSheet m_SpriteSheet;
 
+	int m_DoorIndexTouching = -1;
 	int m_BuildingIndexToEnterNextFrame = -1;
 	bool m_ExitBuildingNextFrame = false;
 };

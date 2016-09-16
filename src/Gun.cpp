@@ -103,28 +103,30 @@ void Gun::Tick(sf::Time elapsed)
 {
 	if (m_ReloadingTimeRemaining != sf::Time::Zero)
 	{
-		if (m_ReloadingTimeRemaining != sf::Time::Zero)
-		{
-			m_ReloadingTimeRemaining -= elapsed;
-			if (m_ReloadingTimeRemaining < sf::Time::Zero)
-				m_ReloadingTimeRemaining = sf::Time::Zero;
-		}
-
-		const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_World->GetCurrentView()));
-		if (mousePos.x != -1.0f && mousePos.y != -1.0f) // only update our rotation when the mouse is inside the window
-		{
-			const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
-			m_Direction = atan2(dPos.y, dPos.x);
-		}
-		
-		m_Actor->SetPosition(m_World->GetPlayer()->GetPosition());
+		m_ReloadingTimeRemaining -= elapsed;
+		if (m_ReloadingTimeRemaining < sf::Time::Zero)
+			m_ReloadingTimeRemaining = sf::Time::Zero;
 	}
+
+	const sf::Vector2f mousePos = static_cast<sf::Vector2f>(APEX->GetMouseCoordsScreenSpace(m_World.GetCurrentView()));
+	if (mousePos.x != -1.0f && mousePos.y != -1.0f) // only update our rotation when the mouse is inside the window
+	{
+		const sf::Vector2f dPos = mousePos - m_Actor->GetPosition();
+		m_Direction = atan2(dPos.y, dPos.x);
+	}
+		
+	m_Actor->SetPosition(m_World.GetPlayer()->GetPosition());
 }
 
 void Gun::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	states.transform.rotate(m_Direction * (180.0f/ 3.1415f));
 	target.draw(m_RectShape, states);
+}
+
+sf::Vector2f Gun::GetBottomMiddlePoint()
+{
+	return m_Actor->GetPosition() + sf::Vector2f(0, 0);
 }
 
 void Gun::Shoot()

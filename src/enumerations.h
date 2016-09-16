@@ -12,6 +12,12 @@ enum class ApexCursor
 	_LAST_ELEMENT
 };
 
+enum class Direction
+{
+	UP, DOWN, LEFT, RIGHT
+};
+
+// TODO: FIXME: XXX: Make this an std bitset? (just somehow automate indexing)
 enum ActorID
 {
 	PLAYER		= (1 << 1),

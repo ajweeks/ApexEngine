@@ -2,6 +2,7 @@
 
 #include "Mob.h"
 #include "Interactable.h"
+#include "ApexSpriteSheet.h"
 
 #include <SFML\Graphics\Text.hpp>
 
@@ -18,10 +19,11 @@ public:
 
 	void Tick(sf::Time elapsed) override;
 	void Draw(sf::RenderTarget& target, sf::RenderStates states) override;
+	virtual sf::Vector2f GetBottomMiddlePoint() override;
 
 	std::string GetCurrentSpeech() const;
 
-	virtual void CreatePhysicsActor(ApexContactListener* b2ContactListener) override;
+	virtual void CreatePhysicsActor() override;
 
 	virtual void Interact() override;
 
@@ -39,6 +41,9 @@ private:
 		int answerIndex;
 	};
 
+	static const float WIDTH;
+	static const float HEIGHT;
+
 	std::vector<Statement> m_Statements;
 	int m_CurrentStatementIndex;
 
@@ -47,5 +52,5 @@ private:
 	std::string m_Name;
 	sf::Text m_NameText;
 	sf::Vector2f m_Spawnpoint;
-	sf::Sprite m_Sprite;
+	ApexSpriteSheet m_SpriteSheet;
 };

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "enumerations.h"
 #include "ApexKeyListener.h"
 #include "ApexKeyboard.h"

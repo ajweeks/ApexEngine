@@ -10,6 +10,9 @@
 
 using namespace nlohmann;
 
+const float ApexNPC::WIDTH = 10.0f;
+const float ApexNPC::HEIGHT = 28.0f;
+
 ApexNPC::ApexNPC(World& world, Map& map, const json& info) :
 	Mob(world, map, sf::Vector2f(), ActorID::NPC, this)
 {
@@ -45,10 +48,15 @@ ApexNPC::ApexNPC(World& world, Map& map, const json& info) :
 		m_Statements.push_back(statement);
 	}
 
-	m_Sprite.setTexture(*TextureManager::GetTexture(TextureManager::NPC));
+	m_SpriteSheet.Create(TextureManager::GetTexture(TextureManager::NPC), 16, 32);
+
+	ApexSpriteSheet::Sequence standingSequence;
+	m_SpriteSheet.AddSequence(0, standingSequence);
+	m_SpriteSheet.SetCurrentSequence(0);
+
 	m_Name = info["name"].get<std::string>();
-	m_NameText = sf::Text(m_Name, APEX->FontPixelFJ8, 32);
-	m_NameText.setColor(sf::Color::White);
+	m_NameText = sf::Text(m_Name, APEX->FontPixelFJ8, 48);
+	m_NameText.setFillColor(sf::Color::White);
 }
 
 ApexNPC::~ApexNPC()
@@ -57,18 +65,28 @@ ApexNPC::~ApexNPC()
 
 void ApexNPC::Tick(sf::Time elapsed)
 {
+	m_SpriteSheet.Tick(elapsed);
 }
 
 void ApexNPC::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
-	const sf::Vector2f topLeft = m_Actor->GetPosition() - sf::Vector2f(8.0f, 16.0f);
-	states.transform.translate(topLeft);
-	target.draw(m_Sprite, states);
+	states.transform.translate(m_Actor->GetPosition());
+	m_SpriteSheet.Draw(target, states);
 
-	states.transform.translate(-109.0f, -190.0f);
-	states.transform.scale(sf::Vector2f(0.2f, 0.2f), m_Actor->GetPosition());
 	states.shader = states.Default.shader;
+
+	const float TEXT_WIDTH = m_NameText.getLocalBounds().width;
+	const float TEXT_SCALE = 0.15f;
+	states.transform.translate(-TEXT_WIDTH * TEXT_SCALE / 2.0f, 15)
+		.scale(sf::Vector2f(TEXT_SCALE, TEXT_SCALE));
 	target.draw(m_NameText, states);
+
+}
+
+sf::Vector2f ApexNPC::GetBottomMiddlePoint()
+{
+	// TODO: Fix player appearing in front of npcs
+	return m_Actor->GetPosition() + sf::Vector2f(0, HEIGHT / 2.0f);
 }
 
 std::string ApexNPC::GetCurrentSpeech() const
@@ -76,14 +94,13 @@ std::string ApexNPC::GetCurrentSpeech() const
 	return m_Statements[m_CurrentStatementIndex].statement;
 }
 
-void ApexNPC::CreatePhysicsActor(ApexContactListener* contactListener)
+void ApexNPC::CreatePhysicsActor()
 {
 	if (m_Actor == nullptr)
 	{
-		Mob::CreatePhysicsActor(contactListener);
-		m_Actor->AddBoxFixture(10.0f, 20.0f);
-		m_Actor->SetSensor(true);
-		m_Actor->SetPosition(m_Spawnpoint);
+		// TODO: Fix player-npc clipping (figure out how to set Physics Actors' origin point)
+		Mob::CreatePhysicsActor();
+		m_Actor->AddBoxFixture(WIDTH, HEIGHT, true);
 	}
 }
 

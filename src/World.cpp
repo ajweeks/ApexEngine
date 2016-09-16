@@ -37,9 +37,7 @@ World::World(int worldIndex) :
 
 	m_BulletManager = new BulletManager();
 
-	m_Map = new Map(this, -1, "resources/worlds/" + std::to_string(m_WorldIndex) + "/");
-
-	ReadBuildingData();
+	CreateMaps();
 
 	m_Player = new Player(*this, *m_Map);
 
@@ -98,9 +96,11 @@ void World::Reset()
 	m_CurrentSpeech.interiorSize.SetFinished();
 	m_SpeechLetterTransition.SetFinished();
 	m_SpeechBubbleTransition.SetFinished();
+
+	m_FadingOutTo = FadingOutTo::NONE;
 }
 
-void World::ReadBuildingData()
+void World::CreateMaps()
 {
 	std::ifstream fileInStream;
 
@@ -158,6 +158,21 @@ Map* World::GetCurrentMap()
 	else return m_Maps[m_CurrentMapShowingIndex];
 }
 
+void World::ToggleLightingEnabled()
+{
+	SetLightingEnabled(!m_LightingEnabled);
+}
+
+void World::SetLightingEnabled(bool enabled)
+{
+	m_LightingEnabled = enabled;
+}
+
+bool World::IsLightingEnabled() const
+{
+	return m_LightingEnabled;
+}
+
 void World::SetPaused(bool paused, bool pauseSounds)
 {
 	m_Paused = paused;
@@ -166,7 +181,11 @@ void World::SetPaused(bool paused, bool pauseSounds)
 
 	if (m_Paused)
 	{
-		m_PauseScreen->SetScreenShowing(ApexPauseScreen::Screen::MAIN);
+		m_PauseScreen->SetScreenShowing(PauseScreen::Screen::MAIN);
+	}
+	else
+	{
+		m_PauseScreen->SetScreenShowing(PauseScreen::Screen::NONE);
 	}
 
 	if (pauseSounds) ApexAudio::SetAllPaused(m_Paused);
@@ -180,32 +199,42 @@ void World::Tick(sf::Time elapsed)
 		return;
 	}
 
-	if (APEX->IsFadingOut() && m_FadingOutTo != FadingOutTo::NONE)
+	if (m_FadingOutTo != FadingOutTo::NONE)
 	{
-		switch (m_FadingOutTo)
+		if (!APEX->IsFadingIn())
 		{
-		case FadingOutTo::ENTER_BUILDING:
-			m_Map->DestroyPhysicsActors();
-			CreateMapPhysicsActors(m_MapToTravelToIndex);
-			m_Player->GetPhysicsActor()->SetPosition(m_Maps[m_MapToTravelToIndex]->GetPlayerSpawnPosition());
-			m_CurrentMapShowingIndex = m_MapToTravelToIndex;
-			m_MapToTravelToIndex = -1;
-			break;
-		case FadingOutTo::EXIT_BUILDING:
-			DeleteMapPhysicsActors(m_CurrentMapShowingIndex);
-			m_Map->CreatePhysicsActors(this);
-			m_Player->GetPhysicsActor()->SetPosition(m_Map->GetPlayerSpawnPosition());
-			m_CurrentMapShowingIndex = -1;
-			break;
-		case FadingOutTo::NONE:
-		default:
-			break;
+			switch (m_FadingOutTo)
+			{
+			case FadingOutTo::ENTER_BUILDING:
+			{
+				m_Map->DestroyPhysicsActors();
+				CreateMapPhysicsActors(m_MapToTravelToIndex);
+				m_Player->GetPhysicsActor()->SetPosition(m_Maps[m_MapToTravelToIndex]->GetPlayerSpawnPosition());
+				m_CurrentMapShowingIndex = m_MapToTravelToIndex;
+				m_MapToTravelToIndex = -1;
+				m_FadingOutTo = FadingOutTo::NONE;
+				m_Camera->SnapToPlayer();
+				break;
+			}
+			case FadingOutTo::EXIT_BUILDING:
+			{
+				DeleteMapPhysicsActors(m_CurrentMapShowingIndex);
+				m_Map->CreatePhysicsActors(this);
+				m_Player->GetPhysicsActor()->SetPosition(m_Map->GetPlayerSpawnPosition());
+				m_CurrentMapShowingIndex = -1;
+				m_FadingOutTo = FadingOutTo::NONE;
+				m_Camera->SnapToPlayer();
+				break;
+			}
+			case FadingOutTo::NONE:
+			default:
+			{
+			} break;
+			}
 		}
 
-		m_FadingOutTo = FadingOutTo::NONE;
 		return;
 	}
-
 
 	GetCurrentMap()->Tick(elapsed);
 
@@ -246,19 +275,10 @@ void World::Tick(sf::Time elapsed)
 				!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_2) &&
 				!ApexAudio::IsSoundEffectPlaying(ApexAudio::Sound::TYPING_3))
 			{
-				const char currentSoundPronouncing = m_CurrentSpeech.speechString[m_SpeechLetterTransition.GetCurrentTransitionData()];
-				if (currentSoundPronouncing >= 'a' && currentSoundPronouncing < 'j')
-				{
-					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_1);
-				}
-				else if (currentSoundPronouncing >= 'j' && currentSoundPronouncing < 'r')
-				{
-					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_2);
-				}
-				else
-				{
-					ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_3);
-				}
+				const char currentSound = m_CurrentSpeech.speechString[m_SpeechLetterTransition.GetCurrentTransitionData()];
+				if (currentSound >= 'a' && currentSound < 'j') ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_1);
+				else if (currentSound >= 'j' && currentSound < 'r') ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_2);
+				else ApexAudio::PlaySoundEffect(ApexAudio::Sound::TYPING_3);
 			}
 		}
 	}
@@ -269,7 +289,7 @@ void World::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	sf::View cameraView = m_Camera->GetCurrentView();
 	target.setView(cameraView);
 
-	GetCurrentMap()->Draw(target, states);
+	GetCurrentMap()->Draw(target, states, m_LightingEnabled);
 	m_BulletManager->Draw(target, states);
 	m_ParticleManager.Draw(target, states);
 
@@ -360,11 +380,11 @@ void World::DrawSpeechBubble(sf::RenderTarget& target, sf::RenderStates states)
 		states.transform = topLeftTransform;
 		states.transform.translate(m_CurrentSpeech.frameWidth, m_CurrentSpeech.frameHeight);
 		
-		m_CurrentSpeech.speechText.setColor(SPEECH_SHADOW_COLOR);
+		m_CurrentSpeech.speechText.setFillColor(SPEECH_SHADOW_COLOR);
 		states.transform.translate(m_CurrentSpeech.scale);
 		target.draw(m_CurrentSpeech.speechText, states); // Text shadow
 
-		m_CurrentSpeech.speechText.setColor(SPEECH_FONT_COLOR);
+		m_CurrentSpeech.speechText.setFillColor(SPEECH_FONT_COLOR);
 		states.transform.translate(-m_CurrentSpeech.scale);
 		target.draw(m_CurrentSpeech.speechText, states); // Text
 	}
@@ -458,15 +478,23 @@ void World::OnUnmappedKeypress(sf::Event::KeyEvent event)
 
 void World::EnterMap(int buildingIndex)
 {
-	APEX->StartFadeInOut();
-	m_FadingOutTo = FadingOutTo::ENTER_BUILDING;
-	m_MapToTravelToIndex = buildingIndex;
+	if (m_FadingOutTo == FadingOutTo::NONE)
+	{
+		APEX->StartFadeInOut();
+		m_FadingOutTo = FadingOutTo::ENTER_BUILDING;
+		m_MapToTravelToIndex = buildingIndex;
+		m_Player->StopMoving();
+	}
 }
 
 void World::ExitMap()
 {
-	APEX->StartFadeInOut();
-	m_FadingOutTo = FadingOutTo::EXIT_BUILDING;
+	if (m_FadingOutTo == FadingOutTo::NONE)
+	{
+		APEX->StartFadeInOut();
+		m_FadingOutTo = FadingOutTo::EXIT_BUILDING;
+		m_Player->StopMoving();
+	}
 }
 
 int World::GetWorldIndex() const
@@ -493,6 +521,8 @@ void World::PreSolve(ApexContact* contact, bool & enableContact)
 
 bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
+	if (APEX->IsFadingIn() || APEX->IsFadingOut()) return false;
+
 	if (keyPressed)
 	{
 		switch (key)
@@ -543,16 +573,6 @@ bool World::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 
 void World::OnKeyRelease(ApexKeyboard::Key key)
 {
-}
-
-unsigned int World::GetWidth() const
-{
-	return m_Width;
-}
-
-unsigned int World::GetHeight() const
-{
-	return m_Height;
 }
 
 Player* World::GetPlayer()

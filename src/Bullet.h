@@ -16,9 +16,10 @@ public:
 	Bullet(const Bullet&) = delete;
 	Bullet& operator=(const Bullet&) = delete;
 
-	virtual void Tick(sf::Time elapsed);
-	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
+	virtual void Tick(sf::Time elapsed) override;
+	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) override;
 
+	virtual sf::Vector2f GetBottomMiddlePoint() override;
 	virtual void BeginContact(ApexContact* contact) override;
 
 private:

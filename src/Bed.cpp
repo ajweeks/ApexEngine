@@ -2,35 +2,15 @@
 #include "Bed.h"
 #include "TextureManager.h"
 #include "PhysicsActor.h"
+#include "Layer.h"
+#include "Map.h"
 
 Bed::Bed(World& world, Map& map, sf::Vector2f position) :
-	Item(world, map, position + sf::Vector2f(WIDTH * 16 / 2.0f, HEIGHT * 16 / 2.0f), ActorID::BED, this, b2BodyType::b2_staticBody)
+	Item(world, map, position + sf::Vector2f(TILES_WIDE * map.GetTileSize() / 2.0f, TILES_HIGH * map.GetTileSize() / 2.0f),
+		ActorID::BED, this, b2BodyType::b2_staticBody),
+	m_Texture(TextureManager::GetTexture(TextureManager::GENERAL_TILES)),
+	m_Verticies(Map::GetSpriteTexture(TILES_WIDE, TILES_HIGH, map.GetTileSet(), TILE_X_OFFSET, TILE_Y_OFFSET, position))
 {
-	m_Texture = TextureManager::GetTexture(TextureManager::GENERAL_TILES);
-	
-	m_Verticies.setPrimitiveType(sf::Quads);
-	m_Verticies.resize((WIDTH * HEIGHT) * 4);
-
-	for (int x = 0; x < WIDTH; x++)
-	{
-		for (int y = 0; y < HEIGHT; y++)
-		{
-			const int tileIndex = (x + y * WIDTH);
-			const int tileSize = 16;
-			sf::Vertex* currentQuad = &m_Verticies[tileIndex * 4];
-			currentQuad[0].position = position + sf::Vector2f(float(x * tileSize), float(y * tileSize));
-			currentQuad[1].position = position + sf::Vector2f(float((x + 1) * tileSize), float(y * tileSize));
-			currentQuad[2].position = position + sf::Vector2f(float((x + 1) * tileSize), float((y + 1) * tileSize));
-			currentQuad[3].position = position + sf::Vector2f(float(x * tileSize), float((y + 1) * tileSize));
-			
-			const int tileSrcX = 8 + x;
-			const int tileSrcY = 4 + y;
-			currentQuad[0].texCoords = sf::Vector2f(float(tileSrcX * tileSize), float(tileSrcY * tileSize));
-			currentQuad[1].texCoords = sf::Vector2f(float((tileSrcX + 1) * tileSize), float(tileSrcY * tileSize));
-			currentQuad[2].texCoords = sf::Vector2f(float((tileSrcX + 1) * tileSize), float((tileSrcY + 1) * tileSize));
-			currentQuad[3].texCoords = sf::Vector2f(float(tileSrcX * tileSize), float((tileSrcY + 1) * tileSize));
-		}
-	}
 }
 
 Bed::~Bed()
@@ -47,8 +27,18 @@ void Bed::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	target.draw(m_Verticies, states);
 }
 
+sf::Vector2f Bed::GetBottomMiddlePoint()
+{
+	return m_Actor->GetPosition() + sf::Vector2f(0, TILES_HIGH * m_Map.GetTileSize() / 2.0f);
+}
+
 void Bed::CreatePhysicsActor()
 {
 	Item::CreatePhysicsActor();
-	m_Actor->AddBoxFixture(WIDTH * 16, HEIGHT * 16);
+	b2Filter collisionFilter;
+	collisionFilter.categoryBits = ActorID::BED;
+	collisionFilter.maskBits = ActorID::PLAYER | ActorID::NPC | ActorID::COIN;
+	m_Actor->SetCollisionFilter(collisionFilter);
+	// TODO: Use global tilesize
+	m_Actor->AddBoxFixture(float(TILES_WIDE * m_Map.GetTileSize()), float((TILES_HIGH - 1.0f) * m_Map.GetTileSize()));
 }

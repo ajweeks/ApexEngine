@@ -17,14 +17,15 @@ class Map;
 class Gun : public Entity, public ApexMouseListener
 {
 public:
-	Gun(World* world, Map* map, sf::Vector2f position);
+	Gun(World& world, Map& map, sf::Vector2f position);
 	virtual ~Gun();
 
 	Gun(const Gun&) = delete;
 	Gun& operator=(const Gun&) = delete;
 
-	virtual void Tick(sf::Time elapsed);
-	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states);
+	virtual void Tick(sf::Time elapsed) override;
+	virtual void Draw(sf::RenderTarget& target, sf::RenderStates states) override;
+	virtual sf::Vector2f GetBottomMiddlePoint() override;
 
 	void Shoot();
 	void Reset();

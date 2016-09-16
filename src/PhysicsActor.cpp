@@ -9,7 +9,7 @@
 #include <Box2D\Collision\Shapes\b2PolygonShape.h>
 #include <Box2D\Collision\Shapes\b2CircleShape.h>
 
-const int PhysicsActor::SCALE = 100;
+const float PhysicsActor::SCALE = 100.0f;
 
 PhysicsActor::PhysicsActor(sf::Vector2f pos, b2BodyType bodyType, float angle)
 {
@@ -17,7 +17,7 @@ PhysicsActor::PhysicsActor(sf::Vector2f pos, b2BodyType bodyType, float angle)
 	bodyDef.position.Set(pos.x / SCALE, pos.y / SCALE);
 	bodyDef.angle = angle;
 	bodyDef.type = bodyType;
-	m_Body = APEX->GetPhysicsWorld()->CreateBody(&bodyDef);
+	m_Body = APEX->GetPhysicsWorld().CreateBody(&bodyDef);
 
 	m_Body->SetFixedRotation(true);
 }
@@ -29,14 +29,14 @@ PhysicsActor::~PhysicsActor()
 		fixturePtr->SetUserData(nullptr);
 	}
 
-	APEX->GetPhysicsWorld()->DestroyBody(m_Body);
+	APEX->GetPhysicsWorld().DestroyBody(m_Body);
 	m_Body = nullptr;
 }
 
-b2Fixture* PhysicsActor::AddBoxFixture(float width, float height, float resitiution, float friction, float density)
+b2Fixture* PhysicsActor::AddBoxFixture(float width, float height, bool isSensor, const b2Vec2& center, float resitiution, float friction, float density)
 {
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(width / SCALE / 2.0f, height / SCALE / 2.0f);
+	polygonShape.SetAsBox(width / SCALE / 2.0f, height / SCALE / 2.0f, b2Vec2(center.x / SCALE, center.y / SCALE), 0.0f);
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &polygonShape;
@@ -49,12 +49,12 @@ b2Fixture* PhysicsActor::AddBoxFixture(float width, float height, float resitiut
 	else fixtureDef.density = 0.0f;
 
 	b2Fixture* fixture = m_Body->CreateFixture(&fixtureDef);
-	if (fixture != nullptr) fixture->SetSensor(m_IsSensor);
+	if (fixture != nullptr) fixture->SetSensor(isSensor);
 
 	return fixture;
 }
 
-b2Fixture* PhysicsActor::AddCircleFixture(float radius, sf::Vector2f offset, float resitiution, float friction, float density)
+b2Fixture* PhysicsActor::AddCircleFixture(float radius, bool isSensor, const b2Vec2& offset, float resitiution, float friction, float density)
 {
 	b2CircleShape circleShape;
 	circleShape.m_p.Set(offset.x / SCALE, offset.y / SCALE);
@@ -71,7 +71,7 @@ b2Fixture* PhysicsActor::AddCircleFixture(float radius, sf::Vector2f offset, flo
 	else fixtureDef.density = 0.0f;
 
 	b2Fixture* fixture = m_Body->CreateFixture(&fixtureDef);
-	if (fixture != nullptr) fixture->SetSensor(m_IsSensor);
+	if (fixture != nullptr) fixture->SetSensor(isSensor);
 
 	return fixture;
 }
@@ -221,20 +221,6 @@ bool PhysicsActor::IsAwake() const
 	return m_Body->IsAwake();
 }
 
-void PhysicsActor::SetSensor(bool isSensor)
-{
-	m_IsSensor = isSensor;
-	for (b2Fixture* fixturePtr = m_Body->GetFixtureList(); fixturePtr != nullptr; fixturePtr = fixturePtr->GetNext())
-	{
-		fixturePtr->SetSensor(isSensor);
-	}
-}
-
-bool PhysicsActor::IsSensor() const
-{
-	return m_IsSensor;
-}
-
 void PhysicsActor::SetCollisionFilter(const b2Filter& collisionFilter)
 {
 	m_CollisionFilter = collisionFilter;
@@ -296,6 +282,11 @@ void PhysicsActor::ApplyAngularImpulse(float impulse)
 {
 	impulse /= float(SCALE * SCALE);
 	m_Body->ApplyAngularImpulse(impulse, true);
+}
+
+b2Fixture* PhysicsActor::GetFixtureList() const
+{
+	return m_Body->GetFixtureList();
 }
 
 b2Body* PhysicsActor::GetBody() const

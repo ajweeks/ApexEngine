@@ -32,6 +32,8 @@ public:
 	virtual void CreatePhysicsActor();
 	virtual void DeletePhysicsActor();
 
+	virtual sf::Vector2f GetBottomMiddlePoint() = 0;
+
 	PhysicsActor* GetPhysicsActor() const;
 
 	Map& GetMap() const;
