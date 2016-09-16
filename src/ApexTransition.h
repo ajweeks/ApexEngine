@@ -28,7 +28,7 @@ public:
 
 	virtual void Create(sf::Time totalTime, EaseType easeType);
 
-	virtual void Tick(sf::Time elapsed);
+	virtual void Tick(sf::Time elapsed) = 0;
 
 	virtual void SwapAndRestart() = 0; 
 	virtual void Restart();

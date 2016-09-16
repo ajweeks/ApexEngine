@@ -124,11 +124,6 @@ void ApexMain::Init()
 
 	m_SlowMoData.Create(0.01f, 1.0f, sf::seconds(0.1f), ApexTransition::EaseType::QUADRATIC_IN_OUT);
 	m_SlowMoData.SetFinished();
-	
-	sf::Color start = sf::Color::Black;
-	sf::Color end = sf::Color::White;
-	m_FadeInOutTransition.Create(start, end, FADE_IN_OUT_TIME);
-	m_FadeInOutTransition.SetFinished();
 
 	LoadCursorTextures();
 
@@ -378,23 +373,7 @@ void ApexMain::Tick(double& accumulator)
 
 		m_StateManager->Tick(dt);
 
-		if (m_FadingIn || m_FadingOut)
-		{
-			m_FadeInOutTransition.Tick(dt);
-			if (m_FadeInOutTransition.GetPercentComplete() >= 1.0f)
-			{
-				if (m_FadingIn)
-				{
-					m_FadingIn = false;
-					m_FadingOut = true;
-					m_FadeInOutTransition.SwapAndRestart();
-				}
-				else if (m_FadingOut)
-				{
-					m_FadingOut = false;
-				}
-			}
-		}
+		m_FadeInOutTransitionChain.Tick(dt);
 
 		if (!m_PhysicsPaused)
 		{
@@ -421,14 +400,18 @@ void ApexMain::Draw()
 	m_CursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(*m_Window)));
 	m_Window->draw(m_CursorSprite);
 
-	const sf::Color color = m_FadeInOutTransition.GetCurrentColor();
-	if (color != sf::Color::White)
+	std::pair<std::string, ApexTransition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+	if (colorTransition.second != nullptr)
 	{
-		sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
-		rect.setFillColor(color);
-		sf::RenderStates states;
-		states.blendMode = sf::BlendMultiply;
-		m_Window->draw(rect, states);
+		const sf::Color color = static_cast<ColorTransition*>(colorTransition.second)->GetCurrentColor();
+		if (color != sf::Color::White)
+		{
+			sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
+			rect.setFillColor(color);
+			sf::RenderStates states;
+			states.blendMode = sf::BlendMultiply;
+			m_Window->draw(rect, states);
+		}
 	}
 
 	m_Window->display();
@@ -709,32 +692,50 @@ void ApexMain::SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeTyp
 
 void ApexMain::StartFadeInOut(sf::Time length)
 {
-	sf::Color start = sf::Color::White;
-	sf::Color end = sf::Color::Black;
-	m_FadeInOutTransition.Create(start, end, length);
-	m_FadeInOutTransition.Restart();
-	m_FadingIn = true;
-	m_FadingOut = false;
+	m_FadeInOutTransitionChain.Clear();
+
+	const sf::Color start = sf::Color::White;
+	const sf::Color end = sf::Color::Black;
+	ColorTransition* fadeInTransition = new ColorTransition(start, end, length);
+	m_FadeInOutTransitionChain.AddTransition(fadeInTransition, "in");
+	ColorTransition* fadeOutTransition = new ColorTransition(end, start, length);
+	m_FadeInOutTransitionChain.AddTransition(fadeOutTransition, "out");
+}
+
+void ApexMain::StartFadeIn(sf::Time length)
+{
+	m_FadeInOutTransitionChain.Clear();
+
+	const sf::Color start = sf::Color::White;
+	const sf::Color end = sf::Color::Black;
+	ColorTransition* fadeInTransition = new ColorTransition(start, end, length);
+	m_FadeInOutTransitionChain.AddTransition(fadeInTransition, "in");
 }
 
 void ApexMain::StartFadeOut(sf::Time length)
 {
-	sf::Color start = sf::Color::Black;
-	sf::Color end = sf::Color::White;
-	m_FadeInOutTransition.Create(start, end, length);
-	m_FadeInOutTransition.Restart();
-	m_FadingIn = false;
-	m_FadingOut = true;
+	m_FadeInOutTransitionChain.Clear();
+
+	const sf::Color start = sf::Color::Black;
+	const sf::Color end = sf::Color::White;
+	ColorTransition* fadeOutTransition = new ColorTransition(start, end, length);
+	m_FadeInOutTransitionChain.AddTransition(fadeOutTransition, "out");
 }
 
-bool ApexMain::IsFadingIn() const
+bool ApexMain::IsFadingIn()
 {
-	return m_FadingIn;
+	if (m_FadeInOutTransitionChain.IsFinished()) return false;
+
+	std::pair<std::string, ApexTransition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+	return colorTransition.first.compare("in") == 0;
 }
 
-bool ApexMain::IsFadingOut() const
+bool ApexMain::IsFadingOut()
 {
-	return m_FadingOut;
+	if (m_FadeInOutTransitionChain.IsFinished()) return false;
+
+	std::pair<std::string, ApexTransition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+	return colorTransition.first.compare("out") == 0;
 }
 
 void ApexMain::DEBUGToggleGamePaused()

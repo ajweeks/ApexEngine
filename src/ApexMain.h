@@ -4,7 +4,7 @@
 #include "FloatTransition.h"
 #include "ColorTransition.h"
 
-#include <SFML\Graphics\RenderWindow.hpp>
+#include "TransitionChain.h"
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 
@@ -18,6 +18,11 @@ class ApexKeyListener;
 class ApexMouseListener;
 class ApexWindowListener;
 class PhysicsActorManager;
+
+namespace sf
+{
+	class RenderWindow;
+}
 
 class b2World;
 
@@ -78,10 +83,12 @@ public:
 	sf::RenderWindow* GetWindow();
 
 	void SetSlowMoTime(sf::Time duration, ApexTransition::EaseType easeType); // Call this with the amount of time to be in slow mo for
+
 	void StartFadeInOut(sf::Time length = FADE_IN_OUT_TIME);
+	void StartFadeIn(sf::Time length = FADE_IN_OUT_TIME);
 	void StartFadeOut(sf::Time length = FADE_IN_OUT_TIME);
-	bool IsFadingIn() const;
-	bool IsFadingOut() const;
+	bool IsFadingIn();
+	bool IsFadingOut();
 
 	// Box2D overriden methods
 	virtual void BeginContact(b2Contact* contact);
@@ -114,6 +121,7 @@ private:
 	int m_UPS;
 
 	FloatTransition m_SlowMoData;
+	TransitionChain m_FadeInOutTransitionChain;
 
 	bool m_IsRunning;
 	bool m_WindowIsFullscreen;
@@ -137,7 +145,4 @@ private:
 	std::vector<ApexMouseListener*> m_MouseListeners;
 	std::vector<ApexWindowListener*> m_WindowListeners;
 
-	bool m_FadingIn = false;
-	bool m_FadingOut = false;
-	ColorTransition m_FadeInOutTransition;
 };
