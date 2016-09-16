@@ -7,7 +7,7 @@
 
 #include <Box2D\Dynamics\Contacts\b2Contact.h>
 
-Entity::Entity(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
+Entity::Entity(World& world, Map& map, sf::Vector2f position, ActorID id, void* userPointer, b2BodyType bodyType) :
 	m_World(world), m_Map(map),
 	m_Position(position), m_UserData(id), m_UserPointer(userPointer), m_BodyType(bodyType)
 {
@@ -43,7 +43,7 @@ PhysicsActor* Entity::GetPhysicsActor() const
 	return m_Actor;
 }
 
-Map* Entity::GetMap() const
+Map& Entity::GetMap() const
 {
 	return m_Map;
 }

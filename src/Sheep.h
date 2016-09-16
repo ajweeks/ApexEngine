@@ -9,7 +9,7 @@
 class Sheep : public Mob
 {
 public:
-	Sheep(World* world, Map* map, sf::Vector2f position);
+	Sheep(World& world, Map& map, sf::Vector2f position);
 	virtual ~Sheep();
 
 	Sheep(const Sheep&) = delete;

@@ -10,10 +10,11 @@
 
 using namespace nlohmann;
 
-ApexNPC::ApexNPC(World* world, Map* map, const json& info) :
+ApexNPC::ApexNPC(World& world, Map& map, const json& info) :
 	Mob(world, map, sf::Vector2f(), ActorID::NPC, this)
 {
 	m_Spawnpoint = ApexMain::StringToVector2f(info["spawn_point"]["position"].get<std::string>());
+	m_Position = m_Spawnpoint;
 
 	std::vector<json> statements = info["statements"].get<std::vector<json>>();
 	for (size_t i = 0; i < statements.size(); ++i)
@@ -91,19 +92,19 @@ void ApexNPC::Interact()
 	if (m_ShouldStop)
 	{
 		m_ShouldStop = false;
-		m_World->ClearSpeechShowing();
+		m_World.ClearSpeechShowing();
 		++m_CurrentStatementIndex;
 		return;
 	}
 	else if (m_ShouldRepeat)
 	{
-		if (m_World->IsShowingSpeechBubble())
+		if (m_World.IsShowingSpeechBubble())
 		{
-			m_World->ClearSpeechShowing();
+			m_World.ClearSpeechShowing();
 		}
 		else
 		{
-			m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+			m_World.SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 		}
 		return;
 	}
@@ -112,22 +113,22 @@ void ApexNPC::Interact()
 	{
 	case Statement::Type::REPEAT:
 	{
-		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_World.SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 		m_ShouldRepeat = true;
 	} break;
 	case Statement::Type::END:
 	{
-		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_World.SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 		m_ShouldStop = true;
 	} break;
 	case Statement::Type::NORMAL:
 	{
 		if (m_CurrentStatementIndex == m_Statements.size() - 1) // We've said all we have to say
 		{
-			m_World->ClearSpeechShowing(); // *drops mic*
+			m_World.ClearSpeechShowing(); // *drops mic*
 		}
 
-		m_World->SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
+		m_World.SetCurrentSpeechShowing(m_Statements[m_CurrentStatementIndex].statement);
 
 		++m_CurrentStatementIndex;
 	} break;

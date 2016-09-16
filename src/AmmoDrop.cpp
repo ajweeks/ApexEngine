@@ -9,13 +9,12 @@
 const float AmmoDrop::WIDTH = 26.0f;
 const float AmmoDrop::HEIGHT = 26.0f;
 
-AmmoDrop::AmmoDrop(World* world, Map* map, sf::Vector2f position, int bulletCount) :
+AmmoDrop::AmmoDrop(World& world, Map& map, sf::Vector2f position, int bulletCount) :
 	Item(world, map, position, ActorID::AMMO, this, b2BodyType::b2_staticBody),
 	m_BulletCount(bulletCount)
 {
-	m_Actor->AddBoxFixture(WIDTH, HEIGHT);
+	m_Actor->AddBoxFixture(WIDTH, HEIGHT, true);
 	m_Actor->AddContactListener(this);
-	m_Actor->SetSensor(true);
 
 	m_Sprite = sf::Sprite(*TextureManager::GetTexture(TextureManager::AMMO));
 }
@@ -53,7 +52,7 @@ void AmmoDrop::BeginContact(ApexContact* contact)
 	{
 	case ActorID::PLAYER:
 	{
-		m_Map->AddItemToBeRemoved(this);
+		m_Map.AddEntityToBeRemoved(this);
 	} break;
 	}
 }

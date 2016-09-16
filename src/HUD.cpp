@@ -5,7 +5,7 @@
 #include "Gun.h"
 #include "ApexMain.h"
 
-HUD::HUD(World* world) :
+HUD::HUD(World& world) :
 	m_World(world)
 {
 	const sf::Font& font = APEX->FontOpenSans;
@@ -17,8 +17,8 @@ HUD::HUD(World* world) :
 	m_BulletsRemaining.setCharacterSize(characterSize);
 
 	const sf::Color fontColor = sf::Color(210, 210, 215);
-	m_BulletsInClip.setColor(fontColor);
-	m_BulletsRemaining.setColor(fontColor);
+	m_BulletsInClip.setFillColor(fontColor);
+	m_BulletsRemaining.setFillColor(fontColor);
 }
 
 HUD::~HUD()
@@ -27,7 +27,7 @@ HUD::~HUD()
 
 void HUD::Tick(sf::Time elapsed)
 {
-	//Gun& gun = m_World->GetPlayer()->GetGun();
+	//Gun& gun = m_World.GetPlayer()->GetGun();
 	//m_BulletsInClip.setString(std::to_string(gun.GetBulletsInClip()));
 	//m_BulletsRemaining.setString(" / " + std::to_string(gun.GetBulletsRemaining()));
 

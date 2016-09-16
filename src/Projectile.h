@@ -7,7 +7,7 @@
 class Projectile : public Entity
 {
 public:
-	Projectile(World* world, Map* map, sf::Vector2f position, ActorID id, void* userPointer);
+	Projectile(World& world, Map& map, sf::Vector2f position, ActorID id, void* userPointer);
 	virtual ~Projectile();
 
 	Projectile(const Projectile&) = delete;

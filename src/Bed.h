@@ -7,7 +7,7 @@
 class Bed : public Item
 {
 public:
-	Bed(World* world, Map* map, sf::Vector2f position);
+	Bed(World& world, Map& map, sf::Vector2f position);
 	virtual ~Bed();
 
 	Bed(const Bed&) = delete;

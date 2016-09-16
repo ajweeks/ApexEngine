@@ -16,7 +16,7 @@ public:
 		NE, NW, SE, SW
 	};
 
-	Minimap(World* world, sf::Vector2f size, Location location = Location::NE);
+	Minimap(World& world, sf::Vector2f size, Location location = Location::NE);
 	virtual ~Minimap();
 
 	Minimap(const Minimap&) = delete;
@@ -34,7 +34,8 @@ private:
 	static const float EDGE_WIDTH;
 	static const float MARGIN;
 
-	World* m_World = nullptr;
+	World& m_World;
+
 	sf::FloatRect m_Bounds;
 	Location m_Location;
 

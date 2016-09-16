@@ -26,7 +26,7 @@ sf::Shader Map::s_OutlinedSpriteShader;
 
 using json = nlohmann::json;
 
-Map::Map(World* world, int buildingIndex, std::string directory) :
+Map::Map(World& world, int buildingIndex, std::string directory) :
 	m_LightManager(world, directory),
 	m_World(world),
 	m_BuildingIndex(buildingIndex),
@@ -372,9 +372,9 @@ void Map::Tick(sf::Time elapsed)
 	}
 
 	// Somehow the player moved away while talking with someone, clear the speech bubble
-	if (m_HighlightedEntity == nullptr && m_World->IsShowingSpeechBubble())
+	if (m_HighlightedEntity == nullptr && m_World.IsShowingSpeechBubble())
 	{
-		m_World->ClearSpeechShowing();
+		m_World.ClearSpeechShowing();
 	}
 
 

@@ -9,7 +9,7 @@ class World;
 class HUD
 {
 public:
-	HUD(World* world);
+	HUD(World& world);
 	virtual ~HUD();
 
 	HUD(const HUD&) = delete;
@@ -19,7 +19,7 @@ public:
 	void Draw(sf::RenderTarget& target, sf::RenderStates states);
 
 private:
-	World* m_World = nullptr;
+	World& m_World;
 
 	sf::Text m_BulletsInClip;
 	sf::Text m_BulletsRemaining;

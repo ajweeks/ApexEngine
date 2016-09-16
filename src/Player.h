@@ -23,7 +23,7 @@ public:
 		LEFT, RIGHT
 	};
 
-	Player(World* world, Map* map);
+	Player(World& world, Map& map);
 	virtual ~Player();
 
 	void Tick(sf::Time elapsed);

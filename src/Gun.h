@@ -47,9 +47,9 @@ public:
 private:
 	void Reload();
 
+	BulletManager& m_BulletManager;
+
 	bool m_BeingHeld;
-	World* m_World = nullptr;
-	BulletManager* m_BulletManager = nullptr;
 
 	float m_Direction;
 

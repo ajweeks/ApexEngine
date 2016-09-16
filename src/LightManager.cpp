@@ -20,7 +20,7 @@ const std::string LightManager::LIGHTMAP_FILENAME = "lights.json";
 sf::Shader LightManager::s_LightingShader;
 bool LightManager::s_LoadedLightingShader = false;
 
-LightManager::LightManager(World* world, const std::string& directory) :
+LightManager::LightManager(World& world, const std::string& directory) :
 	ApexMouseListener(),
 	m_Directory(directory),
 	m_World(world)
@@ -46,7 +46,7 @@ void LightManager::Tick(sf::Time elapsed)
 		{
 			m_NeedUpdate = true;
 
-			const sf::Vector2f deltaMousePos = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView()) - m_MouseDragStart;
+			const sf::Vector2f deltaMousePos = APEX->GetMouseCoordsWorldSpace(m_World.GetCurrentView()) - m_MouseDragStart;
 			if (m_CurrentLightDraggingIndex != -1)
 			{
 				m_StaticLights[m_CurrentLightDraggingIndex].position = m_PosDragStart + deltaMousePos;
@@ -102,11 +102,11 @@ void LightManager::Draw(sf::RenderTarget& target, sf::RenderStates states)
 		screen.setFillColor(sf::Color::Black);
 		for (size_t i = 0; i < m_StaticLights.size(); ++i)
 		{
-			s_LightingShader.setParameter("u_blur", m_StaticLights[i].blur);
-			s_LightingShader.setParameter("u_color", m_StaticLights[i].color);
-			s_LightingShader.setParameter("u_opacity", m_StaticLights[i].opacity);
-			s_LightingShader.setParameter("u_position", m_StaticLights[i].position);
-			s_LightingShader.setParameter("u_radius", m_StaticLights[i].radius);
+			s_LightingShader.setUniform("u_blur", m_StaticLights[i].blur);
+			s_LightingShader.setUniform("u_color", NormalizeColor(m_StaticLights[i].color));
+			s_LightingShader.setUniform("u_opacity", m_StaticLights[i].opacity);
+			s_LightingShader.setUniform("u_position", m_StaticLights[i].position);
+			s_LightingShader.setUniform("u_radius", m_StaticLights[i].radius);
 
 			m_LightmapTexture.draw(screen, &s_LightingShader);
 		}
@@ -159,7 +159,7 @@ void LightManager::DrawEditor(sf::RenderTarget& target, sf::RenderStates states)
 
 void LightManager::OnWindowResize(sf::Vector2u windowSize)
 {
-	s_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
+	s_LightingShader.setUniform("u_resolution", sf::Glsl::Vec2(float(windowSize.x), float(windowSize.y)));
 }
 
 void LightManager::LoadLightData()
@@ -206,6 +206,10 @@ void LightManager::LoadLightData()
 	}
 
 	fileStream.close();
+
+	s_LoadedLightingShader = false;
+	LoadShader();
+	m_NeedUpdate = true;
 }
 
 void LightManager::SaveLightData()
@@ -255,7 +259,7 @@ void LightManager::LoadShader()
 			ApexOutputDebugString("\n\n\nCould not compile lighting shader\n\n\n\n");
 		}
 		const sf::Vector2u windowSize = APEX->GetWindowSize();
-		s_LightingShader.setParameter("u_resolution", float(windowSize.x), float(windowSize.y));
+		s_LightingShader.setUniform("u_resolution", sf::Glsl::Vec2(float(windowSize.x), float(windowSize.y)));
 		s_LoadedLightingShader = true;
 	}
 }
@@ -265,11 +269,6 @@ void LightManager::SetShowingEditor(bool showingEditor)
 	m_IsShowingEditor = showingEditor;
 	if (!showingEditor) SaveLightData();
 	m_CurrentLightDraggingIndex = -1;
-}
-
-void LightManager::ToggleShowingEditor()
-{
-	SetShowingEditor(!m_IsShowingEditor);
 }
 
 bool LightManager::IsShowingEditor() const
@@ -285,7 +284,7 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 		{
 		case  sf::Mouse::Left:
 		{
-			sf::Vector2f mouseWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView());
+			sf::Vector2f mouseWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World.GetCurrentView());
 				m_MouseDragStart = mouseWorldSpace;
 			for (size_t i = 0; i < m_StaticLights.size(); ++i)
 			{
@@ -340,7 +339,7 @@ bool LightManager::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 				m_CurrentLightBlurIndex == -1 &&
 				m_CurrentLightRadiusIndex == -1)
 			{
-				sf::Vector2f mousePosWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World->GetCurrentView());
+				sf::Vector2f mousePosWorldSpace = APEX->GetMouseCoordsWorldSpace(m_World.GetCurrentView());
 
 				bool deletedLight = false;
 				for (size_t i = 0; i < m_StaticLights.size(); ++i)

@@ -1,7 +1,7 @@
 
 #include "StateManager.h"
 
-StateManager::StateManager(BaseState * startingState)
+StateManager::StateManager(BaseState* startingState)
 	: m_CurrentState(startingState)
 {
 }

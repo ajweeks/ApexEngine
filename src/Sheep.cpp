@@ -11,7 +11,7 @@
 const float Sheep::WIDTH = 15.0f;
 const float Sheep::HEIGHT = 15.0f;
 
-Sheep::Sheep(World* world, Map* map, sf::Vector2f position) :
+Sheep::Sheep(World& world, Map& map, sf::Vector2f position) :
 	Mob(world, map, position, ActorID::SHEEP, this)
 {
 	m_Actor->AddBoxFixture(15, 15);
@@ -19,7 +19,7 @@ Sheep::Sheep(World* world, Map* map, sf::Vector2f position) :
 
 	b2Filter collisionFilter;
 	collisionFilter.categoryBits = ActorID::SHEEP;
-	collisionFilter.maskBits = ActorID::BULLET | ActorID::WALL | ActorID::PLAYER;
+	collisionFilter.maskBits = ActorID::BULLET | ActorID::BUILDING | ActorID::PLAYER;
 	m_Actor->SetCollisionFilter(collisionFilter);
 
 	m_BgRect = sf::RectangleShape(sf::Vector2f(WIDTH, HEIGHT));
@@ -50,7 +50,7 @@ void Sheep::Tick(sf::Time elapsed)
 {
 	if (m_IsDead)
 	{
-		m_Map->RemoveMob(this);
+		m_Map.RemoveEntity(this);
 		return;
 	}
 
@@ -110,7 +110,7 @@ void Sheep::BeginContact(ApexContact* contact)
 {
 	switch (contact->actorB->GetUserData())
 	{
-	case int(ActorID::WALL):
+	case int(ActorID::BUILDING):
 	{
 		m_NeedToPickNewTarget = true;
 	} break;
@@ -122,7 +122,7 @@ void Sheep::BeginContact(ApexContact* contact)
 			m_IsDead = true;
 
 			DustParticle *dustParticle = new DustParticle(m_Actor->GetPosition());
-			m_World->AddParticle(dustParticle);
+			m_World.AddParticle(dustParticle);
 		}
 		else
 		{

@@ -41,18 +41,18 @@ World::World(int worldIndex) :
 
 	ReadBuildingData();
 
-	m_Player = new Player(this, m_Map);
+	m_Player = new Player(*this, *m_Map);
 
 	const sf::Vector2u windowSize = APEX->GetWindowSize();
 	const float aspectRatio = float(windowSize.x / windowSize.y);
-	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)));
+	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)), *this);
 	m_Camera->SetZoom(2.0f);
 	m_PauseScreen = new PauseScreen(*this);
 
 	const float minimapWidth = 200.0f;
-	m_Minimap = new Minimap(this, sf::Vector2f(minimapWidth, minimapWidth / aspectRatio));
+	m_Minimap = new Minimap(*this, sf::Vector2f(minimapWidth, minimapWidth / aspectRatio));
 
-	m_HUD = new HUD(this);
+	m_HUD = new HUD(*this);
 
 	m_SpeechBubbleSpriteSheet = ApexSpriteSheet(TextureManager::GetTexture(TextureManager::SPEECH_BUBBLE), 16, 16);
 	m_SpeechLetterTransition.SetEaseType(ApexTransition::EaseType::LINEAR);
@@ -88,9 +88,6 @@ void World::Reset()
 		m_Maps[i]->Reset();
 	}
 
-	m_Width = m_Map->GetTilesWide() * m_Map->GetTileSize();
-	m_Height = m_Map->GetTilesHigh() * m_Map->GetTileSize();
-
 	GetCurrentMap()->CreatePhysicsActors(this);
 	m_Player->CreatePhysicsActor();
 	m_Player->GetPhysicsActor()->SetPosition(GetCurrentMap()->GetPlayerSpawnPosition());
@@ -107,8 +104,10 @@ void World::ReadBuildingData()
 {
 	std::ifstream fileInStream;
 
-	std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/buildings/";
+	std::string directoryPath = "resources/worlds/" + std::to_string(m_WorldIndex) + "/";
 	const std::string fileName = "tiles.json";
+
+	m_Map = new Map(*this, -1, directoryPath);
 
 	int buildingIndex = 0;
 	bool fileFound;
@@ -116,14 +115,15 @@ void World::ReadBuildingData()
 	{
 		fileFound = false;
 
-		const std::string fullPath = directoryPath + std::to_string(buildingIndex) + "/" + fileName;
+		const std::string subDirectory = directoryPath + "buildings/" + std::to_string(buildingIndex) + "/";
+		const std::string fullPath = subDirectory + fileName;
 		fileInStream.open(fullPath);
 
 		if (fileInStream)
 		{
 			fileFound = true;
 
-			Map* map = new Map(this, buildingIndex, directoryPath + std::to_string(buildingIndex) + "/");
+			Map* map = new Map(*this, buildingIndex, subDirectory);
 			m_Maps.push_back(map);
 
 			++buildingIndex;
@@ -210,7 +210,7 @@ void World::Tick(sf::Time elapsed)
 	GetCurrentMap()->Tick(elapsed);
 
 	m_Player->Tick(elapsed);
-	m_Camera->Tick(elapsed, this);
+	m_Camera->Tick(elapsed);
 	m_BulletManager->Tick(elapsed);
 	m_HUD->Tick(elapsed);
 
@@ -560,9 +560,9 @@ Player* World::GetPlayer()
 	return m_Player;
 }
 
-BulletManager* World::GetBulletManager()
+BulletManager& World::GetBulletManager()
 {
-	return m_BulletManager;
+	return *m_BulletManager;
 }
 
 void World::ToggleDebugOverlay()

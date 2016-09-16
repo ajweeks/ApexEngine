@@ -18,7 +18,7 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target);
 
-	World* GetWorld();
+	World& GetWorld();
 	bool IsWorldPaused() const;
 
 	virtual bool OnKeyPress(ApexKeyboard::Key key, bool keyPressed) override;
@@ -31,6 +31,5 @@ public:
 private:
 	// LATER: Add more worlds? (underworld, aether, ...)
 	World* m_World = nullptr;
-
 };
 

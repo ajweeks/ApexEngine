@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 #include "PhysicsActor.h"
 
-Bed::Bed(World* world, Map* map, sf::Vector2f position) :
+Bed::Bed(World& world, Map& map, sf::Vector2f position) :
 	Item(world, map, position + sf::Vector2f(WIDTH * 16 / 2.0f, HEIGHT * 16 / 2.0f), ActorID::BED, this, b2BodyType::b2_staticBody)
 {
 	m_Texture = TextureManager::GetTexture(TextureManager::GENERAL_TILES);

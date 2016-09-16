@@ -3,7 +3,7 @@
 #include "PhysicsActor.h"
 #include "World.h"
 
-Layer::Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
+Layer::Layer(World& world, std::vector<Tile*> tiles, TileSet* tileSet,
 	std::string name, bool visible, float opacity, Type type, int width, int height) :
 	m_World(world), m_Tiles(tiles), m_Name(name), m_Visible(visible), m_Opacity(opacity), 
 	m_Type(type),  m_Width(width), m_Height(height), m_TileSet(tileSet)

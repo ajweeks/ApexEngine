@@ -10,7 +10,7 @@ class BulletManager;
 class Bullet : public Projectile
 {
 public:
-	Bullet(World* world, Map* map, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity = sf::Vector2f());
+	Bullet(World& world, Map& map, sf::Vector2f position, float direction, sf::Vector2f additionalVelcity = sf::Vector2f());
 	virtual ~Bullet();
 
 	Bullet(const Bullet&) = delete;
@@ -25,7 +25,8 @@ private:
 	static const float RADIUS;
 	static const sf::Color FILL_COLOR;
 
-	BulletManager* m_BulletManager = nullptr;
+	BulletManager& m_BulletManager;
+
 	float m_Direction; // Angle in radians
 	sf::CircleShape m_Circle;
 };

@@ -14,6 +14,7 @@ GameState::GameState() :
 	APEX->SetPhysicsPaused(false);
 
 	Reset();
+	APEX->StartFadeOut();
 }
 
 GameState::~GameState()
@@ -36,9 +37,9 @@ void GameState::Draw(sf::RenderTarget& target)
 	m_World->Draw(target, sf::RenderStates::Default);
 }
 
-World* GameState::GetWorld()
+World& GameState::GetWorld()
 {
-	return m_World;
+	return *m_World;
 }
 
 bool GameState::IsWorldPaused() const
@@ -48,7 +49,7 @@ bool GameState::IsWorldPaused() const
 
 bool GameState::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
-	if (APEX->DEBUGIsGamePaused()) return true;
+	if (APEX->DEBUGIsGamePaused()) return false;
 
 	if (keyPressed)
 	{

@@ -9,7 +9,7 @@ const float Minimap::DEFAULT_SCALE = 0.25f;
 const float Minimap::EDGE_WIDTH = 14.0f;
 const float Minimap::MARGIN = 10.0f;
 
-Minimap::Minimap(World* world, sf::Vector2f size, Location location) :
+Minimap::Minimap(World& world, sf::Vector2f size, Location location) :
 	m_World(world), m_Location(location)
 {
 	m_Bounds.width = size.x;
@@ -36,7 +36,7 @@ void Minimap::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	states.transform.translate(388, -70)
 		.scale(DEFAULT_SCALE, DEFAULT_SCALE, m_Bounds.left + m_Bounds.width / 2, m_Bounds.top + m_Bounds.height / 2);
-	//m_World->DrawMap(target, states);
+	//m_World.DrawMap(target, states);
 }
 
 void Minimap::SetSize(sf::Vector2f size)

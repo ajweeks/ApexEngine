@@ -23,7 +23,7 @@ public:
 		TILE, OBJECT, IMAGE, NONE
 	};
 
-	Layer(World* world, std::vector<Tile*> tiles, TileSet* tileSet,
+	Layer(World& world, std::vector<Tile*> tiles, TileSet* tileSet,
 		std::string name, bool visible, float opacity, Type type, int width, int height);
 	virtual ~Layer();
 
@@ -44,7 +44,7 @@ public:
 	static Type ParseLayerTypeString(std::string layerTypeString);
 
 private:
-	World* m_World;
+	World& m_World;
 	TileSet* m_TileSet;
 
 	std::vector<Tile*> m_Tiles;

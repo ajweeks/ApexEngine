@@ -6,7 +6,7 @@
 class Coin : public Item
 {
 public:
-	Coin(World* world, Map* map, sf::Vector2f position);
+	Coin(World& world, Map& map, sf::Vector2f position);
 	virtual ~Coin();
 
 	Coin& operator=(const Coin&) = delete;

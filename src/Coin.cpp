@@ -5,7 +5,7 @@
 #include "World.h"
 #include "Map.h"
 
-Coin::Coin(World* world, Map* map, sf::Vector2f position) :
+Coin::Coin(World& world, Map& map, sf::Vector2f position) :
 	Item(world, map, position, ActorID::COIN, this)
 {
 	m_SpriteSheet.Create(TextureManager::GetTexture(TextureManager::COIN), 16, 16);
@@ -34,7 +34,7 @@ void Coin::BeginContact(ApexContact* contact)
 	{
 	case ActorID::PLAYER:
 	{
-		m_Map->AddItemToBeRemoved(this);
+		m_Map.AddEntityToBeRemoved(this);
 	} break;
 	}
 }

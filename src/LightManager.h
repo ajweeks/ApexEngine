@@ -14,7 +14,7 @@
 class LightManager : public ApexMouseListener
 {
 public:
-	LightManager(World* world, const std::string& directory);
+	LightManager(World& world, const std::string& directory);
 	virtual ~LightManager();
 
 	LightManager(const LightManager&) = delete;
@@ -31,7 +31,6 @@ public:
 	void SaveLightData();
 
 	void SetShowingEditor(bool showingEditor);
-	void ToggleShowingEditor();
 	bool IsShowingEditor() const;
 
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
@@ -63,7 +62,7 @@ private:
 	std::string m_Directory;
 
 	int m_BuildingIndex;
-	World* m_World = nullptr;
+	World& m_World;
 
 	bool m_NeedUpdate = true;
 

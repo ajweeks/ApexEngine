@@ -12,7 +12,7 @@
 
 const float Player::VEL = 550000.0f;
 
-Player::Player(World* world, Map* map) :
+Player::Player(World& world, Map& map) :
 	Mob(world, map, sf::Vector2f(), ActorID::PLAYER, this),
 	ApexKeyListener(),
 	m_World(world),
@@ -107,7 +107,7 @@ bool Player::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 		case ApexKeyboard::MOVE_UP:
 		case ApexKeyboard::MOVE_DOWN:
 		{
-			if (!m_World->IsShowingSpeechBubble())
+			if (!m_World.IsShowingSpeechBubble())
 			{
 				m_SpriteSheet.SetCurrentSequence(AnimationSequence::WALKING, false);
 			}
@@ -125,19 +125,19 @@ void Player::Tick(sf::Time elapsed)
 {
 	if (m_BuildingIndexToEnterNextFrame != -1)
 	{
-		m_World->EnterMap(m_BuildingIndexToEnterNextFrame);
+		m_World.EnterMap(m_BuildingIndexToEnterNextFrame);
 		m_BuildingIndexToEnterNextFrame = -1;
 		return;
 	}
 
 	if (m_ExitBuildingNextFrame)
 	{
-		m_World->ExitMap();
+		m_World.ExitMap();
 		m_ExitBuildingNextFrame = false;
 		return;
 	}
 
-	if (!m_World->IsShowingSpeechBubble())
+	if (!m_World.IsShowingSpeechBubble())
 	{
 		HandleMovement(elapsed);
 	}
@@ -188,10 +188,12 @@ void Player::HandleMovement(sf::Time elapsed)
 // should have 4 containing walls)
 void Player::ClampPosition()
 {
+	Map* currentMap = m_World.GetCurrentMap();
+	const size_t tileSize = currentMap->GetTileSize();
 	const float left = 0;
-	const float right = float(m_World->GetWidth()) - 50.0f;
+	const float right = float(currentMap->GetTilesWide() * tileSize) - 50.0f;
 	const float top = 0;
-	const float bottom = float(m_World->GetHeight()) - 50.0f;
+	const float bottom = float(currentMap->GetTilesHigh() * tileSize) - 50.0f;
 	if (m_Actor->GetPosition().x < left)
 	{
 		m_Actor->SetXPosition(left);

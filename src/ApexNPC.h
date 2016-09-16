@@ -10,7 +10,7 @@
 class ApexNPC : public Mob, public Interactable
 {
 public:
-	ApexNPC(World* world, Map* map, const nlohmann::json& info);
+	ApexNPC(World& world, Map& map, const nlohmann::json& info);
 	virtual ~ApexNPC();
 
 	ApexNPC(const ApexNPC&) = delete;

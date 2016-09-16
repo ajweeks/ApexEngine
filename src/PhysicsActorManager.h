@@ -20,7 +20,7 @@ public:
 	void Tick(sf::Time elapsed);
 	void Draw(sf::RenderTarget& target);
 
-	b2World* GetWorld() const;
+	b2World& GetWorld() const;
 
 	static const float TIMESTEP;
 private:

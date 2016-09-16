@@ -21,7 +21,7 @@ class Map
 {
 public:
 	Map();
-	Map(World* world, int buildingIndex, std::string directory);
+	Map(World& world, int buildingIndex, std::string directory);
 	virtual ~Map();
 
 	Map(const Map&) = delete;
@@ -68,6 +68,7 @@ private:
 	int m_TilesHigh;
 
 	int m_BuildingIndex;
+	World& m_World;
 
 	std::string m_Directory;
 
@@ -85,7 +86,6 @@ private:
 	std::vector<Item*> m_ItemsToBeRemoved;
 
 	TileSet* m_TileSet = nullptr;
-	World* m_World = nullptr;
 
 	sf::Vector2f m_PlayerSpawnPosition;
 };

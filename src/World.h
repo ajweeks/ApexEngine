@@ -43,7 +43,7 @@ public:
 	void Reset();
 
 	Player* GetPlayer();
-	BulletManager* GetBulletManager();
+	BulletManager& GetBulletManager();
 
 	void ToggleDebugOverlay();
 	bool IsShowingDebugOverlay() const;

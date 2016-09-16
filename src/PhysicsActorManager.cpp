@@ -38,7 +38,7 @@ void PhysicsActorManager::Draw(sf::RenderTarget& target)
 	m_World->DrawDebugData();
 }
 
-b2World* PhysicsActorManager::GetWorld() const
+b2World& PhysicsActorManager::GetWorld() const
 {
-	return m_World;
+	return *m_World;
 }

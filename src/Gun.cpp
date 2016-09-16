@@ -11,11 +11,10 @@
 
 const float Gun::RELOAD_SECONDS = 0.8f;
 
-Gun::Gun(World* world, Map* map, sf::Vector2f position) :
+Gun::Gun(World& world, Map& map, sf::Vector2f position) :
 	Entity(world, map, position, ActorID::GUN, this),
-	m_World(world)
+	m_BulletManager(world.GetBulletManager())
 {
-	m_BulletManager = world->GetBulletManager();
 	m_Direction = 0.0f;
 
 	m_RectShape.setFillColor(sf::Color::Blue);
@@ -64,7 +63,7 @@ int Gun::GetClipSize() const
 
 bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
-	if (m_World->IsPaused()) return true;
+	if (m_World.IsPaused()) return true;
 	if (APEX->DEBUGIsGamePaused()) return true;
 
 	switch (buttonEvent.button)
@@ -85,13 +84,13 @@ bool Gun::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 
 void Gun::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)
 {
-	if (m_World->IsPaused()) return;
+	if (m_World.IsPaused()) return;
 	if (APEX->DEBUGIsGamePaused()) return;
 }
 
 void Gun::OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent)
 {
-	if (m_World->IsPaused()) return;
+	if (m_World.IsPaused()) return;
 	if (APEX->DEBUGIsGamePaused()) return;
 }
 
@@ -102,7 +101,7 @@ float Gun::GetDirection() const
 
 void Gun::Tick(sf::Time elapsed)
 {
-	if (m_World->GetPlayer() != nullptr)
+	if (m_ReloadingTimeRemaining != sf::Time::Zero)
 	{
 		if (m_ReloadingTimeRemaining != sf::Time::Zero)
 		{
@@ -142,10 +141,10 @@ void Gun::Shoot()
 	const float sinDir = sin(m_Direction);
 
 	//const float screenJoltAmount = 2.0f + (std::rand() % 8);
-	//m_World->JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
+	//m_World.JoltCamera(screenJoltAmount * cosDir, screenJoltAmount * sinDir);
 
 	const sf::Vector2f posOffset = sf::Vector2f(cosDir * 22.0f, sinDir * 22.0f);
-	const sf::Vector2f playerVel = m_World->GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
+	const sf::Vector2f playerVel = m_World.GetPlayer()->GetPhysicsActor()->GetLinearVelocity();
 	Bullet* newBullet = new Bullet(m_World, m_Map, m_Actor->GetPosition() + posOffset, m_Direction, playerVel / 2.0f);
 	--m_BulletsInClip;
 	ApexAudio::PlaySoundEffect(ApexAudio::Sound::GUN_FIRE);
