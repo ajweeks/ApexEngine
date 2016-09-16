@@ -3,8 +3,8 @@
 #include "PhysicsActor.h"
 #include "enumerations.h"
 
-Tile::Tile(int ID, bool isSolid, bool isSensor, Type type)
-	: m_ID(ID), m_IsSolid(isSolid),m_IsSensor(isSensor),  m_Type(type)
+Tile::Tile(int ID, bool isSolid, bool isSensor)
+	: m_ID(ID), m_IsSolid(isSolid),m_IsSensor(isSensor)
 {
 }
 
@@ -34,11 +34,6 @@ bool Tile::IsSensor() const
 int Tile::GetBuildingID() const
 {
 	return m_ExtraInfo.buildingID;
-}
-
-Tile::Type Tile::GetType() const
-{
-	return m_Type;
 }
 
 Tile::ExtraInfo Tile::GetExtraInfo() const

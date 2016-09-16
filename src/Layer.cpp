@@ -151,25 +151,8 @@ void Layer::CreatePhysicsActors(ApexContactListener* contactListener)
 				newActor->SetSensor(m_Tiles[tileIndex]->IsSensor());
 
 				b2Filter collisionFilter;
-				switch (m_Tiles[tileIndex]->GetType())
-				{
-				case Tile::Type::DOOR:
-				{
-					collisionFilter.categoryBits = ActorID::DOOR;
-					newActor->SetUserData(ActorID::DOOR);
-				} break;
-				case Tile::Type::EXIT:
-				{
-					collisionFilter.categoryBits = ActorID::EXIT;
-					newActor->SetUserData(ActorID::EXIT);
-				} break;
-				case Tile::Type::NORMAL:
-				default:
-				{
-					collisionFilter.categoryBits = ActorID::WALL;
-					newActor->SetUserData(ActorID::WALL);
-				} break;
-				}
+				collisionFilter.categoryBits = ActorID::BUILDING;
+				newActor->SetUserData(ActorID::BUILDING);
 
 				collisionFilter.maskBits = ActorID::BULLET | ActorID::PLAYER | ActorID::SHEEP;
 				newActor->SetCollisionFilter(collisionFilter);

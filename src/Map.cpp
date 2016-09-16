@@ -171,7 +171,6 @@ void Map::ReadJSONFile()
 	tileAtlas.reserve(tileCount);
 	for (int i = 0; i < tileCount; ++i)
 	{
-		Tile::Type tileType = Tile::Type::NORMAL;
 		Tile::ExtraInfo tileExtraInfo{};
 		const int ID = i - 1;
 		bool solid = false;
@@ -196,20 +195,17 @@ void Map::ReadJSONFile()
 				if (StringBeginsWith(tileStringID, "door", extraChars))
 				{
 					tileExtraInfo.buildingID = stoi(extraChars);
-					tileType = Tile::Type::DOOR;
 				}
 				if (StringBeginsWith(tileStringID, "exit", extraChars))
 				{
-					tileType = Tile::Type::EXIT;
 				}
 				if (StringBeginsWith(tileStringID, "building", extraChars))
 				{
-					tileType = Tile::Type::BUILDING;
 					tileExtraInfo.buildingID = stoi(extraChars);
 				}
 			}
 		}
-		Tile* tile = new Tile(ID, solid, sensor, tileType);
+		Tile* tile = new Tile(ID, solid, sensor);
 		if (!tileStringID.empty())
 		{
 			tile->SetStringID(tileStringID);
@@ -275,7 +271,7 @@ void Map::ReadJSONFile()
 				for (size_t i = 0; i < tileIDs.size(); ++i)
 				{
 					const int id = tileIDs[i];
-					Tile* tile = new Tile(id, tileAtlas[id]->IsSolid(), tileAtlas[id]->IsSensor(), tileAtlas[id]->GetType());
+					Tile* tile = new Tile(id, tileAtlas[id]->IsSolid(), tileAtlas[id]->IsSensor());
 					tile->SetExtraInfo(tileAtlas[id]->GetExtraInfo());
 					tiles.push_back(tile);
 				}
