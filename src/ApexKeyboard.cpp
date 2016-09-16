@@ -19,28 +19,6 @@ ApexKeyboard::~ApexKeyboard()
 {
 }
 
-void ApexKeyboard::LoadKeybindingsFromFile()
-{
-	const std::string filePath = "resources/keybindings.json";
-	std::ifstream fileInStream;
-	std::stringstream stringStream;
-
-	fileInStream.open(filePath);
-
-	if (fileInStream)
-	{
-		std::string line;
-		while (fileInStream.eof() == false)
-		{
-			std::getline(fileInStream, line);
-			stringStream << line;
-		}
-		fileInStream.close();
-	}
-
-	StoreStringData(stringStream.str());
-}
-
 void ApexKeyboard::StoreStringData(const std::string& fileContents)
 {
 	json file;
@@ -79,6 +57,28 @@ int ApexKeyboard::FindVKCode(const json& keybindings, const std::string& tagName
 	}
 
 	return defaultKey;
+}
+
+void ApexKeyboard::LoadKeybindingsFromFile()
+{
+	const std::string filePath = "resources/keybindings.json";
+	std::ifstream fileInStream;
+	std::stringstream stringStream;
+
+	fileInStream.open(filePath);
+
+	if (fileInStream)
+	{
+		std::string line;
+		while (fileInStream.eof() == false)
+		{
+			std::getline(fileInStream, line);
+			stringStream << line;
+		}
+		fileInStream.close();
+	}
+
+	StoreStringData(stringStream.str());
 }
 
 void ApexKeyboard::SaveKeybindingsToFile()
@@ -225,7 +225,7 @@ std::string ApexKeyboard::GetKeyName(Key key)
 
 size_t ApexKeyboard::GetNumberOfKeys()
 {
-	return size_t(Key::NONE) - 1;
+	return size_t(Key::NONE);
 }
 
 std::string ApexKeyboard::GetSFKeyName(sf::Keyboard::Key key)
@@ -305,9 +305,9 @@ std::string ApexKeyboard::GetSFKeyName(sf::Keyboard::Key key)
 	case sf::Keyboard::Num9:
 		return "Num9";
 	case sf::Keyboard::Escape:
-		return "Escape";
+		return "Esc";
 	case sf::Keyboard::LControl:
-		return "LControl";
+		return "LCtrl";
 	case sf::Keyboard::LShift:
 		return "LShift";
 	case sf::Keyboard::LAlt:
@@ -315,7 +315,7 @@ std::string ApexKeyboard::GetSFKeyName(sf::Keyboard::Key key)
 	case sf::Keyboard::LSystem:
 		return "LSystem";
 	case sf::Keyboard::RControl:
-		return "RControl";
+		return "RCtrl";
 	case sf::Keyboard::RShift:
 		return "RShift";
 	case sf::Keyboard::RAlt:

@@ -19,6 +19,8 @@
 #include "logo.h"
 #include "LightManager.h"
 #include "Map.h"
+#include "PhysicsActor.h"
+#include "ApexContact.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -29,7 +31,6 @@
 
 const sf::Time ApexMain::FADE_IN_OUT_TIME = sf::seconds(0.35f);
 const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
-const bool ApexMain::USE_V_SYNC = true;
 
 ApexMain* ApexMain::m_Singleton = nullptr;
 sf::Font ApexMain::FontOpenSans;
@@ -86,9 +87,14 @@ std::vector<std::string> ApexSplit(const std::string& str, const char& delim)
 	return result;
 }
 
-sf::Color SetAlpha(sf::Color color, sf::Uint8 alpha)
+sf::Color SetAlpha(const sf::Color& color, sf::Uint8 alpha)
 {
 	return sf::Color(color.r, color.g, color.b, alpha);
+}
+
+sf::Glsl::Vec4 NormalizeColor(const sf::Color& color)
+{
+	return sf::Glsl::Vec4(color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f);
 }
 
 ApexMain::ApexMain()
@@ -128,7 +134,8 @@ void ApexMain::Init()
 	LoadCursorTextures();
 
 	m_PhysicsActorManager = new PhysicsActorManager(*m_Window);
-	m_StateManager = new StateManager(new LoadingState());
+	LoadingState* loadingState = new LoadingState();
+	m_StateManager = new StateManager(loadingState);
 
 	if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
 	{
@@ -157,7 +164,8 @@ void ApexMain::CreateApexWindow(bool fullscreen)
 		unsigned int windowHeight = (unsigned int)(desktopMode.height * 0.6f);
 		m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, desktopMode.bitsPerPixel), WINDOW_TITLE, sf::Style::Close);
 	}
-	m_Window->setVerticalSyncEnabled(USE_V_SYNC);
+	// TODO: Use previously set option here
+	//m_Window->setVerticalSyncEnabled(USE_V_SYNC);
 	m_Window->setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
 	m_Window->setMouseCursorVisible(false);
 }
@@ -242,18 +250,20 @@ void ApexMain::Run()
 					if (ApexKeyboard::GetKeyFromVKCode(event.key.code, key))
 					{
 						const bool keyPressed = ApexKeyboard::IsKeyPressed(key);
+						bool blockedInput = false;
 						for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 						{
 							if (m_KeyListeners[i] != nullptr)
 							{
 								if (m_KeyListeners[i]->OnKeyPress(key, keyPressed))
 								{
+									blockedInput = true;
 									break;
 								}
 							}
 						}
 
-						if (keyPressed)
+						if (!blockedInput && keyPressed)
 						{
 							switch (key)
 							{
@@ -281,14 +291,20 @@ void ApexMain::Run()
 					}
 					else
 					{
-						GameState* gameState = dynamic_cast<GameState*>(m_StateManager->CurrentState());
-						if (gameState)
+						bool blockedInput = false;
+						const bool keyPressed = sf::Keyboard::isKeyPressed(event.key.code);
+						for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 						{
-							if (gameState->IsWorldPaused())
+							if (m_KeyListeners[i] != nullptr)
 							{
-								gameState->OnUnmappedKeypress(event.key);
+								if (m_KeyListeners[i]->OnUnmappedKeyPress(event.key.code, keyPressed))
+								{
+									blockedInput = true;
+									break;
+								}
 							}
 						}
+
 					}
 				} break;
 				case sf::Event::KeyReleased:
@@ -360,7 +376,8 @@ void ApexMain::Tick(double& accumulator)
 {
 	while (accumulator >= PhysicsActorManager::TIMESTEP)
 	{
-		m_SlowMoData.Tick(sf::seconds(PhysicsActorManager::TIMESTEP));
+		const sf::Time delta = sf::seconds(PhysicsActorManager::TIMESTEP);
+		m_SlowMoData.Tick(delta);
 
 		float time = PhysicsActorManager::TIMESTEP;
 
@@ -383,6 +400,8 @@ void ApexMain::Tick(double& accumulator)
 
 		accumulator -= PhysicsActorManager::TIMESTEP;
 	}
+
+	ApexMouse::SetMousePosLastFrame();
 }
 
 void ApexMain::Draw()
@@ -474,7 +493,11 @@ void ApexMain::SetCursor(ApexCursor cursorType)
 
 void ApexMain::TakeScreenshot()
 {
-	sf::Image screen = m_Window->capture();
+	sf::Texture windowTexture;
+	const sf::Vector2u windowSize = m_Window->getSize();
+	windowTexture.create(windowSize.x, windowSize.y);
+	windowTexture.update(*m_Window);
+	sf::Image screen = windowTexture.copyToImage();
 	SYSTEMTIME localTime;
 	GetLocalTime(&localTime);
 
@@ -530,17 +553,27 @@ std::string ApexMain::Vector2fToString(sf::Vector2f vec)
 	return stream.str();
 }
 
-void ApexMain::AddKeyListener(ApexKeyListener* keyListener)
+void ApexMain::AddKeyListener(ApexKeyListener* keyListener, int priority)
 {
-	for (size_t i = 0; i < m_KeyListeners.size(); ++i)
+	if (priority == -1)
 	{
-		if (m_KeyListeners[i] == nullptr)
+		for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 		{
-			m_KeyListeners[i] = keyListener;
-			return;
+			if (m_KeyListeners[i] == nullptr)
+			{
+				m_KeyListeners[i] = keyListener;
+				return;
+			}
 		}
+		m_KeyListeners.push_back(keyListener);
 	}
-	m_KeyListeners.push_back(keyListener);
+	else
+	{
+		size_t index = priority;
+		if (index >= m_KeyListeners.size()) index = m_KeyListeners.size() - 1;
+		std::vector<ApexKeyListener*>::const_iterator iter = m_KeyListeners.begin() + index;
+		m_KeyListeners.insert(iter, keyListener);
+	}
 }
 
 
@@ -633,7 +666,7 @@ void ApexMain::RemoveWindowListener(ApexWindowListener* windowListener)
 	}
 }
 
-b2World* ApexMain::GetPhysicsWorld() const
+b2World& ApexMain::GetPhysicsWorld() const
 {
 	return m_PhysicsActorManager->GetWorld();
 }
@@ -671,6 +704,29 @@ void ApexMain::SetWindowFullscreen(bool fullscreen)
 			}
 		}
 	}
+}
+
+bool ApexMain::IsWindowFullscreen() const
+{
+	return m_WindowIsFullscreen;
+}
+
+void ApexMain::ToggleVSyncEnabled()
+{
+	SetVSyncEnabled(!m_UseVSync);
+}
+
+void ApexMain::SetVSyncEnabled(bool enabled)
+{
+	if (m_UseVSync == enabled) return;
+
+	m_UseVSync = enabled;
+	m_Window->setVerticalSyncEnabled(enabled);
+}
+
+bool ApexMain::IsVSyncEnabled() const
+{
+	return m_UseVSync;
 }
 
 sf::Time ApexMain::GetTimeElapsed() const

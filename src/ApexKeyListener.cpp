@@ -2,9 +2,9 @@
 #include "ApexKeyListener.h"
 #include "ApexMain.h"
 
-ApexKeyListener::ApexKeyListener()
+ApexKeyListener::ApexKeyListener(int priority)
 {
-	APEX->AddKeyListener(this);
+	APEX->AddKeyListener(this, priority);
 }
 
 ApexKeyListener::~ApexKeyListener()

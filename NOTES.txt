@@ -1,6 +1,7 @@
 
 __ NOTES __
 
+		-PAUSING-
 - There are three (3) types of pausing
   1. Entire game loop pausing
       - This type of pausing is a debug feature used for inspecting animations/collisions/etc.
@@ -11,6 +12,11 @@ __ NOTES __
 	    and access the pause screen (sets 2 to true)
   4. (?) Defocusing pause?
 
+  
+		-Map loading-
+- Maps are loaded in using json files created by using the tiled editor
+- Each map *must* have exactly one background, and foreground layer, and at least one midground layer.
+- Midground layers are parsed when the map is created and items and tiles are converted to items/mobs
   
 TODO:
 

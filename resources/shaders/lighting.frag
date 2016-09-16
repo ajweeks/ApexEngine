@@ -14,9 +14,9 @@ void main()
 	float distFromCenter = distance(gl_FragCoord.xy, pos) / resLen;
 	float radius = u_radius / resLen;
 	
-	float dist = length(smoothstep(radius, radius + u_blur, distFromCenter));
-
-	vec4 color = mix(vec4(u_color.rgb, u_opacity), vec4(0.0), dist);
+	const float magic_number = 1.5;
+	float dist = magic_number * length(smoothstep(radius, radius + u_blur, distFromCenter));
+	vec4 color = vec4(u_color.rgb, mix(u_opacity, 0.0, dist));
 	
 	gl_FragColor = color;
 }

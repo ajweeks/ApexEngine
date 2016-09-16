@@ -9,10 +9,9 @@
       "statements": [
         { "q": "Hi there!" },
         { "q": "I'm an old man!" },
-        { "q": "Wut wut!" },
-        { "q": "Wusdfdsfsdfdsfsdfsdft wut!\nsdfdsfdsfsdfdsfsd\nsfdsfsdfsdf" },
+        { "q": "Wut wut![END]" },
         { "q": "Wow, you're a talkative one![END]" },
-        { "q": "I don't have much to say..." },
+        { "q": "I don't have much to say...[END]" },
         { "q": "Why do you keep bothering me?[END]" },
         { "q": "I can't believe you've done this" },
         { "q": "Please go away[REPEAT]" }
@@ -27,7 +26,6 @@
       },
       "statements": [
         { "q": "I'm Mary!" },
-        { "q": " " },
         { "q": "Wow..." },
         { "q": "Why tho?[END]" },
         { "q": "Nah bruh[REPEAT]" }

@@ -28,6 +28,8 @@ private:
 		CollapsibleElement* m_CollapsibleElement = nullptr;
 		sf::RectangleShape m_BackgroundRect;
 	};
+	
+	static const sf::Color FILL_COLOR;
 
 	CollapsibleElement* AddCollapsibleElementChild(CollapsibleElement* parentElement, const std::string& string, int numOfStringValues = 1);
 	CollapsibleElementStack* CreateCollapsibleElementStack(const std::string& string, const sf::Vector2f& position, int numOfStringValues = 1);

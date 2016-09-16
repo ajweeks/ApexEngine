@@ -2,9 +2,9 @@
 
 #include "StateManager.h"
 #include "FloatTransition.h"
+#include "TransitionChain.h"
 #include "ColorTransition.h"
 
-#include "TransitionChain.h"
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Graphics\Sprite.hpp>
 
@@ -32,7 +32,8 @@ void ApexOutputDebugString(const std::string &string);
 std::vector<std::string> ApexSplit(const std::string& str);
 std::vector<std::string> ApexSplit(const std::string& str, const char& delim);
 
-sf::Color SetAlpha(sf::Color color, sf::Uint8 alpha);
+sf::Color SetAlpha(const sf::Color& color, sf::Uint8 alpha);
+sf::Glsl::Vec4 NormalizeColor(const sf::Color& color);
 
 class ApexMain : public b2ContactListener
 {
@@ -65,19 +66,24 @@ public:
 	StateManager* GetStateManager();
 	sf::Vector2u GetWindowSize() const;
 
-	void AddKeyListener(ApexKeyListener* keyListener);
+	void AddKeyListener(ApexKeyListener* keyListener, int priority = -1);
 	void RemoveKeyListener(ApexKeyListener* keyListener);
 	void AddMouseListener(ApexMouseListener* mouseListener);
 	void RemoveMouseListener(ApexMouseListener* mouseListener);
 	void AddWindowListener(ApexWindowListener* windowListener);
 	void RemoveWindowListener(ApexWindowListener* windowListener);
 
-	b2World* GetPhysicsWorld() const;
+	b2World& GetPhysicsWorld() const;
 	void SetPhysicsPaused(bool physicsPaused);
 	bool DEBUGIsGamePaused() const;
 
 	void ToggleWindowFullscreen();
 	void SetWindowFullscreen(bool fullscreen);
+	bool IsWindowFullscreen() const;
+
+	void ToggleVSyncEnabled();
+	void SetVSyncEnabled(bool enabled);
+	bool IsVSyncEnabled() const;
 
 	sf::Time GetTimeElapsed() const;
 	sf::RenderWindow* GetWindow();
@@ -108,7 +114,6 @@ private:
 
 	static const sf::Time FADE_IN_OUT_TIME;
 	static const std::string WINDOW_TITLE;
-	static const bool USE_V_SYNC;
 
 	static ApexMain* m_Singleton;
 
@@ -145,4 +150,5 @@ private:
 	std::vector<ApexMouseListener*> m_MouseListeners;
 	std::vector<ApexWindowListener*> m_WindowListeners;
 
+	bool m_UseVSync;
 };

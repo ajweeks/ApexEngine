@@ -32,19 +32,21 @@ public:
 	int GetCurrentStringIndex() const;
 	void SetNumberOfTextValues(int num);
 
+	CollapsibleElement* AddChildElement(CollapsibleElement* newElement);
+	void ClearAllInput();
+
+	bool IsCollapsed() const;
+
 	// Apex Mouse Listener overrides
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
-
-	void ClearAllInput();
 
 private:
 	static const float INDENTATION;
 	static const float LINE_HEIGHT;
 	static const int FONT_SIZE;
 
-	CollapsibleElement* AddChildElement(CollapsibleElement* newElement);
 	void DrawTriangle(sf::RenderTarget& target, const sf::Vector2f centerPos, bool rotatedDown, sf::RenderStates states) const;
 
 	sf::FloatRect GetBounds(sf::Text text);
@@ -62,9 +64,5 @@ private:
 	bool m_Hover = false; // True when the mouse is hovering over this element (text or arrow)
 	bool m_NeedsBackgroundResize = false;
 
-	// A function callback which get's called every frame to update this element's value
-	float (*GetValue)() = nullptr;
 	float m_Value = 0.0f;
-
-	friend class ApexDebug;
 };

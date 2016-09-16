@@ -89,15 +89,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <ProgramDataBaseFileName>$(OutDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;Box2DDebug.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.4.0\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2DDebug.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -124,7 +124,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.3.2\include;C:\Libraries\JSON\include\;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -132,8 +132,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.3.2\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;Box2DRelease.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Libraries\SFML-2.4.0\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2DRelease.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,13 +170,14 @@
     <ClCompile Include="src\ApexNPC.cpp" />
     <ClCompile Include="src\ApexParticle.cpp" />
     <ClCompile Include="src\ApexParticleManager.cpp" />
-    <ClCompile Include="src\ApexPauseScreen.cpp" />
+    <ClCompile Include="src\PauseScreen.cpp" />
     <ClCompile Include="src\ApexSlider.cpp" />
     <ClCompile Include="src\ApexSpriteSheet.cpp" />
     <ClCompile Include="src\ApexTransition.cpp" />
     <ClCompile Include="src\ApexWindowListener.cpp" />
     <ClCompile Include="src\BaseState.cpp" />
     <ClCompile Include="src\Bed.cpp" />
+    <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\Bullet.cpp" />
     <ClCompile Include="src\BulletManager.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -185,6 +186,10 @@
     <ClCompile Include="src\ColorTransition.cpp" />
     <ClCompile Include="src\DustParticle.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\ExitSensor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\FloatTransition.cpp" />
     <ClCompile Include="src\GameState.cpp" />
     <ClCompile Include="src\Gun.cpp" />
@@ -205,19 +210,21 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\Sheep.cpp" />
+    <ClCompile Include="src\SolidBlock.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TransformableTransition.cpp" />
+    <ClCompile Include="src\TransitionChain.cpp" />
     <ClCompile Include="src\Vector2fTransition.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\AmmoDrop.h" />
     <ClInclude Include="src\ApexAudio.h" />
     <ClInclude Include="src\ApexButton.h" />
     <ClInclude Include="src\ApexButtonList.h" />
+    <ClInclude Include="src\ApexContact.h" />
     <ClInclude Include="src\ApexContactListener.h" />
     <ClInclude Include="src\ApexDebug.h" />
     <ClInclude Include="src\ApexDebugDraw.h" />
@@ -230,13 +237,14 @@
     <ClInclude Include="src\ApexNPC.h" />
     <ClInclude Include="src\ApexParticle.h" />
     <ClInclude Include="src\ApexParticleManager.h" />
-    <ClInclude Include="src\ApexPauseScreen.h" />
+    <ClInclude Include="src\PauseScreen.h" />
     <ClInclude Include="src\ApexSlider.h" />
     <ClInclude Include="src\ApexSpriteSheet.h" />
     <ClInclude Include="src\ApexTransition.h" />
     <ClInclude Include="src\ApexWindowListener.h" />
     <ClInclude Include="src\BaseState.h" />
     <ClInclude Include="src\Bed.h" />
+    <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\Bullet.h" />
     <ClInclude Include="src\BulletManager.h" />
     <ClInclude Include="src\Camera.h" />
@@ -246,6 +254,10 @@
     <ClInclude Include="src\DustParticle.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\enumerations.h" />
+    <ClInclude Include="src\ExitSensor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\FloatTransition.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Gun.h" />
@@ -267,11 +279,13 @@
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\Sheep.h" />
+    <ClInclude Include="src\SolidBlock.h" />
     <ClInclude Include="src\StateManager.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\TileSet.h" />
     <ClInclude Include="src\TransformableTransition.h" />
+    <ClInclude Include="src\TransitionChain.h" />
     <ClInclude Include="src\Vector2fTransition.h" />
     <ClInclude Include="src\World.h" />
   </ItemGroup>

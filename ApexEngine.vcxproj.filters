@@ -9,14 +9,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\State">
-      <UniqueIdentifier>{38b15e0a-0129-4908-8d16-00b48522a00f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Debug">
       <UniqueIdentifier>{40f3d414-d3af-49ae-9a99-0bee875b5e69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Level">
-      <UniqueIdentifier>{f20e7422-11ff-47c8-ad95-991c9822e0ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IO">
       <UniqueIdentifier>{05ce6e50-94cd-4322-8a65-e222accc2e3b}</UniqueIdentifier>
@@ -24,26 +18,29 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{df87255f-0a20-472a-9335-be4a536bd0a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Physics">
-      <UniqueIdentifier>{a1f708e7-235e-4a7a-8902-2b49ddf5be15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Level\Entity">
-      <UniqueIdentifier>{1e5450f4-035c-4628-a931-76b3983fdc76}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Graphics\Particle">
       <UniqueIdentifier>{697db4f6-c402-4d6e-83a2-918b194af416}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Level\Entity\Mob">
-      <UniqueIdentifier>{f3b5191d-91b5-46ff-b6c9-7c11f63b1405}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics\Transition">
       <UniqueIdentifier>{4d048fdd-68da-4fae-bee8-b1d02f64a4fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Level\Entity\Weapon">
+    <Filter Include="Source Files\State">
+      <UniqueIdentifier>{38b15e0a-0129-4908-8d16-00b48522a00f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World">
+      <UniqueIdentifier>{f20e7422-11ff-47c8-ad95-991c9822e0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Entity">
+      <UniqueIdentifier>{1e5450f4-035c-4628-a931-76b3983fdc76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Entity\Mob">
+      <UniqueIdentifier>{f3b5191d-91b5-46ff-b6c9-7c11f63b1405}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\Entity\Weapon">
       <UniqueIdentifier>{00a1836c-0490-42bf-902d-1e022d6a1f54}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Level\World">
-      <UniqueIdentifier>{7106c2a4-e6b5-4854-b717-ef7f30fc5ee8}</UniqueIdentifier>
+    <Filter Include="Source Files\World\Entity\Physics">
+      <UniqueIdentifier>{a1f708e7-235e-4a7a-8902-2b49ddf5be15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +81,7 @@
       <Filter>Source Files\IO</Filter>
     </ClCompile>
     <ClCompile Include="src\ApexContactListener.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\ApexWindowListener.cpp">
       <Filter>Source Files\IO</Filter>
@@ -92,77 +89,47 @@
     <ClCompile Include="src\ApexAudio.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
-    <ClCompile Include="src\AmmoDrop.cpp">
-      <Filter>Source Files\Level\World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\World.cpp">
-      <Filter>Source Files\Level\World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tile.cpp">
-      <Filter>Source Files\Level\World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Map.cpp">
-      <Filter>Source Files\Level\World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Layer.cpp">
-      <Filter>Source Files\Level\World</Filter>
-    </ClCompile>
     <ClCompile Include="src\StateManager.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MainMenuState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LoadingState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameState.cpp">
-      <Filter>Source Files\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseState.cpp">
       <Filter>Source Files\State</Filter>
     </ClCompile>
     <ClCompile Include="src\ApexSpriteSheet.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\ApexPauseScreen.cpp">
-      <Filter>Source Files\Level</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mob.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClCompile>
     <ClCompile Include="src\Player.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClCompile>
     <ClCompile Include="src\Sheep.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClCompile>
     <ClCompile Include="src\ApexNPC.cpp">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClCompile>
     <ClCompile Include="src\Entity.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClCompile>
     <ClCompile Include="src\Coin.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClCompile>
     <ClCompile Include="src\Bullet.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\BulletManager.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\Gun.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\Projectile.cpp">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\PhysicsActorManager.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\PhysicsActor.cpp">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\ApexSlider.cpp">
       <Filter>Source Files\Graphics</Filter>
@@ -198,22 +165,64 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\Item.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Minimap.cpp">
-      <Filter>Source Files\Level</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClCompile>
     <ClCompile Include="src\DustParticle.cpp">
       <Filter>Source Files\Graphics\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Source Files\Level</Filter>
     </ClCompile>
     <ClCompile Include="src\Vector2fTransition.cpp">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClCompile>
     <ClCompile Include="src\Bed.cpp">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransitionChain.cpp">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainMenuState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LoadingState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Building.cpp">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tile.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Map.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Layer.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Minimap.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AmmoDrop.cpp">
+      <Filter>Source Files\World\Entity\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExitSensor.cpp">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SolidBlock.cpp">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PauseScreen.cpp">
+      <Filter>Source Files\World</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,7 +269,7 @@
       <Filter>Source Files\IO</Filter>
     </ClInclude>
     <ClInclude Include="src\ApexContactListener.h">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClInclude>
     <ClInclude Include="src\ApexWindowListener.h">
       <Filter>Source Files\IO</Filter>
@@ -268,77 +277,50 @@
     <ClInclude Include="src\ApexAudio.h">
       <Filter>Source Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="src\AmmoDrop.h">
-      <Filter>Source Files\Level\World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World.h">
-      <Filter>Source Files\Level\World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile.h">
-      <Filter>Source Files\Level\World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Map.h">
-      <Filter>Source Files\Level\World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layer.h">
-      <Filter>Source Files\Level\World</Filter>
-    </ClInclude>
     <ClInclude Include="src\StateManager.h">
       <Filter>Source Files\State</Filter>
     </ClInclude>
     <ClInclude Include="src\MainMenuState.h">
       <Filter>Source Files\State</Filter>
     </ClInclude>
-    <ClInclude Include="src\LoadingState.h">
-      <Filter>Source Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameState.h">
-      <Filter>Source Files\State</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseState.h">
-      <Filter>Source Files\State</Filter>
-    </ClInclude>
     <ClInclude Include="src\ApexSpriteSheet.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\ApexPauseScreen.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mob.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClInclude>
     <ClInclude Include="src\Player.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClInclude>
     <ClInclude Include="src\Sheep.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClInclude>
     <ClInclude Include="src\ApexNPC.h">
-      <Filter>Source Files\Level\Entity\Mob</Filter>
+      <Filter>Source Files\World\Entity\Mob</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity.h">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\Coin.h">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\Bullet.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\BulletManager.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Gun.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Projectile.h">
-      <Filter>Source Files\Level\Entity\Weapon</Filter>
+      <Filter>Source Files\World\Entity\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\PhysicsActorManager.h">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClInclude>
     <ClInclude Include="src\PhysicsActor.h">
-      <Filter>Source Files\Physics</Filter>
+      <Filter>Source Files\World\Entity\Physics</Filter>
     </ClInclude>
     <ClInclude Include="src\ApexSlider.h">
       <Filter>Source Files\Graphics</Filter>
@@ -367,9 +349,6 @@
     <ClInclude Include="src\ParticleEmitter.h">
       <Filter>Source Files\Graphics\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="src\Interactable.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="src\IntTransition.h">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClInclude>
@@ -377,26 +356,70 @@
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Item.h">
-      <Filter>Source Files\Level\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Minimap.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TileSet.h">
-      <Filter>Source Files\Level</Filter>
+      <Filter>Source Files\World\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\DustParticle.h">
       <Filter>Source Files\Graphics\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>Source Files\Level</Filter>
-    </ClInclude>
     <ClInclude Include="src\Vector2fTransition.h">
       <Filter>Source Files\Graphics\Transition</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\Bed.h">
-      <Filter>Source Files\Level\Entity</Filter>
+      <Filter>Source Files\World\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TransitionChain.h">
+      <Filter>Source Files\Graphics\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LoadingState.h">
+      <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameState.h">
+      <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseState.h">
+      <Filter>Source Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ApexContact.h">
+      <Filter>Source Files\World\Entity\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Building.h">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Interactable.h">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TileSet.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tile.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Map.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layer.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AmmoDrop.h">
+      <Filter>Source Files\World\Entity\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Minimap.h">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ExitSensor.h">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SolidBlock.h">
+      <Filter>Source Files\World\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PauseScreen.h">
+      <Filter>Source Files\World</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

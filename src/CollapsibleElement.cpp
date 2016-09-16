@@ -33,7 +33,7 @@ bool CollapsibleElement::Tick(sf::Time elapsed, ApexDebug* debug)
 
 	const bool wasHovering = m_Hover;
 	m_Hover = (globalBounds.contains(sf::Vector2f(mousePos)));
-	if (m_Hover) APEX->SetCursor(ApexCursor::POINT);
+	if (m_Hover && !m_Children.empty()) APEX->SetCursor(ApexCursor::POINT);
 
 	if (m_Collapsed == false)
 	{
@@ -56,12 +56,12 @@ void CollapsibleElement::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 	if (m_Hover) 
 	{
-		m_Text.setColor(sf::Color(250, 250, 250));
+		m_Text.setFillColor(sf::Color(250, 250, 250));
 		m_Text.setStyle(sf::Text::Bold);
 	}
 	else 
 	{
-		m_Text.setColor(sf::Color(200, 200, 215));
+		m_Text.setFillColor(sf::Color(200, 200, 215));
 	}
 	target.draw(m_Text, states);
 
@@ -193,6 +193,11 @@ void CollapsibleElement::ClearAllInput()
 	{
 		m_Children[i]->ClearAllInput();
 	}
+}
+
+bool CollapsibleElement::IsCollapsed() const
+{
+	return m_Collapsed;
 }
 
 void CollapsibleElement::SetCollapsed(bool collapsed)

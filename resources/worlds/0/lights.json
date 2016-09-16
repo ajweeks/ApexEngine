@@ -2,27 +2,11 @@
   "ambient": "rgba(195, 210, 222, 55)",
   "lights": [
     {
-      "blur": 0.05,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "124.60,226.26",
-      "radius": 27.8
-    },
-    {
-      "blur": 0.06,
-      "color": "rgb(255, 255, 255)",
-      "flickers": false,
-      "opacity": 0.8,
-      "position": "288.40,388.90",
-      "radius": 11
-    },
-    {
       "blur": 0.11,
       "color": "rgb(255, 255, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "176.40,346.63",
+      "position": "180.57,339.13",
       "radius": 16.6
     },
     {
@@ -120,6 +104,22 @@
       "opacity": 0.8,
       "position": "349.89,604.66",
       "radius": 34.5
+    },
+    {
+      "blur": 0.07,
+      "color": "rgb(255, 255, 255 )",
+      "flickers": false,
+      "opacity": 1,
+      "position": "165.00,229.65",
+      "radius": 24.5
+    },
+    {
+      "blur": 0.08,
+      "color": "rgb(255, 255, 255)",
+      "flickers": false,
+      "opacity": 0.8,
+      "position": "370.93,381.50",
+      "radius": 18.17
     }
   ]
 }

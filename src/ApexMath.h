@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PhysicsActor.h"
+
 #include <SFML\System\Vector2.hpp>
 
 #include <cmath>
@@ -75,4 +77,25 @@ public:
 	{
 		return (floor((value * pow(10, precision) + 0.5)) / pow(10, precision));
 	}
+
+	static sf::Vector2f b2Vec2ToSFVec2fS(b2Vec2 vec)
+	{
+		return sf::Vector2f(vec.x * PhysicsActor::SCALE, vec.y * PhysicsActor::SCALE);
+	}
+
+	static sf::Vector2f b2Vec2ToSFVec2fSS(b2Vec2 vec)
+	{
+		return sf::Vector2f(vec.x, vec.y);
+	}
+
+	static b2Vec2 SFVec2fToB2Vec2S(sf::Vector2f vec)
+	{
+		return b2Vec2(vec.x / PhysicsActor::SCALE, vec.y / PhysicsActor::SCALE);
+	}
+
+	static b2Vec2 SFVec2fToB2Vec2(sf::Vector2f vec)
+	{
+		return b2Vec2(vec.x, vec.y);
+	}
+
 };

@@ -2,50 +2,21 @@
 
 	GAME IDEAS
 
-	
-THEME
--Fruits
--Vegetables
--Space
--Tools
--Music?
 
--Electricity
-  -Build up charge by doing something
-  -You're a battery
-    -You need to disperse your charge to various devices
-	-The lower your charge, the slower you move
-	-You're invisibly moving around an inhabited house chargin stuff
-
-
--
-
-
--Medicine? 
-  -Pill Boy
-  -You need to find your medicine scattered around the world
-  -
-  
-  
-***
--Alien
-  -You crash landed on a planet, and developed amnesia
-  -You must attempt to communicate with the locals (using an in-ear translator?)
-  -You need to find an old wizard who will provide you with a material you need to fix your ship
-  -You need to gather other materials as you go
-    -You can build (or purchase?) robots to do resourse gathering for you (mining, etc.)
-  
-  Objectives:
-    -Find a dictionary on the planet so that your in-ear translator will work
-	-Collect parts to fix your ship
-	-Find the old wizard to get the special ingredient
-	
-***
+-Cards:
+	-Collect all 52 cards in the deck to win?
+	-Or just ~12 missing from your deck
+	-Find rare unique cards
 
 
 MECHANICS
--Top down ✓
--Automation
--Inventory?
--Multiplayer?
--
+-Top down
+-Inventory
+-Possible Weapons:
+	-Pea shooter
+	-Slingshot
+	-Bow and Arrow
+	-Lasso
+	-Boomerang
+
+

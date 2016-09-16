@@ -2,6 +2,7 @@
 #include "ApexDebugDraw.h"
 #include "ApexMain.h"
 #include "PhysicsActor.h"
+#include "ApexMath.h"
 
 #include <SFML\Graphics\VertexArray.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
@@ -32,11 +33,6 @@ void ApexDebugDraw::Destroy()
 {
 }
 
-inline sf::Vector2f ApexDebugDraw::b2Vec2ToSFVec2f(b2Vec2 vec)
-{
-	return sf::Vector2f(vec.x * PhysicsActor::SCALE, vec.y * PhysicsActor::SCALE);
-}
-
 inline sf::Color ApexDebugDraw::b2ColorToSFColor(b2Color col)
 {
 	return sf::Color(static_cast<sf::Uint8>(col.r * 255),
@@ -58,7 +54,7 @@ void ApexDebugDraw::DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const
 	m_Polygon.setPointCount(vertexCount);
 	for (int32 i = 0; i < vertexCount; ++i)
 	{
-		m_Polygon.setPoint(i, b2Vec2ToSFVec2f(vertices[i]));
+		m_Polygon.setPoint(i, ApexMath::b2Vec2ToSFVec2fS(vertices[i]));
 	}
 	m_Polygon.setFillColor(sf::Color::Transparent);
 	m_Polygon.setOutlineColor(b2ColorToSFColor(color));
@@ -71,7 +67,7 @@ void ApexDebugDraw::DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, 
 	m_Polygon.setPointCount(vertexCount);
 	for (int32 i = 0; i < vertexCount; ++i)
 	{
-		m_Polygon.setPoint(i, b2Vec2ToSFVec2f(vertices[i]));
+		m_Polygon.setPoint(i, ApexMath::b2Vec2ToSFVec2fS(vertices[i]));
 	}
 	m_Polygon.setFillColor(b2ColorToSFColor(color, 0.5f));
 	m_Polygon.setOutlineColor(b2ColorToSFColor(color));
@@ -84,7 +80,7 @@ void ApexDebugDraw::DrawCircle(const b2Vec2& center, float32 radius, const b2Col
 	const float scaledRadius = radius * PhysicsActor::SCALE;
 	m_Circle.setRadius(scaledRadius);
 	m_Circle.setOrigin(scaledRadius, scaledRadius);
-	m_Circle.setPosition(b2Vec2ToSFVec2f(center));
+	m_Circle.setPosition(ApexMath::b2Vec2ToSFVec2fS(center));
 	m_Circle.setOutlineColor(b2ColorToSFColor(color));
 	m_Circle.setFillColor(sf::Color::Transparent);
 
@@ -96,7 +92,7 @@ void ApexDebugDraw::DrawSolidCircle(const b2Vec2& center, float32 radius, const 
 	const float scaledRadius = radius * PhysicsActor::SCALE;
 	m_Circle.setRadius(scaledRadius);
 	m_Circle.setOrigin(scaledRadius, scaledRadius);
-	m_Circle.setPosition(b2Vec2ToSFVec2f(center));
+	m_Circle.setPosition(ApexMath::b2Vec2ToSFVec2fS(center));
 	m_Circle.setOutlineColor(b2ColorToSFColor(color));
 	m_Circle.setFillColor(b2ColorToSFColor(color, 0.5f));
 
@@ -108,8 +104,8 @@ void ApexDebugDraw::DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Colo
 	const sf::Color lineColor(b2ColorToSFColor(color));
 
 	sf::Vertex segment[2];
-	segment[0] = sf::Vertex(b2Vec2ToSFVec2f(p1), lineColor);
-	segment[1] = sf::Vertex(b2Vec2ToSFVec2f(p2), lineColor);
+	segment[0] = sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(p1), lineColor);
+	segment[1] = sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(p2), lineColor);
 
 	m_Target.draw(segment, 2, sf::Lines);
 }
@@ -120,14 +116,14 @@ void ApexDebugDraw::DrawTransform(const b2Transform& xf)
 
 	b2Vec2 xAxis = b2Vec2(xf.p + lineLength * xf.q.GetXAxis());
 	sf::Vertex redLine[2] = {
-		sf::Vertex(b2Vec2ToSFVec2f(xf.p), m_SFRed),
-		sf::Vertex(b2Vec2ToSFVec2f(xAxis), m_SFRed)
+		sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(xf.p), m_SFRed),
+		sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(xAxis), m_SFRed)
 	};
 
 	b2Vec2 yAxis = b2Vec2(xf.p + lineLength * xf.q.GetYAxis());
 	sf::Vertex greenLine[2] = {
-		sf::Vertex(b2Vec2ToSFVec2f(xf.p), m_SFGreen),
-		sf::Vertex(b2Vec2ToSFVec2f(yAxis), m_SFGreen)
+		sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(xf.p), m_SFGreen),
+		sf::Vertex(ApexMath::b2Vec2ToSFVec2fS(yAxis), m_SFGreen)
 	};
 
 	m_Target.draw(redLine, 2, sf::Lines);

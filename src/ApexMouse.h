@@ -13,9 +13,12 @@ public:
 	static bool IsButtonDown(sf::Mouse::Button button);
 	static bool IsButtonReleased(sf::Mouse::Button button);
 	static bool IsButtonPressed(sf::Mouse::Button button);
+	static bool MovedLastFrame();
+	static void SetMousePosLastFrame();
 
 private:
-	static bool buttonsdown[sf::Mouse::ButtonCount];
-	static bool buttonsdownLastFrame[sf::Mouse::ButtonCount];
-
+	static bool s_Buttonsdown[sf::Mouse::ButtonCount];
+	static bool s_ButtonsdownLastFrame[sf::Mouse::ButtonCount];
+	static bool s_MouseMovedLastFrame;
+	static sf::Vector2i s_MousePosLastFrame;
 };

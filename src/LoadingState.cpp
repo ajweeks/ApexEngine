@@ -119,7 +119,8 @@ void LoadingState::Tick(sf::Time elapsed)
 		m_BufferTime -= elapsed;
 		if (m_BufferTime <= sf::Time::Zero)
 		{
-			APEX->GetStateManager()->SetState(new MainMenuState());
+			MainMenuState* mainMenuState = new MainMenuState();
+			APEX->GetStateManager()->SetState(mainMenuState);
 			return;
 		}
 	} break;

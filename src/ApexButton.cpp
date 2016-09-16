@@ -20,12 +20,11 @@ ApexButton::ApexButton(float left, float top, float width, float height, std::st
 
 	m_StringOptions.push_back(text);
 	m_CurrentStringIndex = 0;
-	m_Text = sf::Text(m_StringOptions[m_CurrentStringIndex], APEX->FontOpenSans);
-	m_Text.setCharacterSize(characterSize);
+	m_Text = sf::Text(m_StringOptions[m_CurrentStringIndex], APEX->FontPixelFJ8, characterSize);
 	m_Text.setStyle(sf::Text::Bold);
 	m_Text.setPosition(left + width / 2.0f - 25 * text.length() / 2.0f, top + height / 2.0f - 24.0f);
 	m_TextColour = FONT_COLOR;
-	m_Text.setColor(m_TextColour);
+	m_Text.setFillColor(m_TextColour);
 }
 
 ApexButton::~ApexButton()
@@ -63,7 +62,7 @@ void ApexButton::SetFillColour(sf::Color fillColour)
 
 void ApexButton::SetTextColour(sf::Color textColour)
 {
-	m_Text.setColor(textColour);
+	m_Text.setFillColor(textColour);
 }
 
 bool ApexButton::IsDown() const
@@ -81,6 +80,9 @@ void ApexButton::SetString(size_t index, sf::String string)
 	assert(index >= 0 && index < m_StringOptions.size());
 	m_StringOptions[index] = string;
 	m_Text.setString(m_StringOptions[index]);
+	const sf::Vector2f pos = m_BoundingRect.getPosition();
+	const sf::Vector2f size = m_BoundingRect.getSize();
+	m_Text.setPosition(pos.x + size.x / 2.0f - 25 * string.getSize() / 2.0f, pos.y + size.y/ 2.0f - 24.0f);
 }
 
 void ApexButton::AddString(sf::String string)
@@ -101,6 +103,13 @@ sf::Vector2f ApexButton::GetPosition() const
 void ApexButton::SetShowingBackground(bool show)
 {
 	m_ShowBackground = show;
+}
+
+void ApexButton::SetActive(bool active)
+{
+	m_IsDown = active;
+	m_IsPressed = active;
+	ShowNextString();
 }
 
 void ApexButton::ClearInputs()
@@ -131,6 +140,24 @@ bool ApexButton::IsHovering() const
 	return m_Hovering;
 }
 
+void ApexButton::SetNeighbor(ApexButton* neighbor, Direction direction)
+{
+	m_Neighbors[int(direction)] = neighbor;
+}
+
+void ApexButton::SetNeighbors(ApexButton* up, ApexButton* down, ApexButton* left, ApexButton* right)
+{
+	m_Neighbors[int(Direction::UP)] = up;
+	m_Neighbors[int(Direction::DOWN)] = down;
+	m_Neighbors[int(Direction::LEFT)] = left;
+	m_Neighbors[int(Direction::RIGHT)] = right;
+}
+
+ApexButton* ApexButton::GetNeighbor(Direction direction)
+{
+	return m_Neighbors[int(direction)];
+}
+
 bool ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 {
 	if (m_Hovering && buttonEvent.button == sf::Mouse::Button::Left)
@@ -138,17 +165,22 @@ bool ApexButton::OnButtonPress(sf::Event::MouseButtonEvent buttonEvent)
 		if (!m_IsDown) m_IsPressed = true;
 		else m_IsPressed = false;
 		m_IsDown = true;
-
-		if (m_StringOptions.size() > 1)
-		{
-			++m_CurrentStringIndex;
-			m_CurrentStringIndex %= m_StringOptions.size();
-			m_Text.setString(m_StringOptions[m_CurrentStringIndex]);
-		}
+		
+		ShowNextString();
 
 		return false;
 	}
 	return true;
+}
+
+void ApexButton::ShowNextString()
+{
+	if (m_StringOptions.size() > 1)
+	{
+		++m_CurrentStringIndex;
+		m_CurrentStringIndex %= m_StringOptions.size();
+		m_Text.setString(m_StringOptions[m_CurrentStringIndex]);
+	}
 }
 
 void ApexButton::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)

@@ -17,7 +17,6 @@ public:
 	void Create();
 	void Destroy();
 
-	static sf::Vector2f b2Vec2ToSFVec2f(b2Vec2 vec);
 	static sf::Color b2ColorToSFColor(b2Color col);
 	static sf::Color b2ColorToSFColor(b2Color col, float percentage);
 

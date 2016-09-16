@@ -1,6 +1,10 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+
+#include <array>
 
 class ApexAudio
 {
@@ -8,7 +12,7 @@ public:
 	enum class Sound
 	{
 		GUN_FIRE, GUN_FIRE_EMPTY, GUN_RELOAD,
-		BOOP,
+		BOOP, BLIP,
 		TYPING_1, TYPING_2, TYPING_3,
 		COIN_PICKUP,
 
@@ -16,7 +20,7 @@ public:
 	};
 	enum class Music
 	{
-
+		A, // There needs to be at least one element in here to compile
 		_LAST_ELEMENT
 	};
 
@@ -46,7 +50,7 @@ private:
 	static void LoadSound(Sound sound, const std::string& filePath);
 	static void LoadMusicTrack(Music track, const std::string& filePath, bool loop);
 
-	static bool m_IsInitialized;
+	static bool s_IsInitialized;
 
 	struct ApexSoundEffect
 	{
@@ -54,7 +58,7 @@ private:
 		sf::Sound m_Sound;
 	};
 
-	static ApexSoundEffect m_SoundEffects[int(Sound::_LAST_ELEMENT)];
-	static sf::Music m_MusicTracks[int(Music::_LAST_ELEMENT)];
+	static std::array<ApexSoundEffect, int(Sound::_LAST_ELEMENT)> s_SoundEffects;
+	static std::array<sf::Music, int(Music::_LAST_ELEMENT)> s_MusicTracks;
 
 };

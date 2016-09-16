@@ -26,8 +26,8 @@ MainMenuState::MainMenuState()
 		ApexOutputDebugString("\n\n\t--Either couldn't find or couldn't compile vignette.frag--\n\n\n");
 	}
 	const sf::Vector2f windowSize = static_cast<sf::Vector2f>(APEX->GetWindowSize());
-	m_VignetteShader.setParameter("u_resolution", windowSize);
-	m_VignetteShader.setParameter("u_bounds", 0.0f, 0.0f, windowSize.x, windowSize.y);
+	m_VignetteShader.setUniform("u_resolution", windowSize);
+	m_VignetteShader.setUniform("u_bounds", sf::Glsl::Vec4(0.0f, 0.0f, windowSize.x, windowSize.y));
 
 	m_LogoSprite.setTexture(*TextureManager::GetTexture(TextureManager::LIQWIDICE_GAMES_LOGO_SCREEN));
 
@@ -51,23 +51,28 @@ void MainMenuState::Tick(sf::Time elapsed)
 	const float time = APEX->GetTimeElapsed().asSeconds();
 	const float x = (sin(time * 0.7658f) + 1.0f) / 2.0f;
 	const float y = (cos(512.25f + time * 1.31f) + 1.0f) / 2.0f;
-	m_VignetteShader.setParameter("u_center", x / 4.0f + 0.3f, y / 6.0f + 0.4f);
+	m_VignetteShader.setUniform("u_center", sf::Glsl::Vec2(x / 4.0f + 0.3f, y / 6.0f + 0.4f));
 
-	if (APEX->IsFadingOut())
+	if (m_FadingOutTo != FadingOutTo::NONE)
 	{
 		switch (m_FadingOutTo)
 		{
 		case FadingOutTo::GAME:
 		{
-			APEX->GetStateManager()->SetState(new GameState());
+			if (!APEX->IsFadingIn())
+			{
+				APEX->GetStateManager()->SetState(new GameState());
+			}
 			return;
 		} break;
 		case FadingOutTo::QUIT:
 		{
-			APEX->Quit();
-			return;
+			if (!APEX->IsFadingIn())
+			{
+				APEX->Quit();
+				return;
+			}
 		} break;
-		case FadingOutTo::NONE:
 		default:
 		{
 		} break;
@@ -79,14 +84,14 @@ void MainMenuState::Tick(sf::Time elapsed)
 		m_Buttons.Tick(elapsed);
 		if (m_Buttons.GetButton(int(Buttons::PLAY))->IsPressed())
 		{
-			APEX->StartFadeInOut();
+			APEX->StartFadeIn();
 			m_FadingOutTo = FadingOutTo::GAME;
 			return;
 		}
 
 		if (m_Buttons.GetButton(int(Buttons::QUIT))->IsPressed())
 		{
-			APEX->StartFadeInOut();
+			APEX->StartFadeIn();
 			m_FadingOutTo = FadingOutTo::QUIT;
 			return;
 		}

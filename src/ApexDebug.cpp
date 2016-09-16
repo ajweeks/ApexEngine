@@ -10,6 +10,8 @@
 
 #include <stdexcept>
 
+const sf::Color ApexDebug::FILL_COLOR = sf::Color(50, 55, 60, 165);
+
 ApexDebug::ApexDebug()
 {
 	m_PlayerElementStack = CreateCollapsibleElementStack("Player", sf::Vector2f(35, 35));
@@ -25,8 +27,8 @@ ApexDebug::ApexDebug()
 	else
 	{
 		// TODO: Call this every time the window size changes
-		m_BackgroundRectangleShader.setParameter("u_resolution", static_cast<sf::Vector2f>(APEX->GetWindowSize()));
-		m_BackgroundRectangleShader.setParameter("u_pos", m_PlayerElementStack->m_BackgroundRect.getPosition());
+		m_BackgroundRectangleShader.setUniform("u_resolution", static_cast<sf::Vector2f>(APEX->GetWindowSize()));
+		m_BackgroundRectangleShader.setUniform("u_pos", m_PlayerElementStack->m_BackgroundRect.getPosition());
 	}
 }
 
@@ -39,28 +41,18 @@ ApexDebug::~ApexDebug()
 void ApexDebug::Tick(sf::Time elapsed)
 {
 	m_Elapsed += elapsed;
-	if (!m_PlayerElementStack->m_CollapsibleElement->m_Collapsed)
+	if (!m_PlayerElementStack->m_CollapsibleElement->IsCollapsed())
 	{
 		BaseState* currentState = APEX->GetStateManager()->CurrentState();
 		if (currentState->GetType() == StateType::GAME)
 		{
-			World* world = ((GameState*)currentState)->GetWorld();
-			Player* player = world->GetPlayer();
+			World& world = ((GameState*)currentState)->GetWorld();
+			Player* player = world.GetPlayer();
 			std::string newPlayerPos = ApexMain::Vector2fToString(player->GetPosition());
 			m_PlayerPosElement->UpdateString(newPlayerPos);
 
 			std::string newPlayerVel = ApexMain::Vector2fToString(player->GetPhysicsActor()->GetLinearVelocity());
 			m_PlayerVelElement->UpdateString(newPlayerVel);
-
-			//float newGunDirRad = player->GetGun().GetDirection();
-			//if (m_PlayerGunDirectionElement->GetCurrentStringIndex() == 0)
-			//{
-			//	m_PlayerGunDirectionElement->UpdateString(std::to_string(newGunDirRad) + " rad");
-			//}
-			//else
-			//{
-			//	m_PlayerGunDirectionElement->UpdateString(std::to_string(newGunDirRad * 180.0f / 3.1415f) + " deg");
-			//}
 		}
 		UpdateBackgroundRect(m_PlayerElementStack);
 	}
@@ -68,7 +60,7 @@ void ApexDebug::Tick(sf::Time elapsed)
 	APEX->SetCursor(ApexCursor::NORMAL);
 	if (m_PlayerElementStack->m_CollapsibleElement->Tick(elapsed, this)) UpdateBackgroundRect(m_PlayerElementStack);
 
-	m_BackgroundRectangleShader.setParameter("u_size", m_PlayerElementStack->m_BackgroundRect.getSize());
+	m_BackgroundRectangleShader.setUniform("u_size", m_PlayerElementStack->m_BackgroundRect.getSize());
 }
 
 void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
@@ -79,7 +71,7 @@ void ApexDebug::UpdateBackgroundRect(CollapsibleElementStack* stack)
 	const float stackHeight = parentElement->GetStackHeight() + 20;
 	stack->m_BackgroundRect = sf::RectangleShape(sf::Vector2f(stackWidth, stackHeight));
 	stack->m_BackgroundRect.setPosition(pos);
-	stack->m_BackgroundRect.setFillColor(sf::Color(50, 55, 60, 135));
+	stack->m_BackgroundRect.setFillColor(FILL_COLOR);
 }
 
 void ApexDebug::Draw(sf::RenderTarget& target, sf::RenderStates states) const

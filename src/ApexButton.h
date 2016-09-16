@@ -1,11 +1,14 @@
 #pragma once
 
 #include "ApexMouseListener.h"
+#include "enumerations.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\Text.hpp>
+
+#include <array>
 
 class ApexButton : public ApexMouseListener
 {
@@ -30,16 +33,23 @@ public:
 	bool IsPressed() const;
 	void SetString(size_t index, sf::String string);
 	void AddString(sf::String string);
+	void ShowNextString();
+
 	sf::String GetCurrentString() const;
 	sf::Vector2f GetPosition() const;
 
 	void SetShowingBackground(bool show);
 
+	void SetActive(bool active);
 	void ClearInputs();
 	sf::RectangleShape GetRectangle() const;
 
 	bool IsHovering() const;
-	
+
+	void SetNeighbor(ApexButton* neighbor, Direction direction);
+	void SetNeighbors(ApexButton* up, ApexButton* down, ApexButton* left, ApexButton* right);
+	ApexButton* GetNeighbor(Direction direction);
+
 	virtual bool OnButtonPress(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent);
 	virtual void OnScroll(sf::Event::MouseWheelScrollEvent scrollEvent);
@@ -54,6 +64,8 @@ private:
 	sf::Text m_Text;
 	std::vector<sf::String> m_StringOptions; // Typically just one string, but can hold multiple and cycle through on click
 	int m_CurrentStringIndex;
+
+	std::array<ApexButton*, 4> m_Neighbors; // Used for keyboard/controller navigation
 
 	bool m_Hovering = false;
 	bool m_IsDown = false;
