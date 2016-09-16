@@ -15,6 +15,7 @@
 #include "LightManager.h"
 #include "Bed.h"
 #include "Coin.h"
+#include "SolidBlock.h"
 
 #include <JSON\json.hpp>
 
@@ -259,6 +260,11 @@ void Map::ReadJSONFile()
 					{
 						Coin* coin = new Coin(m_World, this, topLeft);
 						m_Items.push_back(coin);
+					}
+					else if (StringBeginsWith(stringID, "solid_block", ex))
+					{
+						SolidBlock* solidBlock = new SolidBlock(m_World, *this, topLeft);
+						m_Entites.push_back(solidBlock);
 					}
 				}
 			}
