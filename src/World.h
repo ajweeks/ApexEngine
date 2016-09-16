@@ -22,7 +22,7 @@
 #include <JSON\json.hpp>
 
 class Game;
-class ApexPauseScreen;
+class PauseScreen;
 class Minimap;
 class HUD;
 class Entity;
@@ -120,7 +120,7 @@ private:
 
 	ApexParticleManager m_ParticleManager;
 	BulletManager* m_BulletManager = nullptr;
-	ApexPauseScreen* m_PauseScreen = nullptr;
+	PauseScreen* m_PauseScreen = nullptr;
 
 	struct SpeechElement
 	{

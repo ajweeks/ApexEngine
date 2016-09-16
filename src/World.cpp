@@ -5,7 +5,7 @@
 #include "ApexKeyboard.h"
 #include "Camera.h"
 #include "ApexAudio.h"
-#include "ApexPauseScreen.h"
+#include "PauseScreen.h"
 #include "PhysicsActor.h"
 #include "Minimap.h"
 #include "Mob.h"
@@ -47,7 +47,7 @@ World::World(int worldIndex) :
 	const float aspectRatio = float(windowSize.x / windowSize.y);
 	m_Camera = new Camera(sf::Vector2f(float(windowSize.x), float(windowSize.y)));
 	m_Camera->SetZoom(2.0f);
-	m_PauseScreen = new ApexPauseScreen(this);
+	m_PauseScreen = new PauseScreen(*this);
 
 	const float minimapWidth = 200.0f;
 	m_Minimap = new Minimap(this, sf::Vector2f(minimapWidth, minimapWidth / aspectRatio));

@@ -1,5 +1,5 @@
 
-#include "ApexPauseScreen.h"
+#include "PauseScreen.h"
 #include "World.h"
 #include "GameState.h"
 #include "ApexMain.h"
@@ -8,13 +8,22 @@
 #include "ApexButton.h"
 #include "ApexSlider.h"
 #include "ApexAudio.h"
+#include "Map.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 
-ApexPauseScreen::ApexPauseScreen(World* world) :
-	ApexKeyListener(),
+#include <JSON\json.hpp>
+
+#include <fstream>
+
+using nlohmann::json;
+
+PauseScreen::PauseScreen(World& world) :
+	ApexKeyListener(0),
 	m_World(world)
 {
+	ReadOptionsFromFile();
+
 	float width = 300.0f;
 	float height = 120.0f;
 	sf::Vector2u windowSize = APEX->GetWindowSize();
@@ -28,31 +37,55 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 	const sf::Font& font = APEX->FontPixelFJ8;
 
 	// Main screen
-	ApexButton* resumeButton = new ApexButton(left, top, width, height, "Resume");
+	ApexButton* resumeButton = new ApexButton(left, top, width, height, "Resume", fontSize);
 	m_MainScreenButtonList.AddButton(resumeButton, int(MainScreenButtons::RESUME));
 	top += dy;
-	ApexButton* optionsButton = new ApexButton(left, top, width, height, "Options");
+	ApexButton* optionsButton = new ApexButton(left, top, width, height, "Options", fontSize);
 	m_MainScreenButtonList.AddButton(optionsButton, int(MainScreenButtons::OPTIONS));
 	top += dy;
-	ApexButton* mainMenuButton = new ApexButton(left, top, width, height, "Main Menu");
+	ApexButton* mainMenuButton = new ApexButton(left, top, width, height, "Main Menu", fontSize);
 	m_MainScreenButtonList.AddButton(mainMenuButton, int(MainScreenButtons::MAIN_MENU));
 
 	// Options screen
+	initialTop = 250.0f;
 	top = initialTop;
-	ApexButton* fullscreenButton = new ApexButton(left, top, width, height, "Fullscreen");
+	ApexButton* fullscreenButton = new ApexButton(left, top, width, height, "Fullscreen", fontSize);
 	fullscreenButton->AddString("Windowed");
+	if (!m_Options.fullscreen)
+	{
+		fullscreenButton->ShowNextString();
+	}
 	m_OptionsButtonList.AddButton(fullscreenButton, int(OptionsScreenButtons::FULLSCREEN));
 
 	top += dy;
+	ApexButton* enableVSyncButton = new ApexButton(left, top, width, height, "Use V-Sync: Off", fontSize);
+	enableVSyncButton->AddString("Use V-Sync: On");
+	if (m_Options.useVSync)
+	{
+		enableVSyncButton->ShowNextString();
+	}
+	m_OptionsButtonList.AddButton(enableVSyncButton, int(OptionsScreenButtons::ENABLE_V_SYNC));
+
+	top += dy;
+	ApexButton* renderLightingButton = new ApexButton(left, top, width, height, "Lighting: Off", fontSize);
+	renderLightingButton->AddString("Lighting: On");
+	if (m_Options.renderLighting)
+	{
+		renderLightingButton->ShowNextString();
+	}
+	m_OptionsButtonList.AddButton(renderLightingButton, int(OptionsScreenButtons::RENDER_LIGHTING));
+
+	top += dy;
 	const float bindingsButtonWidth = width * 2.5f;
-	ApexButton* keybindingsButton = new ApexButton(left + (width * 0.5f - bindingsButtonWidth * 0.5f), top, bindingsButtonWidth, height, "Keyboard bindings");
+	ApexButton* keybindingsButton = new ApexButton(left + (width * 0.5f - bindingsButtonWidth * 0.5f), top, 
+		bindingsButtonWidth, height, "Keyboard bindings", fontSize);
 	m_OptionsButtonList.AddButton(keybindingsButton, int(OptionsScreenButtons::KEYBINDINGS));
 
 	top += dy;
 	m_MusicVolumeText = sf::Text("Music Volume:", font, fontSize);
-	m_MusicVolumeText.setColor(sf::Color(210, 210, 210));
+	m_MusicVolumeText.setFillColor(sf::Color(210, 210, 210));
 	m_MusicVolumeText.setPosition(left, top);
-
+	
 	const float volumeBarWidth = width * 1.2f;
 	const float volumeBarHeight = height * 0.25f;
 	top += height * 0.5f;
@@ -61,7 +94,7 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 
 	top += height * 0.8f;
 	m_SoundVolumeText = sf::Text("Sound Volume:", font, fontSize);
-	m_SoundVolumeText.setColor(sf::Color(210, 210, 210));
+	m_SoundVolumeText.setFillColor(sf::Color(210, 210, 210));
 	m_SoundVolumeText.setPosition(left, top);
 
 	top += height * 0.5f;
@@ -76,10 +109,11 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 	const float labelYO = 25.0f;
 	const float maxY = windowSize.y - smallButtonHeight * 2.0f;
 	dy = smallButtonHeight * 1.5f;
-	initialTop = 90.0f;
+	initialTop = smallButtonHeight;
 	top = initialTop;
 	left = 100.0f;
-	for (size_t i = 0; i < ApexKeyboard::GetNumberOfKeys(); i++)
+	const size_t numOfKeys = ApexKeyboard::GetNumberOfKeys();
+	for (size_t i = 0; i < numOfKeys; i++)
 	{
 		Keybinding keybinding;
 
@@ -90,7 +124,7 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 		keybinding.button = new ApexButton(left + buttonXO, top, smallButtonWidth, smallButtonHeight, 
 			ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)), 42);
 		
-		m_Keybindings.push_back(keybinding);
+		m_Options.keybindings.push_back(keybinding);
 
 		top += dy;
 
@@ -103,22 +137,22 @@ ApexPauseScreen::ApexPauseScreen(World* world) :
 
 	m_KeybindingAssigningIndex = -1;
 
-	m_CurrentScreenShowing = Screen::MAIN;
+	SetScreenShowing(Screen::NONE);
 }
 
-ApexPauseScreen::~ApexPauseScreen()
+PauseScreen::~PauseScreen()
 {
 	delete m_MusicVolumeSlider;
 	delete m_SoundVolumeSlider;
-
-	for (size_t i = 0; i < m_Keybindings.size(); i++)
+	
+	for (size_t i = 0; i < m_Options.keybindings.size(); i++)
 	{
-		delete m_Keybindings[i].button;
+		delete m_Options.keybindings[i].button;
 	}
-	m_Keybindings.clear();
+	m_Options.keybindings.clear();
 }
 
-void ApexPauseScreen::Tick(sf::Time elapsed)
+void PauseScreen::Tick(sf::Time elapsed)
 {
 	switch (m_CurrentScreenShowing)
 	{
@@ -127,7 +161,7 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 		m_MainScreenButtonList.Tick(elapsed);
 		if (m_MainScreenButtonList.GetButton(int(MainScreenButtons::RESUME))->IsPressed())
 		{
-			m_World->TogglePaused(true);
+			m_World.TogglePaused(true);
 			return;
 		}
 
@@ -150,8 +184,24 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 		{
 			m_OptionsButtonList.GetButton(int(OptionsScreenButtons::FULLSCREEN))->ClearInputs();
 			ApexMouse::Clear();
-			SetScreenShowing(Screen::MAIN);
 			APEX->ToggleWindowFullscreen();
+			m_Options.fullscreen = APEX->IsWindowFullscreen();
+			return;
+		}
+		if (m_OptionsButtonList.GetButton(int(OptionsScreenButtons::ENABLE_V_SYNC))->IsPressed())
+		{
+			m_OptionsButtonList.GetButton(int(OptionsScreenButtons::ENABLE_V_SYNC))->ClearInputs();
+			ApexMouse::Clear();
+			APEX->ToggleVSyncEnabled();
+			m_Options.useVSync = APEX->IsVSyncEnabled();
+			return;
+		}
+		if (m_OptionsButtonList.GetButton(int(OptionsScreenButtons::RENDER_LIGHTING))->IsPressed())
+		{
+			m_OptionsButtonList.GetButton(int(OptionsScreenButtons::RENDER_LIGHTING))->ClearInputs();
+			ApexMouse::Clear();
+			m_World.ToggleLightingEnabled();
+			m_Options.renderLighting = m_World.IsLightingEnabled();
 			return;
 		}
 
@@ -187,10 +237,10 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 	} break;
 	case Screen::KEYBINDINGS:
 	{
-		for (size_t i = 0; i < m_Keybindings.size(); i++)
+		for (size_t i = 0; i < m_Options.keybindings.size(); i++)
 		{
-			m_Keybindings[i].button->Tick(elapsed);
-			if (m_Keybindings[i].button->IsDown())
+			m_Options.keybindings[i].button->Tick(elapsed);
+			if (m_Options.keybindings[i].button->IsDown())
 			{
 				m_KeybindingAssigningIndex = i;
 				return;
@@ -200,7 +250,7 @@ void ApexPauseScreen::Tick(sf::Time elapsed)
 	}
 }
 
-void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
+void PauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 {
 	const sf::Vector2f renderTargetSize = static_cast<sf::Vector2f>(target.getSize());
 	sf::RectangleShape bgRect(renderTargetSize);
@@ -225,10 +275,10 @@ void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 	} break;
 	case Screen::KEYBINDINGS:
 	{
-		for (size_t i = 0; i < m_Keybindings.size(); i++)
+		for (size_t i = 0; i < m_Options.keybindings.size(); i++)
 		{
-			target.draw(m_Keybindings[i].label, states);
-			m_Keybindings[i].button->Draw(target, states);
+			target.draw(m_Options.keybindings[i].label, states);
+			m_Options.keybindings[i].button->Draw(target, states);
 		}
 
 		if (m_KeybindingAssigningIndex != -1)
@@ -243,33 +293,38 @@ void ApexPauseScreen::Draw(sf::RenderTarget& target, sf::RenderStates states)
 
 			int vkCode;
 			ApexKeyboard::GetVKCodeFromKey(ApexKeyboard::PAUSE, vkCode);
-			sf::Text text("Press any key to\nassign to " + ApexKeyboard::GetKeyName(m_Keybindings[m_KeybindingAssigningIndex].key) + 
+			sf::Text text("Press any key to\nassign to " + ApexKeyboard::GetKeyName(m_Options.keybindings[m_KeybindingAssigningIndex].key) +
 			"\n(" + ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)) + " to cancel)", APEX->FontPixelFJ8);
 			text.setPosition(renderTargetSize.x / 2.0f - 240, renderTargetSize.y / 2.0f + 20);
-			text.setColor(sf::Color::Black);
+			text.setFillColor(sf::Color::Black);
 			target.draw(text, states);
 		}
 	} break;
 	}
 }
 
-void ApexPauseScreen::SetScreenShowing(Screen screen)
+void PauseScreen::SetScreenShowing(Screen screen)
 {
 	m_CurrentScreenShowing = screen;
+	m_MainScreenButtonList.SetActive(screen == Screen::MAIN);
+	m_OptionsButtonList.SetActive(screen == Screen::OPTIONS);
 
-	m_MainScreenButtonList.GetButton(int(MainScreenButtons::RESUME))->ClearInputs();
-	m_MainScreenButtonList.GetButton(int(MainScreenButtons::OPTIONS))->ClearInputs();
-	m_MainScreenButtonList.GetButton(int(MainScreenButtons::MAIN_MENU))->ClearInputs();
-	m_OptionsButtonList.GetButton(int(OptionsScreenButtons::FULLSCREEN))->ClearInputs();
-	m_OptionsButtonList.GetButton(int(OptionsScreenButtons::KEYBINDINGS))->ClearInputs();
-
-	for (size_t i = 0; i < m_Keybindings.size(); i++)
+	for (size_t i = 0; i < int(MainScreenButtons::_LAST_ELEMENT); i++)
 	{
-		m_Keybindings[i].button->ClearInputs();
+		m_MainScreenButtonList.GetButton(i)->ClearInputs();
+	}
+	for (size_t i = 0; i < int(OptionsScreenButtons::_LAST_ELEMENT); i++)
+	{
+		m_OptionsButtonList.GetButton(i)->ClearInputs();
+	}
+
+	for (size_t i = 0; i < m_Options.keybindings.size(); i++)
+	{
+		m_Options.keybindings[i].button->ClearInputs();
 	}
 }
 
-bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
+bool PauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 {
 	if (keyPressed)
 	{
@@ -281,7 +336,7 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 			{
 			case ApexKeyboard::PAUSE:
 			{
-				m_World->TogglePaused(true);
+				m_World.TogglePaused(true);
 				return true;
 			} break;
 			}
@@ -292,6 +347,7 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 			{
 			case ApexKeyboard::PAUSE:
 			{
+				SaveOptionsToFile();
 				SetScreenShowing(Screen::MAIN);
 				return true;
 			} break;
@@ -310,11 +366,11 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 					int vkCode;
 					if (ApexKeyboard::GetVKCodeFromKey(key, vkCode))
 					{
-						for (size_t i = 0; i < m_Keybindings.size(); i++)
+						for (size_t i = 0; i < m_Options.keybindings.size(); i++)
 						{
-							if (m_Keybindings[i].key == key)
+							if (m_Options.keybindings[i].key == key)
 							{
-								AssignKeybinding(m_Keybindings[i], vkCode);
+								AssignKeybinding(m_Options.keybindings[i], vkCode);
 								return true;
 							}
 						}
@@ -334,27 +390,103 @@ bool ApexPauseScreen::OnKeyPress(ApexKeyboard::Key key, bool keyPressed)
 				}
 			}
 		} break;
+		case Screen::NONE:
+		default:
+		{
+		} break;
 		}
 	}
 	return false;
 }
 
-void ApexPauseScreen::OnUnmappedKeyPress(sf::Event::KeyEvent event)
+void PauseScreen::OnUnmappedKeyPress(sf::Event::KeyEvent event)
 {
 	if (m_KeybindingAssigningIndex != -1)
 	{
-		AssignKeybinding(m_Keybindings[m_KeybindingAssigningIndex], event.code);
+		AssignKeybinding(m_Options.keybindings[m_KeybindingAssigningIndex], event.code);
 	}
 }
 
-void ApexPauseScreen::OnKeyRelease(ApexKeyboard::Key key)
+void PauseScreen::OnKeyRelease(ApexKeyboard::Key key)
 {
 }
 
-void ApexPauseScreen::AssignKeybinding(Keybinding& keybinding, int vkCode)
+void PauseScreen::AssignKeybinding(Keybinding& keybinding, int vkCode)
 {
 	ApexKeyboard::MapKey(keybinding.key, vkCode);
 
 	keybinding.button->SetString(0, ApexKeyboard::GetSFKeyName(sf::Keyboard::Key(vkCode)));
 	m_KeybindingAssigningIndex = -1;
 }
+
+void PauseScreen::SaveOptionsToFile()
+{
+	std::ofstream fileOutStream;
+	const std::string filePath = "resources/options.json";
+	std::stringstream stringStream;
+
+	fileOutStream.open(filePath);
+
+	if (fileOutStream)
+	{
+		json fileJson;
+
+		// TODO: Store fewer floating point digits
+		fileJson["options"]["fullscreen"] = m_Options.fullscreen;
+		fileJson["options"]["useVSync"] = m_Options.useVSync;
+		fileJson["options"]["renderLighting"] = m_Options.renderLighting;
+		fileJson["options"]["musicVolume"] = m_Options.musicVolume;
+		fileJson["options"]["soundVolume"] = m_Options.soundVolume;
+		
+		fileOutStream << std::setw(4) << fileJson;
+		fileOutStream.close();
+	}
+}
+
+template<typename T>
+T PauseScreen::FindOption(const json& options, const std::string& option)
+{
+	if (options.find(option) != options.end())
+	{
+		return options[option].get<T>();
+	}
+	return T();
+}
+void PauseScreen::ReadOptionsFromFile()
+{
+	const std::string filePath = "resources/options.json";
+	std::ifstream fileInStream;
+	std::stringstream stringStream;
+
+	fileInStream.open(filePath);
+
+	if (fileInStream)
+	{
+		std::string line;
+		while (fileInStream.eof() == false)
+		{
+			std::getline(fileInStream, line);
+			stringStream << line;
+		}
+		fileInStream.close();
+
+		if (!stringStream.str().empty())
+		{
+			json fileJson = json::parse(stringStream.str());
+
+			m_Options = {};
+			m_Options.fullscreen = FindOption<bool>(fileJson["options"], "fullscreen");
+			m_Options.useVSync = FindOption<bool>(fileJson["options"], "useVSync");
+			m_Options.renderLighting = FindOption<bool>(fileJson["options"], "renderLighting");
+			m_Options.musicVolume = FindOption<float>(fileJson["options"], "musicVolume");
+			m_Options.soundVolume = FindOption<float>(fileJson["options"], "soundVolume");
+
+			APEX->SetWindowFullscreen(m_Options.fullscreen);
+			APEX->SetVSyncEnabled(m_Options.useVSync);
+			m_World.SetLightingEnabled(m_Options.renderLighting);
+			ApexAudio::SetAllSoundsVolume(m_Options.soundVolume);
+			ApexAudio::SetAllMusicVolume(m_Options.musicVolume);
+		}
+	}
+}
+
