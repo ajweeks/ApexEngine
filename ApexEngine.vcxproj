@@ -89,9 +89,10 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include;E:\OneDrive\Code\C++\ApexEngine\ApexEngine\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <ProgramDataBaseFileName>$(OutDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -99,6 +100,9 @@
       <AdditionalLibraryDirectories>C:\Libraries\SFML-2.4.0\lib;C:\Libraries\Box2D\Box2D\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>Box2DDebug.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;kernel32.lib;user32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -124,7 +128,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include;E:\OneDrive\Code\C++\ApexEngine\ApexEngine\include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -155,142 +159,82 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AmmoDrop.cpp" />
-    <ClCompile Include="src\ApexAudio.cpp" />
-    <ClCompile Include="src\ApexButton.cpp" />
-    <ClCompile Include="src\ApexButtonList.cpp" />
-    <ClCompile Include="src\ApexContactListener.cpp" />
-    <ClCompile Include="src\ApexDebug.cpp" />
-    <ClCompile Include="src\ApexDebugDraw.cpp" />
-    <ClCompile Include="src\ApexKeyboard.cpp" />
-    <ClCompile Include="src\ApexKeyListener.cpp" />
-    <ClCompile Include="src\ApexMain.cpp" />
-    <ClCompile Include="src\ApexMouse.cpp" />
-    <ClCompile Include="src\ApexMouseListener.cpp" />
-    <ClCompile Include="src\ApexNPC.cpp" />
-    <ClCompile Include="src\ApexParticle.cpp" />
-    <ClCompile Include="src\ApexParticleManager.cpp" />
-    <ClCompile Include="src\PauseScreen.cpp" />
-    <ClCompile Include="src\ApexSlider.cpp" />
-    <ClCompile Include="src\ApexSpriteSheet.cpp" />
-    <ClCompile Include="src\ApexTransition.cpp" />
-    <ClCompile Include="src\ApexWindowListener.cpp" />
-    <ClCompile Include="src\BaseState.cpp" />
-    <ClCompile Include="src\Bed.cpp" />
-    <ClCompile Include="src\Building.cpp" />
-    <ClCompile Include="src\Bullet.cpp" />
-    <ClCompile Include="src\BulletManager.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Coin.cpp" />
-    <ClCompile Include="src\CollapsibleElement.cpp" />
-    <ClCompile Include="src\ColorTransition.cpp" />
-    <ClCompile Include="src\DustParticle.cpp" />
-    <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\ExitSensor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="src\FloatTransition.cpp" />
-    <ClCompile Include="src\GameState.cpp" />
-    <ClCompile Include="src\Gun.cpp" />
-    <ClCompile Include="src\HUD.cpp" />
-    <ClCompile Include="src\IntTransition.cpp" />
-    <ClCompile Include="src\Item.cpp" />
-    <ClCompile Include="src\Layer.cpp" />
-    <ClCompile Include="src\LightManager.cpp" />
-    <ClCompile Include="src\LoadingState.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\MainMenuState.cpp" />
-    <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\Minimap.cpp" />
-    <ClCompile Include="src\Mob.cpp" />
-    <ClCompile Include="src\ParticleEmitter.cpp" />
-    <ClCompile Include="src\PhysicsActor.cpp" />
-    <ClCompile Include="src\PhysicsActorManager.cpp" />
-    <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="src\Projectile.cpp" />
-    <ClCompile Include="src\Sheep.cpp" />
-    <ClCompile Include="src\SolidBlock.cpp" />
-    <ClCompile Include="src\StateManager.cpp" />
-    <ClCompile Include="src\TextureManager.cpp" />
-    <ClCompile Include="src\Tile.cpp" />
-    <ClCompile Include="src\TransformableTransition.cpp" />
-    <ClCompile Include="src\TransitionChain.cpp" />
-    <ClCompile Include="src\Vector2fTransition.cpp" />
-    <ClCompile Include="src\World.cpp" />
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="resources\level\00\tiles.json" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AmmoDrop.h" />
-    <ClInclude Include="src\ApexAudio.h" />
-    <ClInclude Include="src\ApexButton.h" />
-    <ClInclude Include="src\ApexButtonList.h" />
-    <ClInclude Include="src\ApexContact.h" />
-    <ClInclude Include="src\ApexContactListener.h" />
-    <ClInclude Include="src\ApexDebug.h" />
-    <ClInclude Include="src\ApexDebugDraw.h" />
-    <ClInclude Include="src\ApexKeyboard.h" />
-    <ClInclude Include="src\ApexKeyListener.h" />
-    <ClInclude Include="src\ApexMain.h" />
-    <ClInclude Include="src\ApexMath.h" />
-    <ClInclude Include="src\ApexMouse.h" />
-    <ClInclude Include="src\ApexMouseListener.h" />
-    <ClInclude Include="src\ApexNPC.h" />
-    <ClInclude Include="src\ApexParticle.h" />
-    <ClInclude Include="src\ApexParticleManager.h" />
-    <ClInclude Include="src\PauseScreen.h" />
-    <ClInclude Include="src\ApexSlider.h" />
-    <ClInclude Include="src\ApexSpriteSheet.h" />
-    <ClInclude Include="src\ApexTransition.h" />
-    <ClInclude Include="src\ApexWindowListener.h" />
-    <ClInclude Include="src\BaseState.h" />
-    <ClInclude Include="src\Bed.h" />
-    <ClInclude Include="src\Building.h" />
-    <ClInclude Include="src\Bullet.h" />
-    <ClInclude Include="src\BulletManager.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Coin.h" />
-    <ClInclude Include="src\CollapsibleElement.h" />
-    <ClInclude Include="src\ColorTransition.h" />
-    <ClInclude Include="src\DustParticle.h" />
-    <ClInclude Include="src\Entity.h" />
-    <ClInclude Include="src\enumerations.h" />
-    <ClInclude Include="src\ExitSensor.h">
+    <ClInclude Include="EmptyGame.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\FloatTransition.h" />
-    <ClInclude Include="src\GameState.h" />
-    <ClInclude Include="src\Gun.h" />
-    <ClInclude Include="src\HUD.h" />
-    <ClInclude Include="src\Interactable.h" />
-    <ClInclude Include="src\IntTransition.h" />
-    <ClInclude Include="src\Item.h" />
-    <ClInclude Include="src\Layer.h" />
-    <ClInclude Include="src\LightManager.h" />
-    <ClInclude Include="src\LoadingState.h" />
-    <ClInclude Include="src\logo.h" />
-    <ClInclude Include="src\MainMenuState.h" />
-    <ClInclude Include="src\Map.h" />
-    <ClInclude Include="src\Minimap.h" />
-    <ClInclude Include="src\Mob.h" />
-    <ClInclude Include="src\ParticleEmitter.h" />
-    <ClInclude Include="src\PhysicsActor.h" />
-    <ClInclude Include="src\PhysicsActorManager.h" />
-    <ClInclude Include="src\Player.h" />
-    <ClInclude Include="src\Projectile.h" />
-    <ClInclude Include="src\Sheep.h" />
-    <ClInclude Include="src\SolidBlock.h" />
-    <ClInclude Include="src\StateManager.h" />
-    <ClInclude Include="src\TextureManager.h" />
-    <ClInclude Include="src\Tile.h" />
-    <ClInclude Include="src\TileSet.h" />
-    <ClInclude Include="src\TransformableTransition.h" />
-    <ClInclude Include="src\TransitionChain.h" />
-    <ClInclude Include="src\Vector2fTransition.h" />
-    <ClInclude Include="src\World.h" />
+    <ClInclude Include="include\APEX\AbstractGame.h" />
+    <ClInclude Include="include\APEX\Graphics\DebugDraw.h" />
+    <ClInclude Include="include\APEX\Math.h" />
+    <ClInclude Include="include\APEX\WindowListener.h" />
+    <ClInclude Include="include\APEX\enumerations.h" />
+    <ClInclude Include="include\APEX\ApexMain.h" />
+    <ClInclude Include="include\APEX\Graphics\Button.h" />
+    <ClInclude Include="include\APEX\Graphics\ButtonList.h" />
+    <ClInclude Include="include\APEX\Graphics\Slider.h" />
+    <ClInclude Include="include\APEX\Graphics\SpriteSheet.h" />
+    <ClInclude Include="include\APEX\Graphics\Particle\Particle.h" />
+    <ClInclude Include="include\APEX\Graphics\Particle\ParticleManager.h" />
+    <ClInclude Include="include\APEX\Graphics\TextureManager.h" />
+    <ClInclude Include="include\APEX\IO\Audio.h" />
+    <ClInclude Include="include\APEX\IO\Keyboard.h" />
+    <ClInclude Include="include\APEX\IO\KeyListener.h" />
+    <ClInclude Include="include\APEX\IO\Mouse.h" />
+    <ClInclude Include="include\APEX\IO\MouseListener.h" />
+    <ClInclude Include="include\APEX\logo.h" />
+    <ClInclude Include="include\APEX\State\BaseState.h" />
+    <ClInclude Include="include\APEX\State\StateManager.h" />
+    <ClInclude Include="include\APEX\Transition\Transition.h" />
+    <ClInclude Include="include\APEX\Transition\ColorTransition.h" />
+    <ClInclude Include="include\APEX\Transition\FloatTransition.h" />
+    <ClInclude Include="include\APEX\Transition\IntTransition.h" />
+    <ClInclude Include="include\APEX\Transition\TransformableTransition.h" />
+    <ClInclude Include="include\APEX\Transition\TransitionChain.h" />
+    <ClInclude Include="include\APEX\Transition\Vector2fTransition.h" />
+    <ClInclude Include="include\APEX\World\Physics\Contact.h" />
+    <ClInclude Include="include\APEX\World\Physics\ContactListener.h" />
+    <ClInclude Include="include\APEX\World\Physics\PhysicsActor.h" />
+    <ClInclude Include="include\APEX\World\Physics\PhysicsActorManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\level\00\tiles.json" />
+    <ClCompile Include="EmptyGame.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="src\APEX\AbstractGame.cpp" />
+    <ClCompile Include="src\APEX\Graphics\DebugDraw.cpp" />
+    <ClCompile Include="src\APEX\Physics\ContactListener.cpp" />
+    <ClCompile Include="src\APEX\Physics\PhysicsActor.cpp" />
+    <ClCompile Include="src\APEX\Physics\PhysicsActorManager.cpp" />
+    <ClCompile Include="src\APEX\WindowListener.cpp" />
+    <ClCompile Include="src\APEX\ApexMain.cpp" />
+    <ClCompile Include="src\APEX\Graphics\Button.cpp" />
+    <ClCompile Include="src\APEX\Graphics\ButtonList.cpp" />
+    <ClCompile Include="src\APEX\Graphics\Slider.cpp" />
+    <ClCompile Include="src\APEX\Graphics\SpriteSheet.cpp" />
+    <ClCompile Include="src\APEX\Graphics\Particle\Particle.cpp" />
+    <ClCompile Include="src\APEX\Graphics\Particle\ParticleManager.cpp" />
+    <ClCompile Include="src\APEX\Graphics\TextureManager.cpp" />
+    <ClCompile Include="src\APEX\IO\Audio.cpp" />
+    <ClCompile Include="src\APEX\IO\Keyboard.cpp" />
+    <ClCompile Include="src\APEX\IO\KeyListener.cpp" />
+    <ClCompile Include="src\APEX\IO\Mouse.cpp" />
+    <ClCompile Include="src\APEX\IO\MouseListener.cpp" />
+    <ClCompile Include="src\APEX\main.cpp" />
+    <ClCompile Include="src\APEX\State\BaseState.cpp" />
+    <ClCompile Include="src\APEX\State\StateManager.cpp" />
+    <ClCompile Include="src\APEX\Transition\Transition.cpp" />
+    <ClCompile Include="src\APEX\Transition\ColorTransition.cpp" />
+    <ClCompile Include="src\APEX\Transition\FloatTransition.cpp" />
+    <ClCompile Include="src\APEX\Transition\IntTransition.cpp" />
+    <ClCompile Include="src\APEX\Transition\TransformableTransition.cpp" />
+    <ClCompile Include="src\APEX\Transition\TransitionChain.cpp" />
+    <ClCompile Include="src\APEX\Transition\Vector2fTransition.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
