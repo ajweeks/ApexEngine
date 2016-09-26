@@ -6,9 +6,10 @@
 
 namespace apex
 {
-	BaseState::BaseState(int index) :
+	BaseState::BaseState(int index, StateManager& stateManager) :
 		KeyListener(),
-		m_Index(index)
+		m_Index(index),
+		m_StateManager(stateManager)
 	{
 	}
 
@@ -28,5 +29,10 @@ namespace apex
 	int BaseState::GetIndex() const
 	{
 		return m_Index;
+	}
+
+	StateManager& BaseState::GetStateManager()
+	{
+		return m_StateManager;
 	}
 } // namespace apex

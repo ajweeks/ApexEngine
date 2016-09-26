@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML\System\Time.hpp>
 #include <SFML\Window\Mouse.hpp>
 
 namespace apex
@@ -10,18 +11,25 @@ namespace apex
 		Mouse();
 		virtual ~Mouse();
 
-		static void Tick();
+		static void Tick(sf::Time elapsed);
 		static void Clear(); // Forget all inputs
 		static bool IsButtonDown(sf::Mouse::Button button);
+		static float GetButtonDownTime(sf::Mouse::Button button);
 		static bool IsButtonReleased(sf::Mouse::Button button);
 		static bool IsButtonPressed(sf::Mouse::Button button);
+
 		static bool MovedLastFrame();
-		static void SetMousePosLastFrame();
+		static sf::Vector2i GetMovementLastFrame();
+		static sf::Vector2i GetDraggedVector();
+		static sf::Vector2i GetDragStartPos();
+		static void SetPosLastFrame();
 
 	private:
-		static bool s_Buttonsdown[sf::Mouse::ButtonCount];
+		static float s_Buttonsdown[sf::Mouse::ButtonCount];
 		static bool s_ButtonsdownLastFrame[sf::Mouse::ButtonCount];
-		static bool s_MouseMovedLastFrame;
-		static sf::Vector2i s_MousePosLastFrame;
+		static sf::Vector2i s_DraggedVector;
+		static sf::Vector2i s_PosLastFrame;
+		static sf::Vector2i s_DragStart;
+
 	};
 } // namespace apex

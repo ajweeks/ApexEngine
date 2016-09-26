@@ -1,9 +1,12 @@
 
 #include "EmptyGame.h"
 
+#include <APEX\ApexMain.h>
+
 EmptyGame::EmptyGame()
 {
-	// TODO: Add test code here
+	APEX->SetWindowTitle("Empty Game");
+	
 }
 
 EmptyGame::~EmptyGame()

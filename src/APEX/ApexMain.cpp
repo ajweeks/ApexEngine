@@ -26,12 +26,12 @@
 
 namespace apex 
 {
-	const std::string ApexMain::WINDOW_TITLE = "Apex Engine";
+	const sf::Time ApexMain::FADE_IN_OUT_TIME = sf::seconds(0.35f);
+
+	std::string ApexMain::s_WindowTitle = "Apex Engine";
+	bool ApexMain::s_ShowFPSInTitleBar = true;
 
 	ApexMain* ApexMain::s_Singleton = nullptr;
-	sf::Font ApexMain::FontOpenSans;
-	sf::Font ApexMain::FontPixelFJ8;
-
 	AbstractGame* ApexMain::s_Game = nullptr;
 
 	void PrintString(const std::string& string, LogType logType)
@@ -90,11 +90,6 @@ namespace apex
 			}
 		}
 		return result;
-	}
-
-	sf::Color SetAlpha(const sf::Color& color, sf::Uint8 alpha)
-	{
-		return sf::Color(color.r, color.g, color.b, alpha);
 	}
 
 	sf::Glsl::Vec4 NormalizeColor(const sf::Color& color)
@@ -168,28 +163,28 @@ namespace apex
 		m_WindowIsFullscreen = false;
 		CreateApexWindow(m_WindowIsFullscreen);
 
-		TextureManager::Initialize();
-		Keyboard::LoadKeybindingsFromFile();
-		Audio::LoadSounds();
-
 		srand(static_cast<unsigned>(time(0))); // Seed random number generator
-
-		if (!FontOpenSans.loadFromFile("resources/font/OpenSans/OpenSans-Regular.ttf"))
-		{
-			PrintString("Couldn't load font OpenSans-Regular.ttf!\n", LogType::LOG_WARNING);
-		}
-		if (!FontPixelFJ8.loadFromFile("resources/font/pixelfj8/pixelFJ8.ttf"))
-		{
-			PrintString("Couldn't load font pixelFJ8.ttf!\n", LogType::LOG_WARNING);
-		}
 	}
-
+	
 	ApexMain::~ApexMain()
 	{
 		delete m_PhysicsActorManager;
 		delete m_Window;
+	}
 
-		TextureManager::Destroy();
+	ApexMain* ApexMain::GetSingleton()
+	{
+		if (s_Singleton == nullptr)
+		{
+			s_Singleton = new ApexMain();
+		}
+		return s_Singleton;
+	}
+
+	void ApexMain::DestroySingleton()
+	{
+		delete s_Singleton;
+		s_Singleton = nullptr;
 	}
 
 	void ApexMain::CreateApexWindow(bool fullscreen)
@@ -200,19 +195,28 @@ namespace apex
 			const sf::VideoMode fullscreenMode = sf::VideoMode::getFullscreenModes()[0];
 			unsigned int windowWidth = fullscreenMode.width;
 			unsigned int windowHeight = fullscreenMode.height;
-			m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, fullscreenMode.bitsPerPixel), WINDOW_TITLE, sf::Style::Fullscreen);
+			m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, fullscreenMode.bitsPerPixel), "", sf::Style::Fullscreen);
 		}
 		else
 		{
 			const sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
 			unsigned int windowWidth = (unsigned int)(desktopMode.width * 0.6f);
 			unsigned int windowHeight = (unsigned int)(desktopMode.height * 0.6f);
-			m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, desktopMode.bitsPerPixel), WINDOW_TITLE, sf::Style::Close);
+			m_Window = new sf::RenderWindow(sf::VideoMode(windowWidth, windowHeight, desktopMode.bitsPerPixel), "", sf::Style::Close);
 		}
 		// TODO: Use previously set option here
 		//m_Window->setVerticalSyncEnabled(USE_V_SYNC);
 		m_Window->setIcon(apex_logo.width, apex_logo.height, apex_logo.pixel_data);
 		SetDefaultCursorVisible(!m_CustomCursorVisible);
+
+		UpdateWindowTitle();
+	}
+
+	void ApexMain::UpdateWindowTitle()
+	{
+		std::string windowTitle = s_WindowTitle;
+		if (s_ShowFPSInTitleBar) windowTitle += " - FPS: " + std::to_string(m_FPS) + "  UPS: " + std::to_string(m_UPS);
+		m_Window->setTitle(windowTitle);
 	}
 
 	void ApexMain::Quit()
@@ -242,16 +246,14 @@ namespace apex
 				m_Frames = 0;
 				m_UPS = m_Updates;
 				m_Updates = 0;
-				m_Window->setTitle(WINDOW_TITLE + " - " + std::to_string(m_FPS) + " FPS - " + std::to_string(m_UPS) + " UPS");
+				UpdateWindowTitle();
 			}
 		
 			if (m_Window->hasFocus())
 			{
 				Keyboard::Tick();
-				Mouse::Tick();
+				Mouse::Tick(elapsed);
 			}
-
-			bool stepOneFrame = false;
 
 			// Process events
 			sf::Event event;
@@ -294,44 +296,22 @@ namespace apex
 					} break;
 					case sf::Event::KeyPressed:
 					{
-						Keyboard::Key key;
-						if (Keyboard::GetKeyFromVKCode(event.key.code, key))
+						int vkCode;
+						if (Keyboard::GetKeyFromVKCode(event.key.code, vkCode))
 						{
-							const bool keyPressed = Keyboard::IsKeyPressed(key);
+							const bool keyPressed = Keyboard::IsKeyPressed(vkCode);
 							bool blockedInput = false;
 							for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 							{
 								if (m_KeyListeners[i] != nullptr)
 								{
+									Keyboard::Key key;
+									key.vkCode = vkCode;
 									if (m_KeyListeners[i]->OnKeyPress(key, keyPressed))
 									{
 										blockedInput = true;
 										break;
 									}
-								}
-							}
-
-							if (!blockedInput && keyPressed)
-							{
-								switch (key)
-								{
-								case Keyboard::SCREENSHOT:
-								{
-									TakeScreenshot();
-								} break;
-								case Keyboard::DEBUG_PAUSE_EVERYTHING:
-								{
-									// TODO: Should this be in the engine code? Or is it too specific?
-									DEBUGToggleGamePaused();
-								} break;
-								case Keyboard::DEBUG_STEP_ONE_PHYSICS_FRAME:
-								{
-									if (m_DEBUG_ApexMainPaused) stepOneFrame = true;
-								} break;
-								case Keyboard::DEBUG_TOGGLE_PHYSICS_OVERLAY:
-								{
-									m_ShowingPhysicsDebug = !m_ShowingPhysicsDebug;
-								} break;
 								}
 							}
 						}
@@ -357,11 +337,13 @@ namespace apex
 					{
 						for (size_t i = 0; i < m_KeyListeners.size(); ++i)
 						{
-							Keyboard::Key key;
-							if (Keyboard::GetKeyFromVKCode(event.key.code, key))
+							int vkCode;
+							if (Keyboard::GetKeyFromVKCode(event.key.code, vkCode))
 							{
 								if (m_KeyListeners[i] != nullptr)
 								{
+									Keyboard::Key key;
+									key.vkCode = vkCode;
 									m_KeyListeners[i]->OnKeyRelease(key);
 								}
 							}
@@ -373,7 +355,7 @@ namespace apex
 						{
 							if (m_MouseListeners[i] != nullptr)
 							{
-								if (!m_MouseListeners[i]->OnButtonPress(event.mouseButton))
+								if (m_MouseListeners[i]->OnButtonPress(event.mouseButton))
 								{
 									break;
 								}
@@ -406,14 +388,17 @@ namespace apex
 
 			if (m_Window->hasFocus())
 			{
-				if (!m_DEBUG_ApexMainPaused || stepOneFrame)
+				if (!m_GamePaused || m_StepOneFrame)
 				{
-					if (stepOneFrame) accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
-					else accumulator += elapsed.asSeconds();
+					// TODO: FIXME: XXX: Fix timestep
+					//if (m_StepOneFrame) 
+					accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
+					//else accumulator += elapsed.asSeconds();
 
 					Tick(accumulator);
 				}
 			}
+
 			Draw();
 		}
 	}
@@ -422,11 +407,7 @@ namespace apex
 	{
 		while (accumulator >= PhysicsActorManager::TIMESTEP)
 		{
-			const sf::Time delta = sf::seconds(PhysicsActorManager::TIMESTEP);
-
-			float time = PhysicsActorManager::TIMESTEP;
-
-			const sf::Time dt = sf::seconds(time);
+			static const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
 
 			if (!m_PhysicsPaused)
 			{
@@ -434,12 +415,13 @@ namespace apex
 				++m_Updates;
 			}
 			
+			m_FadeInOutTransitionChain.Tick(dt);
 			s_Game->Tick(dt);
 
 			accumulator -= PhysicsActorManager::TIMESTEP;
 		}
 
-		Mouse::SetMousePosLastFrame();
+		Mouse::SetPosLastFrame();
 	}
 
 	void ApexMain::Draw()
@@ -463,8 +445,83 @@ namespace apex
 			m_Window->draw(m_CursorSprite);
 		}
 
+		// Fade in/out
+		std::pair<std::string, apex::Transition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+		if (colorTransition.second != nullptr)
+		{
+			const sf::Color color = static_cast<apex::ColorTransition*>(colorTransition.second)->GetCurrentColor();
+			if (color != sf::Color::White)
+			{
+				sf::RectangleShape rect(static_cast<sf::Vector2f>(m_Window->getSize()));
+				rect.setFillColor(color);
+				sf::RenderStates states;
+				states.blendMode = sf::BlendMultiply;
+				m_Window->draw(rect, states);
+			}
+		}
+
 		m_Window->display();
 		++m_Frames;
+	}
+
+	void ApexMain::SetShowFPSInTitleBar(bool show)
+	{
+		s_ShowFPSInTitleBar = show;
+		UpdateWindowTitle();
+	}
+
+	void ApexMain::SetWindowTitle(const std::string& titleString)
+	{
+		s_WindowTitle = titleString;
+		UpdateWindowTitle();
+	}
+
+	void ApexMain::StartFadeInOut(sf::Time length)
+	{
+		m_FadeInOutTransitionChain.Clear();
+
+		const sf::Color start = sf::Color::White;
+		const sf::Color end = sf::Color::Black;
+		apex::ColorTransition* fadeInTransition = new apex::ColorTransition(start, end, length);
+		m_FadeInOutTransitionChain.AddTransition(fadeInTransition, "in");
+		apex::ColorTransition* fadeOutTransition = new apex::ColorTransition(end, start, length);
+		m_FadeInOutTransitionChain.AddTransition(fadeOutTransition, "out");
+	}
+
+	void ApexMain::StartFadeIn(sf::Time length)
+	{
+		m_FadeInOutTransitionChain.Clear();
+
+		const sf::Color start = sf::Color::White;
+		const sf::Color end = sf::Color::Black;
+		apex::ColorTransition* fadeInTransition = new apex::ColorTransition(start, end, length);
+		m_FadeInOutTransitionChain.AddTransition(fadeInTransition, "in");
+	}
+
+	void ApexMain::StartFadeOut(sf::Time length)
+	{
+		m_FadeInOutTransitionChain.Clear();
+
+		const sf::Color start = sf::Color::Black;
+		const sf::Color end = sf::Color::White;
+		apex::ColorTransition* fadeOutTransition = new apex::ColorTransition(start, end, length);
+		m_FadeInOutTransitionChain.AddTransition(fadeOutTransition, "out");
+	}
+
+	bool ApexMain::IsFadingIn()
+	{
+		if (m_FadeInOutTransitionChain.IsFinished()) return false;
+
+		std::pair<std::string, apex::Transition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+		return colorTransition.first.compare("in") == 0;
+	}
+
+	bool ApexMain::IsFadingOut()
+	{
+		if (m_FadeInOutTransitionChain.IsFinished()) return false;
+
+		std::pair<std::string, apex::Transition*> colorTransition = m_FadeInOutTransitionChain.GetCurrentTransition();
+		return colorTransition.first.compare("out") == 0;
 	}
 
 	sf::Vector2f ApexMain::GetMouseCoordsWorldSpace(sf::View view) const
@@ -498,6 +555,11 @@ namespace apex
 		return mouseCoords;
 	}
 
+	sf::Vector2f ApexMain::GetVectorWorldSpace(sf::Vector2i vec, sf::View view)
+	{
+		return m_Window->mapPixelToCoords(vec, view);
+	}
+
 	bool ApexMain::IsMouseInWindow() const
 	{
 		const sf::Vector2i mousePos = GetMouseCoordsScreenSpace();
@@ -511,9 +573,37 @@ namespace apex
 		const size_t cursorIndex = size_t(cursorType);
 		assert(cursorIndex >= 0);
 		if (cursorIndex >= m_CursorTextures.size()) m_CursorTextures.resize(cursorIndex + 1);
-		m_CursorTextures[cursorIndex] = TextureManager::GetTexture(TextureManager::CURSOR_POINTER);
+		m_CursorTextures[cursorIndex] = texture;
 		m_CustomCursorVisible = true;
 		SetDefaultCursorVisible(!m_CustomCursorVisible);
+
+		// Set the first added cursor as the default
+		if (m_CursorTextures.size() == 1) SetCursor(cursorType);
+	}
+
+	void ApexMain::SetStepOneFrame(bool stepOneFrame)
+	{
+		m_StepOneFrame = stepOneFrame;
+	}
+
+	bool ApexMain::IsSteppingOneFrame() const
+	{
+		return m_StepOneFrame;
+	}
+
+	void ApexMain::ToggleShowingPhysicsDebug()
+	{
+		SetShowingPhysicsDebug(!m_ShowingPhysicsDebug);
+	}
+
+	void ApexMain::SetShowingPhysicsDebug(bool showing)
+	{
+		m_ShowingPhysicsDebug = showing;
+	}
+
+	bool ApexMain::IsShowingPhysicsDebug() const
+	{
+		return m_ShowingPhysicsDebug;
 	}
 
 	void ApexMain::SetDefaultCursorVisible(bool visible)
@@ -648,17 +738,22 @@ namespace apex
 		return m_PhysicsActorManager->GetWorld();
 	}
 
+	void ApexMain::TogglePhysicsPaused()
+	{
+		SetPhysicsPaused(!m_PhysicsPaused);
+	}
+
 	void ApexMain::SetPhysicsPaused(bool physicsPaused)
 	{
-		if (!m_DEBUG_ApexMainPaused)
+		if (!m_GamePaused)
 		{
 			m_PhysicsPaused = physicsPaused;
 		}
 	}
 
-	bool ApexMain::DEBUGIsApexMainPaused() const
+	bool ApexMain::IsPhysicsPaused() const
 	{
-		return m_DEBUG_ApexMainPaused;
+		return m_PhysicsPaused;
 	}
 
 	void ApexMain::ToggleWindowFullscreen()
@@ -716,19 +811,22 @@ namespace apex
 		return m_Window;
 	}
 
-	void ApexMain::DEBUGToggleGamePaused()
+	void ApexMain::ToggleGamePaused()
 	{
-		m_DEBUG_ApexMainPaused = !m_DEBUG_ApexMainPaused;
-		m_PhysicsPaused = m_DEBUG_ApexMainPaused;
+		SetGamePaused(!m_GamePaused);
 	}
 
-	ApexMain* ApexMain::GetSingleton()
+	void ApexMain::SetGamePaused(bool paused)
 	{
-		if (s_Singleton == nullptr)
-		{
-			s_Singleton = new ApexMain();
-		}
-		return s_Singleton;
+		m_GamePaused = !m_GamePaused;
+		m_PhysicsPaused = m_GamePaused;
+
+		if (!m_GamePaused) m_StepOneFrame = false;
+	}
+
+	bool ApexMain::IsGamePaused() const
+	{
+		return m_GamePaused;
 	}
 
 	void ApexMain::BeginContact(b2Contact* contact)

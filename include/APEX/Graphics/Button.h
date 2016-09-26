@@ -19,7 +19,7 @@ namespace apex
 		static const sf::Color BG_COLOR;
 		static const sf::Color BG_HOVER_COLOR;
 
-		Button(float left, float top, float width, float height, std::string text, unsigned int characterSize = 48);
+		Button(float left, float top, float width, float height, std::string text, const sf::Font& font, unsigned int characterSize = 48);
 		virtual ~Button();
 
 		Button(const Button&) = delete;

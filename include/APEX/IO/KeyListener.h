@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Keyboard.h"
+#include <APEX\IO\Keyboard.h>
 
 #include <SFML\Window\Event.hpp>
 

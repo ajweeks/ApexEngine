@@ -4,145 +4,128 @@
 
 namespace apex
 {
-	std::array<Audio::SoundEffect, int(Audio::Sound::_LAST_ELEMENT)> Audio::s_SoundEffects;
-	std::array<sf::Music, int(Audio::Music::_LAST_ELEMENT)> Audio::s_MusicTracks;
-	bool Audio::s_IsInitialized = false;
+	std::vector<Audio::SoundEffect> Audio::s_SoundEffects;
+	std::vector<std::unique_ptr<sf::Music>> Audio::s_MusicTracks;
 
-	bool Audio::LoadSounds()
+	void Audio::AddSoundEffect(size_t index, const std::string& filePath)
 	{
-		// SOUNDS
-		LoadSound(Sound::GUN_FIRE, "resources/sound/gun-fire.wav");
-		LoadSound(Sound::GUN_FIRE_EMPTY, "resources/sound/gun-fire-empty.wav");
-		LoadSound(Sound::GUN_RELOAD, "resources/sound/gun-reload.wav");
-		LoadSound(Sound::BOOP, "resources/sound/boop.wav");
-		LoadSound(Sound::BLIP, "resources/sound/blip.wav");
-		LoadSound(Sound::COIN_PICKUP, "resources/sound/coin-pickup.wav");
+		if(index >= s_SoundEffects.size()) s_SoundEffects.resize(index + 1);
 
-		LoadSound(Sound::TYPING_1, "resources/sound/typing-1.wav");
-		LoadSound(Sound::TYPING_2, "resources/sound/typing-2.wav");
-		LoadSound(Sound::TYPING_3, "resources/sound/typing-3.wav");
-
-		// SONGS
-
-		s_IsInitialized = true;
-		return true;
-	}
-
-	void Audio::LoadSound(Sound sound, const std::string& filePath)
-	{
-		if (!s_SoundEffects[int(sound)].m_Buffer.loadFromFile(filePath))
+		if (!s_SoundEffects[index].m_Buffer.loadFromFile(filePath))
 		{
-			apex::PrintString("Unable to load sound effect " + filePath + "\n");
+			PrintString("Unable to load sound effect " + filePath + "\n", LogType::LOG_ERROR);
 			return;
 		}
-		s_SoundEffects[int(sound)].m_Sound.setBuffer(s_SoundEffects[int(sound)].m_Buffer);
+		s_SoundEffects[index].m_Sound.setBuffer(s_SoundEffects[index].m_Buffer);
 	}
 
-	void Audio::LoadMusicTrack(Music track, const std::string& filePath, bool loop)
+	void Audio::AddSong(size_t index, const std::string& filePath, bool loop)
 	{
-		if (!s_MusicTracks[int(track)].openFromFile(filePath))
+		if (index >= s_MusicTracks.size()) s_MusicTracks.resize(index + 1);
+
+		if (!s_MusicTracks[index]->openFromFile(filePath))
 		{
-			apex::PrintString("Unable to music track " + filePath + "\n");
+			PrintString("Unable to music track " + filePath + "\n", LogType::LOG_ERROR);
 			return;
 		}
-		s_MusicTracks[int(track)].setLoop(loop);
+		s_MusicTracks[index]->setLoop(loop);
 	}
 
-	bool Audio::IsSoundEffectPlaying(Sound sound)
+	bool Audio::IsSoundEffectPlaying(size_t index)
 	{
-		return s_SoundEffects[int(sound)].m_Sound.getStatus() == sf::Sound::Playing;
+		return s_SoundEffects[index].m_Sound.getStatus() == sf::Sound::Playing;
 	}
 
-	void Audio::PlaySoundEffect(Sound sound)
+	void Audio::PlaySoundEffect(size_t index)
 	{
-		s_SoundEffects[int(sound)].m_Sound.play();
+		s_SoundEffects[index].m_Sound.play();
 	}
 
-	void Audio::PlayMusicTrack(Music track)
+	void Audio::PlayMusicTrack(size_t index)
 	{
-		s_MusicTracks[int(track)].play();
+		s_MusicTracks[index]->play();
 	}
 
 	void Audio::SetAllPaused(bool paused)
 	{
 		if (paused)
 		{
-			for (size_t i = 0; i < int(Sound::_LAST_ELEMENT); ++i)
+			for (size_t i = 0; i < s_SoundEffects.size(); ++i)
 			{
 				s_SoundEffects[i].m_Sound.pause();
 			}
-			for (size_t i = 0; i < int(Music::_LAST_ELEMENT); ++i)
+			for (size_t i = 0; i < s_MusicTracks.size(); ++i)
 			{
-				s_MusicTracks[i].pause();
+				s_MusicTracks[i]->pause();
 			}
 		}
 		else
 		{
-			for (size_t i = 0; i < int(Sound::_LAST_ELEMENT); ++i)
+			for (size_t i = 0; i < s_SoundEffects.size(); ++i)
 			{
 				if (s_SoundEffects[i].m_Sound.getStatus() == sf::Sound::Paused) s_SoundEffects[i].m_Sound.play();
 			}
-			for (size_t i = 0; i < int(Music::_LAST_ELEMENT); ++i)
+			for (size_t i = 0; i < s_MusicTracks.size(); ++i)
 			{
-				if (s_MusicTracks[i].getStatus() == sf::Sound::Paused) s_MusicTracks[i].play();
+				if (s_MusicTracks[i]->getStatus() == sf::Sound::Paused) s_MusicTracks[i]->play();
 			}
 		}
 	}
 
-	void Audio::SetSoundPitch(Sound sound, float pitch)
+	void Audio::SetSoundPitch(size_t index, float pitch)
 	{
-		s_SoundEffects[int(sound)].m_Sound.setPitch(pitch);
+		s_SoundEffects[int(index)].m_Sound.setPitch(pitch);
 	}
 
-	void Audio::ResetSoundPitch(Sound sound)
+	void Audio::ResetSoundPitch(size_t index)
 	{
-		s_SoundEffects[int(sound)].m_Sound.setPitch(1.0f);
+		s_SoundEffects[int(index)].m_Sound.setPitch(1.0f);
 	}
 
-	void Audio::SlideSoundPitch(Sound sound, float deltaPitch)
+	void Audio::SlideSoundPitch(size_t index, float deltaPitch)
 	{
-		s_SoundEffects[int(sound)].m_Sound.setPitch(s_SoundEffects[int(sound)].m_Sound.getPitch() + deltaPitch);
+		s_SoundEffects[int(index)].m_Sound.setPitch(s_SoundEffects[int(index)].m_Sound.getPitch() + deltaPitch);
 	}
 
-	void Audio::SetMusicPitch(Music track, float pitch)
+	void Audio::SetMusicPitch(size_t index, float pitch)
 	{
-		s_MusicTracks[int(track)].setPitch(pitch);
+		s_MusicTracks[int(index)]->setPitch(pitch);
 	}
 
-	void Audio::ResetMusicPitch(Music track)
+	void Audio::ResetMusicPitch(size_t index)
 	{
-		s_MusicTracks[int(track)].setPitch(1.0f);
+		s_MusicTracks[int(index)]->setPitch(1.0f);
 	}
 
-	void Audio::SlideMusicPitch(Music track, float deltaPitch)
+	void Audio::SlideMusicPitch(size_t index, float deltaPitch)
 	{
-		s_MusicTracks[int(track)].setPitch(s_MusicTracks[int(track)].getPitch() + deltaPitch);
+		s_MusicTracks[int(index)]->setPitch(s_MusicTracks[int(index)]->getPitch() + deltaPitch);
 	}
 
 	void Audio::SetAllSoundsVolume(float volume)
 	{
-		for (size_t i = 0; i < int(Sound::_LAST_ELEMENT); ++i)
+		for (size_t i = 0; i < s_SoundEffects.size(); ++i)
 		{
-			SetSoundVolume(Sound(i), volume);
+			SetSoundVolume(i, volume);
 		}
 	}
 
-	void Audio::SetSoundVolume(Sound sound, float volume)
+	void Audio::SetSoundVolume(size_t index, float volume)
 	{
-		s_SoundEffects[int(sound)].m_Sound.setVolume(volume * 100.0f);
+		s_SoundEffects[index].m_Sound.setVolume(volume * 100.0f);
 	}
 
 	void Audio::SetAllMusicVolume(float volume)
 	{
-		for (size_t i = 0; i < int(Music::_LAST_ELEMENT); ++i)
+		for (size_t i = 0; i < s_MusicTracks.size(); ++i)
 		{
-			SetMusicVolume(Music(i), volume);
+			SetMusicVolume(i, volume);
 		}
 	}
 
-	void Audio::SetMusicVolume(Music track, float volume)
+	void Audio::SetMusicVolume(size_t index, float volume)
 	{
-		s_MusicTracks[int(track)].setVolume(volume * 100.0f);
+		s_MusicTracks[index]->setVolume(volume * 100.0f);
 	}
 } // namespace apex
 

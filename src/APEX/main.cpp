@@ -3,6 +3,8 @@
 
 #include <APEX\ApexMain.h>
 
+#include <memory>
+
 #include "Windows.h"
 // Gotta catch those leaks!
 #include <Initguid.h>
@@ -19,13 +21,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	IDXGIDebug* pDXGIDebug;
 	DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&pDXGIDebug);
-	//_CrtSetBreakAlloc(242);
+	//_CrtSetBreakAlloc(192);
 #endif
 
-	EmptyGame* game = new EmptyGame();
+	std::unique_ptr<EmptyGame> game = std::unique_ptr<EmptyGame>(new EmptyGame());
 
-	APEX->Run(game);
-	delete APEX;
+	APEX->Run(game.get());
+	game.release();
+	apex::ApexMain::DestroySingleton();
 
 	return 0;
 }

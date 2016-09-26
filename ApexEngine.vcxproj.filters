@@ -124,9 +124,6 @@
     <ClInclude Include="include\APEX\Graphics\Button.h">
       <Filter>Source Files\apex\include\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\Graphics\ButtonList.h">
-      <Filter>Source Files\apex\include\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="include\APEX\Graphics\Slider.h">
       <Filter>Source Files\apex\include\Graphics</Filter>
     </ClInclude>
@@ -197,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="src\APEX\Transition\ColorTransition.cpp">
       <Filter>Source Files\apex\src\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\ButtonList.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\APEX\Graphics\Button.cpp">
       <Filter>Source Files\apex\src\Graphics</Filter>

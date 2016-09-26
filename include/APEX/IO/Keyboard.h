@@ -11,35 +11,31 @@ namespace apex
 	class Keyboard
 	{
 	public:
-		enum Key
-		{
-			MOVE_UP, MOVE_LEFT, MOVE_DOWN, MOVE_RIGHT,
-			PAUSE, INTERACT, SCREENSHOT,
-			DEBUG_TOGGLE_INFO_OVERLAY, DEBUG_TOGGLE_LIGHT_EDITOR, DEBUG_RESTART,
-			DEBUG_TOGGLE_PHYSICS_OVERLAY, DEBUG_STEP_ONE_PHYSICS_FRAME, DEBUG_PAUSE_EVERYTHING,
-
-			NONE
-		};
-
 		static void LoadKeybindingsFromFile();
 		static void SaveKeybindingsToFile();
 		static void ResetDefaultValues();
 
+		static void AddKeybinding(size_t keyIndex, const std::string& keyName, size_t defaultVKCode);
+
 		static void Tick();
 		static void Clear();
-		static bool IsKeyDown(Key key);
-		static bool IsKeyPressed(Key key);
-		static bool IsKeyReleased(Key key);
+		static bool IsKeyDown(size_t keyIndex);
+		static bool IsKeyPressed(size_t keyIndexkey);
+		static bool IsKeyReleased(size_t keyIndex);
 
-		static bool GetKeyFromVKCode(int vkCode, Key& key);
-		static bool GetVKCodeFromKey(Key key, int& vkCode);
+		static bool GetKeyFromVKCode(int vkCode, int& keyIndex);
+		static bool GetVKCodeFromKey(size_t keyIndex, int& vkCode);
 
-		static void MapKey(Key key, int vkCode);
-
+		static void SetKeybindingsFilePath(const std::string& filePath);
+		static void MapKey(size_t keyIndex, int vkCode);
 		static std::string GetSFKeyName(sf::Keyboard::Key key);
-		static std::string GetKeyName(Key key);
-
 		static size_t GetNumberOfKeys();
+
+		struct Key
+		{
+			int vkCode;
+			std::string name;
+		};
 
 	private:
 		Keyboard();
@@ -47,11 +43,15 @@ namespace apex
 
 		// TODO: Allow mouse/controller input to replace certain keyboard keys
 		static void StoreStringData(const std::string& fileContents);
-		static int FindVKCode(const nlohmann::json& keybindings, const std::string& tagName, sf::Keyboard::Key defaultKey);
+		static int FindVKCode(const std::string& tagName, size_t defaultKey);
 
-		static std::map<Key, int> m_KeysToVKCodesMap; // map Key enum values to vk codes
+		static std::map<size_t, Key> s_KeysToVKCodesMap; // map key indicies to key objects
 
-		static bool keysdown[sf::Keyboard::KeyCount];
-		static bool keysdownLastFrame[sf::Keyboard::KeyCount];
+		static nlohmann::json s_KeybindingsFileJson;
+
+		static bool s_Keysdown[sf::Keyboard::KeyCount];
+		static bool s_KeysdownLastFrame[sf::Keyboard::KeyCount];
+
+		static std::string s_FilePath;
 	};
 } // namespace apex

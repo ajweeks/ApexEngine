@@ -14,7 +14,7 @@ namespace apex
 	class BaseState : public KeyListener
 	{
 	public:
-		BaseState(int index);
+		BaseState(int index, StateManager& stateManager);
 		virtual ~BaseState();
 
 		BaseState(const BaseState&) = delete;
@@ -25,11 +25,13 @@ namespace apex
 
 		virtual bool OnKeyPress(Keyboard::Key key, bool keyPressed);
 		virtual void OnKeyRelease(Keyboard::Key key);
-	
+
 		int GetIndex() const;
+		StateManager& GetStateManager();
 
 	protected:
 		int m_Index;
+		StateManager& m_StateManager;
 
 	};
 } // namespace apex

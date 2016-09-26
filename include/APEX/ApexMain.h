@@ -27,6 +27,7 @@ namespace apex
 	class WindowListener;
 	class PhysicsActorManager;
 	class AbstractGame;
+	class StateManager;
 }
 
 class b2World;
@@ -43,7 +44,6 @@ namespace apex
 	std::vector<std::string> Split(const std::string& str);
 	std::vector<std::string> Split(const std::string& str, const char& delim);
 
-	sf::Color SetAlpha(const sf::Color& color, sf::Uint8 alpha);
 	sf::Glsl::Vec4 NormalizeColor(const sf::Color& color);
 
 	sf::Vector2f StringToVector2f(const std::string& string);
@@ -61,6 +61,7 @@ namespace apex
 		ApexMain& operator=(const ApexMain&) = delete;
 
 		static ApexMain* GetSingleton();
+		static void DestroySingleton();
 
 		void Run(AbstractGame* game);
 		void Quit();
@@ -68,6 +69,7 @@ namespace apex
 		sf::Vector2f GetMouseCoordsWorldSpace(sf::View view) const;
 		// Returns the mouse coords relative to the game window, or (-1, -1) if mouse is outside of window
 		sf::Vector2i GetMouseCoordsScreenSpace(sf::View currentView = sf::View(sf::Vector2f(0, 0), sf::Vector2f(0, 0))) const;
+		sf::Vector2f GetVectorWorldSpace(sf::Vector2i vec, sf::View view); // Pass in coords in screen space, receive them in world space
 		bool IsMouseInWindow() const;
 		void SetCursor(Cursor cursorType);
 		void TakeScreenshot();
@@ -82,8 +84,21 @@ namespace apex
 		void RemoveWindowListener(WindowListener* windowListener);
 
 		b2World& GetPhysicsWorld() const;
+
+		void TogglePhysicsPaused();
 		void SetPhysicsPaused(bool physicsPaused);
-		bool DEBUGIsApexMainPaused() const;
+		bool IsPhysicsPaused() const;
+
+		void ToggleGamePaused();
+		void SetGamePaused(bool paused);
+		bool IsGamePaused() const;
+
+		void SetStepOneFrame(bool stepOneFrame);
+		bool IsSteppingOneFrame() const;
+
+		void ToggleShowingPhysicsDebug();
+		void SetShowingPhysicsDebug(bool showing);
+		bool IsShowingPhysicsDebug() const;
 
 		void ToggleWindowFullscreen();
 		void SetWindowFullscreen(bool fullscreen);
@@ -93,8 +108,19 @@ namespace apex
 		void SetVSyncEnabled(bool enabled);
 		bool IsVSyncEnabled() const;
 
+		void AddCursorType(Cursor cursorType, sf::Texture* texture);
+
 		sf::Time GetTimeElapsed() const;
 		sf::RenderWindow* GetWindow();
+
+		void StartFadeInOut(sf::Time length = FADE_IN_OUT_TIME);
+		void StartFadeIn(sf::Time length = FADE_IN_OUT_TIME);
+		void StartFadeOut(sf::Time length = FADE_IN_OUT_TIME);
+		bool IsFadingIn();
+		bool IsFadingOut();
+
+		void SetShowFPSInTitleBar(bool show);
+		void SetWindowTitle(const std::string& titleString);
 
 		// Box2D overriden methods
 		virtual void BeginContact(b2Contact* contact);
@@ -102,18 +128,17 @@ namespace apex
 		virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
 		virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
-		static sf::Font FontOpenSans;
-		static sf::Font FontPixelFJ8;
-
 	private:
 		void CreateApexWindow(bool fullscreen);
+		void UpdateWindowTitle();
 		void Tick(double& accumulator);
 		void Draw();
-		void AddCursorType(Cursor cursorType, sf::Texture* texture);
 		void SetDefaultCursorVisible(bool visible);
-		void DEBUGToggleGamePaused();
 
-		static const std::string WINDOW_TITLE;
+		static const sf::Time FADE_IN_OUT_TIME;
+
+		static std::string s_WindowTitle;
+		static bool s_ShowFPSInTitleBar;
 
 		static ApexMain* s_Singleton;
 		static AbstractGame* s_Game;
@@ -134,9 +159,10 @@ namespace apex
 		bool m_PhysicsPaused = false;
 		// True when the state manager shouldn't be Ticked (no animations, etc.)
 		// This pauses the physics too (only a debug feature)
-		bool m_DEBUG_ApexMainPaused = false; 
+		bool m_GamePaused = false; 
 		// Whether or not to show the physics fixtures
 		bool m_ShowingPhysicsDebug = false;
+		bool m_StepOneFrame = false;
 
 		PhysicsActorManager* m_PhysicsActorManager = nullptr;
 
@@ -144,6 +170,8 @@ namespace apex
 		Cursor m_CursorType;
 		sf::Sprite m_CursorSprite;
 		std::vector<sf::Texture*> m_CursorTextures;
+
+		TransitionChain m_FadeInOutTransitionChain;
 
 		std::vector<KeyListener*> m_KeyListeners;
 		std::vector<MouseListener*> m_MouseListeners;

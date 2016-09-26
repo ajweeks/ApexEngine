@@ -2,31 +2,15 @@
 
 #include <SFML\Graphics\Texture.hpp>
 
+#include <memory>
+
 namespace apex
 {
 	class TextureManager
 	{
 	public:
-		enum Texture
-		{
-			LIQWIDICE_GAMES_LOGO_SCREEN,
-			GENERAL_TILES,
-			DUST_PARTICLE,
-			PLAYER,
-			SHADOW,
-			CURSOR_NORMAL, CURSOR_POINTER,
-			AMMO, COIN,
-			TITLE_COLOR, TITLE_SHADOW,
-			SPEECH_BUBBLE,
-			NPC,
-
-			_LAST_ELEMENT
-		};
-
-		static void Initialize();
-		static void Destroy();
-
-		static sf::Texture* GetTexture(Texture texture);
+		static void AddTexture(size_t index, const std::string& filePath);
+		static sf::Texture* GetTexture(size_t index);
 
 	private:
 		TextureManager();
@@ -34,10 +18,7 @@ namespace apex
 		TextureManager(const TextureManager&) = delete;
 		TextureManager& operator=(const TextureManager&) = delete;
 
-		static void LoadTexture(Texture texture, const std::string& filePath);
-
-		static std::vector<sf::Texture*> s_Textures;
-		static bool s_initialized;
+		static std::vector<std::unique_ptr<sf::Texture>> s_Textures;
 
 	};
 } // namespace apex

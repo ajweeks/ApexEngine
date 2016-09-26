@@ -7,9 +7,11 @@
 
 namespace apex
 {
-	bool Keyboard::keysdown[];
-	bool Keyboard::keysdownLastFrame[];
-	std::map<Keyboard::Key, int> Keyboard::m_KeysToVKCodesMap;
+	bool Keyboard::s_Keysdown[];
+	bool Keyboard::s_KeysdownLastFrame[];
+	std::map<size_t, Keyboard::Key> Keyboard::s_KeysToVKCodesMap;
+	std::string Keyboard::s_FilePath;
+	nlohmann::json Keyboard::s_KeybindingsFileJson;
 
 	using nlohmann::json;
 
@@ -21,40 +23,19 @@ namespace apex
 	{
 	}
 
-	void Keyboard::StoreStringData(const std::string& fileContents)
+	void Keyboard::AddKeybinding(size_t keyIndex, const std::string& keyName, size_t defaultVKCode)
 	{
-		json file;
-		json keybindings;
-		if (!fileContents.empty())
-		{
-			file = json::parse(fileContents);
-			keybindings = file["keybindings"];
-		}
-
-		m_KeysToVKCodesMap[Key::MOVE_LEFT] = FindVKCode(keybindings, GetKeyName(Key::MOVE_LEFT), sf::Keyboard::A);
-		m_KeysToVKCodesMap[Key::MOVE_RIGHT] = FindVKCode(keybindings, GetKeyName(Key::MOVE_RIGHT), sf::Keyboard::D);
-		m_KeysToVKCodesMap[Key::MOVE_UP] = FindVKCode(keybindings, GetKeyName(Key::MOVE_UP), sf::Keyboard::W);
-		m_KeysToVKCodesMap[Key::MOVE_DOWN] = FindVKCode(keybindings, GetKeyName(Key::MOVE_DOWN), sf::Keyboard::S);
-
-		m_KeysToVKCodesMap[Key::PAUSE] = FindVKCode(keybindings, GetKeyName(Key::PAUSE), sf::Keyboard::Escape);
-		m_KeysToVKCodesMap[Key::INTERACT] = FindVKCode(keybindings, GetKeyName(Key::INTERACT), sf::Keyboard::E);
-		m_KeysToVKCodesMap[Key::SCREENSHOT] = FindVKCode(keybindings, GetKeyName(Key::SCREENSHOT), sf::Keyboard::F10);
-
-		m_KeysToVKCodesMap[Key::DEBUG_TOGGLE_LIGHT_EDITOR] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_TOGGLE_LIGHT_EDITOR), sf::Keyboard::F8);
-		m_KeysToVKCodesMap[Key::DEBUG_TOGGLE_INFO_OVERLAY] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_TOGGLE_INFO_OVERLAY), sf::Keyboard::F9);
-		m_KeysToVKCodesMap[Key::DEBUG_TOGGLE_PHYSICS_OVERLAY] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_TOGGLE_PHYSICS_OVERLAY), sf::Keyboard::P);
-		m_KeysToVKCodesMap[Key::DEBUG_STEP_ONE_PHYSICS_FRAME] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_STEP_ONE_PHYSICS_FRAME), sf::Keyboard::Period);
-		m_KeysToVKCodesMap[Key::DEBUG_PAUSE_EVERYTHING] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_PAUSE_EVERYTHING), sf::Keyboard::Space);
-		m_KeysToVKCodesMap[Key::DEBUG_RESTART] = FindVKCode(keybindings, GetKeyName(Key::DEBUG_RESTART), sf::Keyboard::R);
-
-		SaveKeybindingsToFile();
+		s_KeysToVKCodesMap[keyIndex].vkCode = FindVKCode(keyName, defaultVKCode);
+		s_KeysToVKCodesMap[keyIndex].name = keyName;
 	}
 
-	int Keyboard::FindVKCode(const json& keybindings, const std::string& tagName, sf::Keyboard::Key defaultKey)
+	int Keyboard::FindVKCode(const std::string& tagName, size_t defaultKey)
 	{
-		if (keybindings.find(tagName) != keybindings.end())
+		assert(!s_KeybindingsFileJson.empty());
+
+		if (s_KeybindingsFileJson.find(tagName) != s_KeybindingsFileJson.end())
 		{
-			int vkCode = keybindings[tagName].get<int>();
+			int vkCode = s_KeybindingsFileJson[tagName].get<int>();
 			return vkCode;
 		}
 
@@ -63,11 +44,16 @@ namespace apex
 
 	void Keyboard::LoadKeybindingsFromFile()
 	{
-		const std::string filePath = "resources/keybindings.json";
+		if (s_FilePath.empty())
+		{
+			PrintString("Keybindings file path not set! Call apex::Keyboard::SetKeybindingsFilePath on initialization!", LogType::LOG_ERROR);
+			return;
+		}
+
 		std::ifstream fileInStream;
 		std::stringstream stringStream;
 
-		fileInStream.open(filePath);
+		fileInStream.open(s_FilePath);
 
 		if (fileInStream)
 		{
@@ -83,26 +69,13 @@ namespace apex
 		StoreStringData(stringStream.str());
 	}
 
-	void Keyboard::SaveKeybindingsToFile()
+	void Keyboard::StoreStringData(const std::string& fileContents)
 	{
-		std::ofstream fileOutStream;
-		const std::string filePath = "resources/keybindings.json";
-		std::stringstream stringStream;
-
-		fileOutStream.open(filePath);
-
-		if (fileOutStream)
+		json file;
+		if (!fileContents.empty())
 		{
-			json fileJson;
-
-			std::map<Key, int>::iterator iter;
-			for (iter = m_KeysToVKCodesMap.begin(); iter != m_KeysToVKCodesMap.end(); ++iter)
-			{
-				fileJson["keybindings"][GetKeyName(iter->first)] = iter->second;
-			}
-
-			fileOutStream << std::setw(4) << fileJson;
-			fileOutStream.close();
+			file = json::parse(fileContents);
+			s_KeybindingsFileJson = file["keybindings"];
 		}
 	}
 
@@ -111,12 +84,34 @@ namespace apex
 		StoreStringData("");
 	}
 
+	void Keyboard::SaveKeybindingsToFile()
+	{
+		std::ofstream fileOutStream;
+		std::stringstream stringStream;
+
+		fileOutStream.open(s_FilePath);
+
+		if (fileOutStream)
+		{
+			json fileJson;
+			
+			std::map<size_t, Key>::iterator iter;
+			for (iter = s_KeysToVKCodesMap.begin(); iter != s_KeysToVKCodesMap.end(); ++iter)
+			{
+				fileJson["keybindings"][iter->second.name] = iter->second.vkCode;
+			}
+
+			fileOutStream << std::setw(4) << fileJson;
+			fileOutStream.close();
+		}
+	}
+
 	void Keyboard::Tick()
 	{
 		for (size_t i = 0; i < sf::Keyboard::KeyCount; ++i)
 		{
-			keysdownLastFrame[i] = keysdown[i];
-			keysdown[i] = sf::Keyboard::isKeyPressed(sf::Keyboard::Key(i));
+			s_KeysdownLastFrame[i] = s_Keysdown[i];
+			s_Keysdown[i] = sf::Keyboard::isKeyPressed(sf::Keyboard::Key(i));
 		}
 	}
 
@@ -124,110 +119,79 @@ namespace apex
 	{
 		for (size_t i = 0; i < sf::Keyboard::KeyCount; ++i)
 		{
-			keysdownLastFrame[i] = false;
-			keysdown[i] = false;
+			s_KeysdownLastFrame[i] = false;
+			s_Keysdown[i] = false;
 		}
 	}
 
-	bool Keyboard::IsKeyDown(Key key)
+	bool Keyboard::IsKeyDown(size_t keyIndex)
 	{
-		if (m_KeysToVKCodesMap.find(key) != m_KeysToVKCodesMap.end())
+		if (s_KeysToVKCodesMap.find(keyIndex) != s_KeysToVKCodesMap.end())
 		{
-			return keysdown[m_KeysToVKCodesMap[key]];
-		}
-		return false;
-	}
-
-	bool Keyboard::IsKeyPressed(Key key)
-	{
-		if (m_KeysToVKCodesMap.find(key) != m_KeysToVKCodesMap.end())
-		{
-			const int vkCode = m_KeysToVKCodesMap[key];
-			return keysdown[vkCode] && keysdownLastFrame[vkCode] == false;
+			return s_Keysdown[s_KeysToVKCodesMap[keyIndex].vkCode];
 		}
 		return false;
 	}
 
-	bool Keyboard::IsKeyReleased(Key key)
+	bool Keyboard::IsKeyPressed(size_t keyIndex)
 	{
-		if (m_KeysToVKCodesMap.find(key) != m_KeysToVKCodesMap.end())
+		if (s_KeysToVKCodesMap.find(keyIndex) != s_KeysToVKCodesMap.end())
 		{
-			const int vkCode = m_KeysToVKCodesMap[key];
-			return keysdown[vkCode] == false && keysdownLastFrame[vkCode];
+			const int vkCode = s_KeysToVKCodesMap[keyIndex].vkCode;
+			return s_Keysdown[vkCode] && s_KeysdownLastFrame[vkCode] == false;
 		}
 		return false;
 	}
 
-	bool Keyboard::GetKeyFromVKCode(int vkCode, Key& key)
+	bool Keyboard::IsKeyReleased(size_t keyIndex)
 	{
-		std::map<Key, int>::iterator iter;
-		for (iter = m_KeysToVKCodesMap.begin(); iter != m_KeysToVKCodesMap.end(); ++iter)
+		if (s_KeysToVKCodesMap.find(keyIndex) != s_KeysToVKCodesMap.end())
 		{
-			if (iter->second == vkCode)
+			const int vkCode = s_KeysToVKCodesMap[keyIndex].vkCode;
+			return s_Keysdown[vkCode] == false && s_KeysdownLastFrame[vkCode];
+		}
+		return false;
+	}
+
+	bool Keyboard::GetKeyFromVKCode(int vkCode, int& keyIndex)
+	{
+		std::map<size_t, Key>::iterator iter;
+		for (iter = s_KeysToVKCodesMap.begin(); iter != s_KeysToVKCodesMap.end(); ++iter)
+		{
+			if (iter->second.vkCode == vkCode)
 			{
-				key = iter->first;
+				keyIndex = iter->first;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	bool Keyboard::GetVKCodeFromKey(Key key, int& vkCode)
+	bool Keyboard::GetVKCodeFromKey(size_t keyIndex, int& vkCode)
 	{
-		if (m_KeysToVKCodesMap.find(key) != m_KeysToVKCodesMap.end())
+		if (s_KeysToVKCodesMap.find(keyIndex) != s_KeysToVKCodesMap.end())
 		{
-			vkCode = m_KeysToVKCodesMap[key];
+			vkCode = s_KeysToVKCodesMap[keyIndex].vkCode;
 			return true;
 		}
 		return false;
 	}
 
-	void Keyboard::MapKey(Key key, int vkCode)
+	void Keyboard::MapKey(size_t keyIndex, int vkCode)
 	{
-		m_KeysToVKCodesMap[key] = vkCode;
+		s_KeysToVKCodesMap[keyIndex].vkCode = vkCode;
 
 		SaveKeybindingsToFile();
 	}
 
-	std::string Keyboard::GetKeyName(Key key)
+	void Keyboard::SetKeybindingsFilePath(const std::string& filePath)
 	{
-		switch (key)
-		{
-		case Key::MOVE_UP:
-			return "Move Up";
-		case Key::MOVE_LEFT:
-			return "Move Left";
-		case Key::MOVE_DOWN:
-			return "Move Down";
-		case Key::MOVE_RIGHT:
-			return "Move Right";
-		case Key::PAUSE:
-			return "Pause";
-		case Key::INTERACT:
-			return "Interact";
-		case Key::SCREENSHOT:
-			return "Screenshot";
-		case Key::DEBUG_RESTART:
-			return "DEBUG_Restart";
-		case Key::DEBUG_TOGGLE_INFO_OVERLAY:
-			return "DEBUG_ToggleInfoOverlay";
-		case Key::DEBUG_TOGGLE_LIGHT_EDITOR:
-			return "DEBUG_ToggleLightEditor";
-		case Key::DEBUG_TOGGLE_PHYSICS_OVERLAY:
-			return "DEBUG_TogglePhysicsOverlay";
-		case Key::DEBUG_STEP_ONE_PHYSICS_FRAME:
-			return "DEBUG_StepOnePhysicsFrame";
-		case Key::DEBUG_PAUSE_EVERYTHING:
-			return "DEBUG_PauseEverything";
-		case Key::NONE:
-		default:
-			return "Unknown";
-		}
+		s_FilePath = filePath;
 	}
 
 	size_t Keyboard::GetNumberOfKeys()
 	{
-		return size_t(Key::NONE);
+		return s_KeysToVKCodesMap.size();
 	}
 
 	std::string Keyboard::GetSFKeyName(sf::Keyboard::Key key)

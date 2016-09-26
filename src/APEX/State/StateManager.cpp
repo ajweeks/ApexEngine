@@ -3,8 +3,7 @@
 
 namespace apex
 {
-	StateManager::StateManager(BaseState* startingState)
-		: m_CurrentState(startingState)
+	StateManager::StateManager()
 	{
 	}
 
@@ -25,7 +24,7 @@ namespace apex
 
 	void StateManager::SetState(BaseState* newState)
 	{
-		delete m_CurrentState;
+		if (m_CurrentState != nullptr) delete m_CurrentState;
 		m_CurrentState = newState;
 	}
 

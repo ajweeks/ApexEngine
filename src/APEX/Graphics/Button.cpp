@@ -11,7 +11,7 @@ namespace apex
 	const sf::Color Button::BG_COLOR = sf::Color(60, 100, 115);
 	const sf::Color Button::BG_HOVER_COLOR = sf::Color(BG_COLOR.r - 20, BG_COLOR.g - 20, BG_COLOR.b - 20);
 
-	Button::Button(float left, float top, float width, float height, std::string text, unsigned int characterSize) :
+	Button::Button(float left, float top, float width, float height, std::string text, const sf::Font& font, unsigned int characterSize) :
 		MouseListener()
 	{
 		m_BoundingRect = sf::RectangleShape(sf::Vector2f(width, height));
@@ -22,7 +22,7 @@ namespace apex
 
 		m_StringOptions.push_back(text);
 		m_CurrentStringIndex = 0;
-		m_Text = sf::Text(m_StringOptions[m_CurrentStringIndex], APEX->FontPixelFJ8, characterSize);
+		m_Text = sf::Text(m_StringOptions[m_CurrentStringIndex], font, characterSize);
 		m_Text.setStyle(sf::Text::Bold);
 		m_Text.setPosition(left + width / 2.0f - 25 * text.length() / 2.0f, top + height / 2.0f - 24.0f);
 		m_TextColour = FONT_COLOR;
@@ -133,7 +133,7 @@ namespace apex
 		{
 			m_Hovering = hovering;
 			m_BoundingRect.setFillColor(m_Hovering ? m_HoverFillColour : m_FillColour);
-			APEX->SetCursor(m_Hovering ? Cursor::POINT : Cursor::NORMAL);
+			//APEX->SetCursor(m_Hovering ? Cursor::POINT : Cursor::NORMAL);
 		}
 	}
 

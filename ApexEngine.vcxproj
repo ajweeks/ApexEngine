@@ -71,12 +71,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -175,7 +177,6 @@
     <ClInclude Include="include\APEX\enumerations.h" />
     <ClInclude Include="include\APEX\ApexMain.h" />
     <ClInclude Include="include\APEX\Graphics\Button.h" />
-    <ClInclude Include="include\APEX\Graphics\ButtonList.h" />
     <ClInclude Include="include\APEX\Graphics\Slider.h" />
     <ClInclude Include="include\APEX\Graphics\SpriteSheet.h" />
     <ClInclude Include="include\APEX\Graphics\Particle\Particle.h" />
@@ -214,7 +215,6 @@
     <ClCompile Include="src\APEX\WindowListener.cpp" />
     <ClCompile Include="src\APEX\ApexMain.cpp" />
     <ClCompile Include="src\APEX\Graphics\Button.cpp" />
-    <ClCompile Include="src\APEX\Graphics\ButtonList.cpp" />
     <ClCompile Include="src\APEX\Graphics\Slider.cpp" />
     <ClCompile Include="src\APEX\Graphics\SpriteSheet.cpp" />
     <ClCompile Include="src\APEX\Graphics\Particle\Particle.cpp" />

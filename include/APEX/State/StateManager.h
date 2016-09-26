@@ -12,7 +12,7 @@ namespace apex
 	class StateManager
 	{
 	public:
-		StateManager(BaseState* startingState = nullptr);
+		StateManager();
 		virtual ~StateManager();
 
 		StateManager(const StateManager&) = delete;

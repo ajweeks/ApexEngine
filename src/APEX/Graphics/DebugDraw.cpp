@@ -134,14 +134,18 @@ namespace apex
 
 	void DebugDraw::DrawString(int x, int y, const char *string, ...)
 	{
-		sf::Text text(sf::String(string), APEX->FontOpenSans);
+		// TODO: Use custom font
+		sf::Text text;
+		text.setString(sf::String(string));
 		text.setPosition(float(x), float(y));
 		m_Target.draw(text);
 	}
 
 	void DebugDraw::DrawString(const b2Vec2& pw, const char *string, ...)
 	{
-		sf::Text text(sf::String(string), APEX->FontOpenSans);
+		// TODO: Use custom font
+		sf::Text text;
+		text.setString(sf::String(string));
 		text.setPosition(pw.x, pw.y);
 		m_Target.draw(text);
 	}
