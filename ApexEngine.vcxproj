@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include;E:\OneDrive\Code\C++\ApexEngine\ApexEngine\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D;$(SolutionDir)include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <ProgramDataBaseFileName>$(OutDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
@@ -130,7 +130,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include;E:\OneDrive\Code\C++\ApexEngine\ApexEngine\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Libraries\SFML-2.4.0\include;C:\Libraries\JSON\include;C:\Libraries\Box2D\Box2D\include;$(SolutionDir)include</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -166,16 +166,20 @@
     <None Include="resources\level\00\tiles.json" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EmptyGame.h">
+    <ClInclude Include="include\Apex\EmptyGame.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="include\APEX\AbstractGame.h" />
+    <ClInclude Include="include\Apex\AbstractGame.h" />
     <ClInclude Include="include\APEX\Graphics\DebugDraw.h" />
-    <ClInclude Include="include\APEX\Math.h" />
-    <ClInclude Include="include\APEX\WindowListener.h" />
-    <ClInclude Include="include\APEX\enumerations.h" />
-    <ClInclude Include="include\APEX\ApexMain.h" />
+    <ClInclude Include="include\Apex\ApexMath.h" />
+    <ClInclude Include="include\APEX\Physics\Contact.h" />
+    <ClInclude Include="include\APEX\Physics\contactlistener.h" />
+    <ClInclude Include="include\APEX\Physics\PhysicsActor.h" />
+    <ClInclude Include="include\APEX\Physics\PhysicsActorManager.h" />
+    <ClInclude Include="include\Apex\WindowListener.h" />
+    <ClInclude Include="include\Apex\enumerations.h" />
+    <ClInclude Include="include\Apex\ApexMain.h" />
     <ClInclude Include="include\APEX\Graphics\Button.h" />
     <ClInclude Include="include\APEX\Graphics\Slider.h" />
     <ClInclude Include="include\APEX\Graphics\SpriteSheet.h" />
@@ -187,7 +191,7 @@
     <ClInclude Include="include\APEX\IO\KeyListener.h" />
     <ClInclude Include="include\APEX\IO\Mouse.h" />
     <ClInclude Include="include\APEX\IO\MouseListener.h" />
-    <ClInclude Include="include\APEX\logo.h" />
+    <ClInclude Include="include\Apex\logo.h" />
     <ClInclude Include="include\APEX\State\BaseState.h" />
     <ClInclude Include="include\APEX\State\StateManager.h" />
     <ClInclude Include="include\APEX\Transition\Transition.h" />
@@ -201,19 +205,56 @@
     <ClInclude Include="include\APEX\World\Physics\ContactListener.h" />
     <ClInclude Include="include\APEX\World\Physics\PhysicsActor.h" />
     <ClInclude Include="include\APEX\World\Physics\PhysicsActorManager.h" />
+    <ClInclude Include="include\Game\ButtonList.h" />
+    <ClInclude Include="include\Game\Debug\ImGui.h" />
+    <ClInclude Include="include\Game\Debug\ImGuiStorage.h" />
+    <ClInclude Include="include\Game\DustParticle.h" />
+    <ClInclude Include="include\Game\enumerations.h" />
+    <ClInclude Include="include\Game\Game.h" />
+    <ClInclude Include="include\Game\HUD.h" />
+    <ClInclude Include="include\Game\ParticleEmitter.h" />
+    <ClInclude Include="include\Game\PauseScreen.h" />
+    <ClInclude Include="include\Game\State\GameState.h" />
+    <ClInclude Include="include\Game\State\LoadingState.h" />
+    <ClInclude Include="include\Game\State\MainMenuState.h" />
+    <ClInclude Include="include\Game\World\AICharacter.h" />
+    <ClInclude Include="include\Game\World\Ammodrop.h" />
+    <ClInclude Include="include\Game\World\Bed.h" />
+    <ClInclude Include="include\Game\World\Building.h" />
+    <ClInclude Include="include\Game\World\Bullet.h" />
+    <ClInclude Include="include\Game\World\BulletManager.h" />
+    <ClInclude Include="include\Game\World\Camera.h" />
+    <ClInclude Include="include\Game\World\Coin.h" />
+    <ClInclude Include="include\Game\World\Entity.h" />
+    <ClInclude Include="include\Game\World\ExitSensor.h" />
+    <ClInclude Include="include\Game\World\Gun.h" />
+    <ClInclude Include="include\Game\World\Interactable.h" />
+    <ClInclude Include="include\Game\World\Item.h" />
+    <ClInclude Include="include\Game\World\Layer.h" />
+    <ClInclude Include="include\Game\World\LightManager.h" />
+    <ClInclude Include="include\Game\World\Map.h" />
+    <ClInclude Include="include\Game\World\Minimap.h" />
+    <ClInclude Include="include\Game\World\Mob.h" />
+    <ClInclude Include="include\Game\World\Player.h" />
+    <ClInclude Include="include\Game\World\Projectile.h" />
+    <ClInclude Include="include\Game\World\Sheep.h" />
+    <ClInclude Include="include\Game\World\SolidBlock.h" />
+    <ClInclude Include="include\Game\World\Tile.h" />
+    <ClInclude Include="include\Game\World\TileSet.h" />
+    <ClInclude Include="include\Game\World\World.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EmptyGame.cpp">
+    <ClCompile Include="src\Apex\EmptyGame.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="src\APEX\AbstractGame.cpp" />
+    <ClCompile Include="src\Apex\AbstractGame.cpp" />
     <ClCompile Include="src\APEX\Graphics\DebugDraw.cpp" />
     <ClCompile Include="src\APEX\Physics\ContactListener.cpp" />
     <ClCompile Include="src\APEX\Physics\PhysicsActor.cpp" />
     <ClCompile Include="src\APEX\Physics\PhysicsActorManager.cpp" />
-    <ClCompile Include="src\APEX\WindowListener.cpp" />
-    <ClCompile Include="src\APEX\ApexMain.cpp" />
+    <ClCompile Include="src\Apex\WindowListener.cpp" />
+    <ClCompile Include="src\Apex\ApexMain.cpp" />
     <ClCompile Include="src\APEX\Graphics\Button.cpp" />
     <ClCompile Include="src\APEX\Graphics\Slider.cpp" />
     <ClCompile Include="src\APEX\Graphics\SpriteSheet.cpp" />
@@ -225,7 +266,6 @@
     <ClCompile Include="src\APEX\IO\KeyListener.cpp" />
     <ClCompile Include="src\APEX\IO\Mouse.cpp" />
     <ClCompile Include="src\APEX\IO\MouseListener.cpp" />
-    <ClCompile Include="src\APEX\main.cpp" />
     <ClCompile Include="src\APEX\State\BaseState.cpp" />
     <ClCompile Include="src\APEX\State\StateManager.cpp" />
     <ClCompile Include="src\APEX\Transition\Transition.cpp" />
@@ -235,6 +275,41 @@
     <ClCompile Include="src\APEX\Transition\TransformableTransition.cpp" />
     <ClCompile Include="src\APEX\Transition\TransitionChain.cpp" />
     <ClCompile Include="src\APEX\Transition\Vector2fTransition.cpp" />
+    <ClCompile Include="src\Game\ButtonList.cpp" />
+    <ClCompile Include="src\Game\Debug\ImGui.cpp" />
+    <ClCompile Include="src\Game\Debug\ImGuiStorage.cpp" />
+    <ClCompile Include="src\Game\DustParticle.cpp" />
+    <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Game\HUD.cpp" />
+    <ClCompile Include="src\Game\main.cpp" />
+    <ClCompile Include="src\Game\ParticleEmitter.cpp" />
+    <ClCompile Include="src\Game\PauseScreen.cpp" />
+    <ClCompile Include="src\Game\State\GameState.cpp" />
+    <ClCompile Include="src\Game\State\LoadingState.cpp" />
+    <ClCompile Include="src\Game\State\MainMenuState.cpp" />
+    <ClCompile Include="src\Game\World\AICharacter.cpp" />
+    <ClCompile Include="src\Game\World\AmmoDrop.cpp" />
+    <ClCompile Include="src\Game\World\Bed.cpp" />
+    <ClCompile Include="src\Game\World\Building.cpp" />
+    <ClCompile Include="src\Game\World\Bullet.cpp" />
+    <ClCompile Include="src\Game\World\BulletManager.cpp" />
+    <ClCompile Include="src\Game\World\Camera.cpp" />
+    <ClCompile Include="src\Game\World\Coin.cpp" />
+    <ClCompile Include="src\Game\World\Entity.cpp" />
+    <ClCompile Include="src\Game\World\ExitSensor.cpp" />
+    <ClCompile Include="src\Game\World\Gun.cpp" />
+    <ClCompile Include="src\Game\World\Item.cpp" />
+    <ClCompile Include="src\Game\World\Layer.cpp" />
+    <ClCompile Include="src\Game\World\LightManager.cpp" />
+    <ClCompile Include="src\Game\World\Map.cpp" />
+    <ClCompile Include="src\Game\World\Minimap.cpp" />
+    <ClCompile Include="src\Game\World\Mob.cpp" />
+    <ClCompile Include="src\Game\World\Player.cpp" />
+    <ClCompile Include="src\Game\World\Projectile.cpp" />
+    <ClCompile Include="src\Game\World\Sheep.cpp" />
+    <ClCompile Include="src\Game\World\SolidBlock.cpp" />
+    <ClCompile Include="src\Game\World\Tile.cpp" />
+    <ClCompile Include="src\Game\World\World.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

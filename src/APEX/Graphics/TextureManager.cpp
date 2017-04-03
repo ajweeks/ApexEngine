@@ -1,6 +1,6 @@
 
-#include <APEX\Graphics\TextureManager.h>
-#include <APEX\ApexMain.h>
+#include "Apex\Graphics\TextureManager.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {

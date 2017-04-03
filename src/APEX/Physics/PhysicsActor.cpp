@@ -1,7 +1,7 @@
 
-#include <APEX\Physics\PhysicsActor.h>
-#include <APEX\ApexMain.h>
-#include <APEX\Physics\ContactListener.h>
+#include "Apex\Physics\PhysicsActor.h"
+#include "Apex\ApexMain.h"
+#include "Apex\Physics\ContactListener.h"
 
 #include <Box2D\Dynamics\b2Body.h>
 #include <Box2D\Dynamics\b2world.h>

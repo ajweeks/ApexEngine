@@ -1,7 +1,7 @@
 #pragma once
 
-#include <APEX\IO\MouseListener.h>
-#include <APEX\enumerations.h>
+#include "Apex\IO\MouseListener.h"
+#include "Apex\enumerations.h"
 
 #include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\System\Time.hpp>

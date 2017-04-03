@@ -1,10 +1,10 @@
 #pragma once
 
-#include <APEX\Transition\Transition.h>
-#include <APEX\Transition\FloatTransition.h>
-#include <APEX\Transition\TransitionChain.h>
-#include <APEX\Transition\ColorTransition.h>
-#include <APEX\enumerations.h>
+#include "Transition\Transition.h"
+#include "Transition\FloatTransition.h"
+#include "Transition\TransitionChain.h"
+#include "Transition\ColorTransition.h"
+#include "enumerations.h"
 
 #include <SFML\Graphics\Glsl.hpp>
 #include <SFML\Graphics\Font.hpp>

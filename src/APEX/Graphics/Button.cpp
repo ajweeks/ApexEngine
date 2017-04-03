@@ -1,7 +1,7 @@
 
-#include <APEX\Graphics\Button.h>
-#include <APEX\ApexMain.h>
-#include <APEX\IO\Mouse.h>
+#include "Apex\Graphics\Button.h"
+#include "Apex\ApexMain.h"
+#include "Apex\IO\Mouse.h"
 
 #include <SFML\Graphics\Shader.hpp>
 
@@ -170,9 +170,9 @@ namespace apex
 
 			ShowNextString();
 
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	void Button::ShowNextString()

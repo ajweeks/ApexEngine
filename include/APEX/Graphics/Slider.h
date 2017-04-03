@@ -1,8 +1,8 @@
 #pragma once
 
-#include <APEX\IO\MouseListener.h>
-#include <APEX\Transition\TransformableTransition.h>
-#include <APEX\Transition\ColorTransition.h>
+#include "Apex\IO\MouseListener.h"
+#include "Apex\Transition\TransformableTransition.h"
+#include "Apex\Transition\ColorTransition.h"
 
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\System\Time.hpp>

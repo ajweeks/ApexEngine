@@ -1,6 +1,6 @@
 
-#include <APEX\IO\KeyListener.h>
-#include <APEX\ApexMain.h>
+#include "Apex\IO\KeyListener.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {

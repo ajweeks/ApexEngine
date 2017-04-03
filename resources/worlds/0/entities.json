@@ -1,0 +1,14 @@
+{
+  "entities": [
+    {
+      "type": "building",
+      "id": 0,
+      "position": "8,6"
+    },
+    {
+      "type": "building",
+      "id": 1,
+      "position": "19,8"
+    }
+  ]
+}

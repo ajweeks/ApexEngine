@@ -1,0 +1,12 @@
+
+		Crowchild Default Controls 
+	(Editable in game in the pause menu)
+	
+WASD - Move
+E - Interact
+ESC - Pause
+
+P - Toggle physics debug overlay
+F8 - Toggle light editor
+F9 - Toggle debug info overlay
+F10 - Take screenshot (saved in /screenshots with the current date)

@@ -1,21 +1,21 @@
 
-#include <APEX\ApexMain.h>
-#include <APEX\AbstractGame.h>
-#include <APEX\State\StateManager.h>
-#include <APEX\enumerations.h>
-#include <APEX\IO\Keyboard.h>
-#include <APEX\IO\KeyListener.h>
-#include <APEX\IO\Mouse.h>
-#include <APEX\IO\MouseListener.h>
-#include <APEX\WindowListener.h>
-#include <APEX\IO\Audio.h>
-#include <APEX\Physics\PhysicsActorManager.h>
-#include <APEX\Physics\ContactListener.h>
-#include <APEX\Graphics\TextureManager.h>
-#include <APEX\logo.h>
-#include <APEX\Physics\PhysicsActor.h>
-#include <APEX\Physics\Contact.h>
-#include <APEX\Transition\Transition.h>
+#include "Apex\ApexMain.h"
+#include "Apex\AbstractGame.h"
+#include "Apex\State\StateManager.h"
+#include "Apex\enumerations.h"
+#include "Apex\IO\Keyboard.h"
+#include "Apex\IO\KeyListener.h"
+#include "Apex\IO\Mouse.h"
+#include "Apex\IO\MouseListener.h"
+#include "Apex\WindowListener.h"
+#include "Apex\IO\Audio.h"
+#include "Apex\Physics\PhysicsActorManager.h"
+#include "Apex\Physics\ContactListener.h"
+#include "Apex\Graphics\TextureManager.h"
+#include "Apex\logo.h"
+#include "Apex\Physics\PhysicsActor.h"
+#include "Apex\Physics\Contact.h"
+#include "Apex\Transition\Transition.h"
 
 #include <windows.h> // ugh (only required for OutputDebugString I think)
 #include <sstream>
@@ -307,10 +307,14 @@ namespace apex
 								{
 									Keyboard::Key key;
 									key.vkCode = vkCode;
-									if (m_KeyListeners[i]->OnKeyPress(key, keyPressed))
+									if (keyPressed)
 									{
-										blockedInput = true;
-										break;
+										if (m_KeyListeners[i]->OnKeyPress(key, keyPressed))
+										{
+											blockedInput = true;
+											break;
+										}
+
 									}
 								}
 							}
@@ -651,7 +655,8 @@ namespace apex
 		const std::string filename = path + std::to_string(index) + filetype;
 		if (screen.saveToFile(filename))
 		{
-			PrintString("Saved screenshot as \"" + filename + "\" successfully!\n", LogType::LOG_INFO);
+			
+			("Saved screenshot as \"" + filename + "\" successfully!\n", LogType::LOG_INFO);
 		}
 	}
 

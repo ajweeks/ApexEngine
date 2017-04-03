@@ -1,7 +1,7 @@
 
-#include <APEX\Physics\PhysicsActorManager.h>
-#include <APEX\Graphics\DebugDraw.h>
-#include <APEX\ApexMain.h>
+#include "Apex\Physics\PhysicsActorManager.h"
+#include "Apex\Graphics\DebugDraw.h"
+#include "Apex\ApexMain.h"
 
 #include <Box2D\Common\b2Math.h>
 #include <Box2D\Collision\Shapes\b2PolygonShape.h>

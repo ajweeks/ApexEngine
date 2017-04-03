@@ -1,8 +1,8 @@
 
-#include <APEX\State\BaseState.h>
-#include <APEX\State\StateManager.h>
-#include <APEX\enumerations.h>
-#include <APEX\IO\Keyboard.h>
+#include "Apex\State\BaseState.h"
+#include "Apex\State\StateManager.h"
+#include "Apex\enumerations.h"
+#include "Apex\IO\Keyboard.h"
 
 namespace apex
 {

@@ -1,18 +1,14 @@
 #pragma once
 
-#include <APEX\Physics\PhysicsActor.h>
+#include "Physics\PhysicsActor.h"
 
 #include <SFML\System\Vector2.hpp>
 
-#include <cmath>
 #include <random>
-
-#define PI 3.14159265359f
-#define PI_2 (3.14159265359f / 2.0f)
 
 namespace apex
 {
-	class Math
+	class ApexMath
 	{
 	public:
 		static sf::Vector2f Normalize(sf::Vector2f v)

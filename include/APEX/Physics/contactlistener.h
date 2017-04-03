@@ -1,6 +1,6 @@
 #pragma once
 
-#include <APEX\Physics\Contact.h>
+#include "Apex\Physics\Contact.h"
 
 namespace apex
 {

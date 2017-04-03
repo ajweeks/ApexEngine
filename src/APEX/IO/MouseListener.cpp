@@ -1,6 +1,6 @@
 
-#include <APEX\IO\MouseListener.h>
-#include <APEX\ApexMain.h>
+#include "Apex\IO\MouseListener.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {

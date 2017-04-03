@@ -1,6 +1,6 @@
 
-#include <APEX\IO\Audio.h>
-#include <APEX\ApexMain.h>
+#include "Apex\IO\Audio.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {

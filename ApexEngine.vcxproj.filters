@@ -67,14 +67,14 @@
     <ClInclude Include="include\APEX\World\Physics\PhysicsActorManager.h">
       <Filter>Source Files\apex\include\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\State\StateManager.h">
-      <Filter>Source Files\apex\include\State</Filter>
+    <ClInclude Include="include\APEX\World\Physics\Contact.h">
+      <Filter>Source Files\apex\include\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\State\BaseState.h">
-      <Filter>Source Files\apex\include\State</Filter>
+    <ClInclude Include="include\APEX\World\Physics\ContactListener.h">
+      <Filter>Source Files\apex\include\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\Graphics\TextureManager.h">
-      <Filter>Source Files\apex\include\Graphics</Filter>
+    <ClInclude Include="include\Apex\WindowListener.h">
+      <Filter>Source Files\apex\include</Filter>
     </ClInclude>
     <ClInclude Include="include\APEX\Graphics\Particle\Particle.h">
       <Filter>Source Files\apex\include\Graphics\Particle</Filter>
@@ -82,52 +82,19 @@
     <ClInclude Include="include\APEX\Graphics\Particle\ParticleManager.h">
       <Filter>Source Files\apex\include\Graphics\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\enumerations.h">
-      <Filter>Source Files\apex\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\logo.h">
-      <Filter>Source Files\apex\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\ColorTransition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\FloatTransition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\IntTransition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\TransformableTransition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\TransitionChain.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\Vector2fTransition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Math.h">
-      <Filter>Source Files\apex\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\WindowListener.h">
-      <Filter>Source Files\apex\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\World\Physics\Contact.h">
-      <Filter>Source Files\apex\include\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\World\Physics\ContactListener.h">
-      <Filter>Source Files\apex\include\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="include\APEX\Transition\Transition.h">
-      <Filter>Source Files\apex\include\Transition</Filter>
-    </ClInclude>
     <ClInclude Include="include\APEX\Graphics\Button.h">
+      <Filter>Source Files\apex\include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Graphics\DebugDraw.h">
       <Filter>Source Files\apex\include\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\APEX\Graphics\Slider.h">
       <Filter>Source Files\apex\include\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\APEX\Graphics\SpriteSheet.h">
+      <Filter>Source Files\apex\include\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Graphics\TextureManager.h">
       <Filter>Source Files\apex\include\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\APEX\IO\Audio.h">
@@ -145,37 +112,147 @@
     <ClInclude Include="include\APEX\IO\MouseListener.h">
       <Filter>Source Files\apex\include\IO</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\ApexMain.h">
+    <ClInclude Include="include\APEX\Physics\Contact.h" />
+    <ClInclude Include="include\APEX\Physics\contactlistener.h" />
+    <ClInclude Include="include\APEX\Physics\PhysicsActor.h" />
+    <ClInclude Include="include\APEX\Physics\PhysicsActorManager.h" />
+    <ClInclude Include="include\APEX\State\BaseState.h">
+      <Filter>Source Files\apex\include\State</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\State\StateManager.h">
+      <Filter>Source Files\apex\include\State</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\ColorTransition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\FloatTransition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\IntTransition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\TransformableTransition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\Transition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\TransitionChain.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\APEX\Transition\Vector2fTransition.h">
+      <Filter>Source Files\apex\include\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Apex\AbstractGame.h">
       <Filter>Source Files\apex\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\AbstractGame.h">
+    <ClInclude Include="include\Apex\ApexMain.h">
       <Filter>Source Files\apex\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\APEX\Graphics\DebugDraw.h">
-      <Filter>Source Files\apex\include\Graphics</Filter>
+    <ClInclude Include="include\Apex\ApexMath.h">
+      <Filter>Source Files\apex\include</Filter>
     </ClInclude>
-    <ClInclude Include="EmptyGame.h">
+    <ClInclude Include="include\Apex\EmptyGame.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Apex\enumerations.h">
+      <Filter>Source Files\apex\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Apex\logo.h">
+      <Filter>Source Files\apex\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\Debug\ImGui.h" />
+    <ClInclude Include="include\Game\Debug\ImGuiStorage.h" />
+    <ClInclude Include="include\Game\State\GameState.h" />
+    <ClInclude Include="include\Game\State\LoadingState.h" />
+    <ClInclude Include="include\Game\State\MainMenuState.h" />
+    <ClInclude Include="include\Game\World\AICharacter.h" />
+    <ClInclude Include="include\Game\World\Ammodrop.h" />
+    <ClInclude Include="include\Game\World\Bed.h" />
+    <ClInclude Include="include\Game\World\Building.h" />
+    <ClInclude Include="include\Game\World\Bullet.h" />
+    <ClInclude Include="include\Game\World\BulletManager.h" />
+    <ClInclude Include="include\Game\World\Camera.h" />
+    <ClInclude Include="include\Game\World\Coin.h" />
+    <ClInclude Include="include\Game\World\Entity.h" />
+    <ClInclude Include="include\Game\World\ExitSensor.h" />
+    <ClInclude Include="include\Game\World\Gun.h" />
+    <ClInclude Include="include\Game\World\Interactable.h" />
+    <ClInclude Include="include\Game\World\Item.h" />
+    <ClInclude Include="include\Game\World\Layer.h" />
+    <ClInclude Include="include\Game\World\LightManager.h" />
+    <ClInclude Include="include\Game\World\Map.h" />
+    <ClInclude Include="include\Game\World\Minimap.h" />
+    <ClInclude Include="include\Game\World\Mob.h" />
+    <ClInclude Include="include\Game\World\Player.h" />
+    <ClInclude Include="include\Game\World\Projectile.h" />
+    <ClInclude Include="include\Game\World\Sheep.h" />
+    <ClInclude Include="include\Game\World\SolidBlock.h" />
+    <ClInclude Include="include\Game\World\Tile.h" />
+    <ClInclude Include="include\Game\World\TileSet.h" />
+    <ClInclude Include="include\Game\World\World.h" />
+    <ClInclude Include="include\Game\ButtonList.h" />
+    <ClInclude Include="include\Game\DustParticle.h" />
+    <ClInclude Include="include\Game\enumerations.h" />
+    <ClInclude Include="include\Game\Game.h" />
+    <ClInclude Include="include\Game\HUD.h" />
+    <ClInclude Include="include\Game\ParticleEmitter.h" />
+    <ClInclude Include="include\Game\PauseScreen.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\APEX\main.cpp">
-      <Filter>Source Files\apex\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\State\StateManager.cpp">
-      <Filter>Source Files\apex\src\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\State\BaseState.cpp">
-      <Filter>Source Files\apex\src\State</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\TextureManager.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\APEX\Graphics\Particle\Particle.cpp">
       <Filter>Source Files\apex\src\Graphics\Particle</Filter>
     </ClCompile>
     <ClCompile Include="src\APEX\Graphics\Particle\ParticleManager.cpp">
       <Filter>Source Files\apex\src\Graphics\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Graphics\Button.cpp">
+      <Filter>Source Files\apex\src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Graphics\DebugDraw.cpp">
+      <Filter>Source Files\apex\src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Graphics\Slider.cpp">
+      <Filter>Source Files\apex\src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Graphics\SpriteSheet.cpp">
+      <Filter>Source Files\apex\src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Graphics\TextureManager.cpp">
+      <Filter>Source Files\apex\src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\IO\Audio.cpp">
+      <Filter>Source Files\apex\src\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\IO\Keyboard.cpp">
+      <Filter>Source Files\apex\src\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\IO\KeyListener.cpp">
+      <Filter>Source Files\apex\src\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\IO\Mouse.cpp">
+      <Filter>Source Files\apex\src\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\IO\MouseListener.cpp">
+      <Filter>Source Files\apex\src\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Physics\ContactListener.cpp">
+      <Filter>Source Files\apex\src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Physics\PhysicsActor.cpp">
+      <Filter>Source Files\apex\src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Physics\PhysicsActorManager.cpp">
+      <Filter>Source Files\apex\src\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\State\BaseState.cpp">
+      <Filter>Source Files\apex\src\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\State\StateManager.cpp">
+      <Filter>Source Files\apex\src\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\APEX\Transition\ColorTransition.cpp">
+      <Filter>Source Files\apex\src\Transition</Filter>
     </ClCompile>
     <ClCompile Include="src\APEX\Transition\FloatTransition.cpp">
       <Filter>Source Files\apex\src\Transition</Filter>
@@ -186,65 +263,131 @@
     <ClCompile Include="src\APEX\Transition\TransformableTransition.cpp">
       <Filter>Source Files\apex\src\Transition</Filter>
     </ClCompile>
+    <ClCompile Include="src\APEX\Transition\Transition.cpp">
+      <Filter>Source Files\apex\src\Transition</Filter>
+    </ClCompile>
     <ClCompile Include="src\APEX\Transition\TransitionChain.cpp">
       <Filter>Source Files\apex\src\Transition</Filter>
     </ClCompile>
     <ClCompile Include="src\APEX\Transition\Vector2fTransition.cpp">
       <Filter>Source Files\apex\src\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\Transition\ColorTransition.cpp">
-      <Filter>Source Files\apex\src\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\Button.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\Slider.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\SpriteSheet.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\IO\MouseListener.cpp">
-      <Filter>Source Files\apex\src\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\IO\Mouse.cpp">
-      <Filter>Source Files\apex\src\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\IO\KeyListener.cpp">
-      <Filter>Source Files\apex\src\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\IO\Keyboard.cpp">
-      <Filter>Source Files\apex\src\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\IO\Audio.cpp">
-      <Filter>Source Files\apex\src\IO</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Transition\Transition.cpp">
-      <Filter>Source Files\apex\src\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\WindowListener.cpp">
+    <ClCompile Include="src\Apex\AbstractGame.cpp">
       <Filter>Source Files\apex\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\ApexMain.cpp">
+    <ClCompile Include="src\Apex\ApexMain.cpp">
       <Filter>Source Files\apex\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\AbstractGame.cpp">
-      <Filter>Source Files\apex\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\APEX\Graphics\DebugDraw.cpp">
-      <Filter>Source Files\apex\src\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="EmptyGame.cpp">
+    <ClCompile Include="src\Apex\EmptyGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\Physics\ContactListener.cpp">
-      <Filter>Source Files\apex\src\Physics</Filter>
+    <ClCompile Include="src\Apex\WindowListener.cpp">
+      <Filter>Source Files\apex\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\Physics\PhysicsActor.cpp">
-      <Filter>Source Files\apex\src\Physics</Filter>
+    <ClCompile Include="src\Game\Debug\ImGui.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\APEX\Physics\PhysicsActorManager.cpp">
-      <Filter>Source Files\apex\src\Physics</Filter>
+    <ClCompile Include="src\Game\Debug\ImGuiStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\State\GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\State\LoadingState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\State\MainMenuState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\AICharacter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\AmmoDrop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Bed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Building.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Bullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\BulletManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Coin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\ExitSensor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Gun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\LightManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Minimap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Mob.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Projectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Sheep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\SolidBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\World\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\ButtonList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\DustParticle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\HUD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\ParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\PauseScreen.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

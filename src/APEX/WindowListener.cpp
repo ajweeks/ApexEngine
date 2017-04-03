@@ -1,6 +1,6 @@
 
-#include <APEX\WindowListener.h>
-#include <APEX\ApexMain.h>
+#include "Apex\WindowListener.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {

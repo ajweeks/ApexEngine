@@ -1,6 +1,6 @@
 
-#include <APEX\Graphics\Slider.h>
-#include <APEX\ApexMain.h>
+#include "Apex\Graphics\Slider.h"
+#include "Apex\ApexMain.h"
 
 namespace apex
 {
@@ -143,8 +143,9 @@ namespace apex
 		{
 			m_BeingDragged = true;
 			m_GripColorTransition.SwapAndRestart();
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	void Slider::OnButtonRelease(sf::Event::MouseButtonEvent buttonEvent)

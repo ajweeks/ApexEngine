@@ -3,8 +3,8 @@
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 
-#include <APEX\IO\KeyListener.h>
-#include <APEX\IO\MouseListener.h>
+#include "IO\KeyListener.h"
+#include "IO\MouseListener.h"
 
 namespace apex
 {

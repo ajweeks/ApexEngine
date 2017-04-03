@@ -1,0 +1,17 @@
+{
+    "keybindings": {
+        "DEBUG_PauseEverything": 57,
+        "DEBUG_Restart": 17,
+        "DEBUG_StepOnePhysicsFrame": 50,
+        "DEBUG_ToggleInfoOverlay": 93,
+        "DEBUG_ToggleLightEditor": 92,
+        "DEBUG_TogglePhysicsOverlay": 15,
+        "Interact": 4,
+        "Move Down": 18,
+        "Move Left": 0,
+        "Move Right": 3,
+        "Move Up": 22,
+        "Pause": 36,
+        "Screenshot": 94
+    }
+}

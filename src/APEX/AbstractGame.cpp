@@ -1,6 +1,6 @@
 
-#include <APEX\AbstractGame.h>
-#include <APEX\ApexMain.h>
+#include "Apex/AbstractGame.h"
+#include "Apex/ApexMain.h"
 
 namespace apex
 {

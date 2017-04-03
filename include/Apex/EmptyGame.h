@@ -1,6 +1,6 @@
 #pragma once
 
-#include <APEX\AbstractGame.h>
+#include "AbstractGame.h"
 
 class EmptyGame : public apex::AbstractGame
 {

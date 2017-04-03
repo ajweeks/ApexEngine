@@ -1,8 +1,8 @@
 #pragma once
 
-#include <APEX\enumerations.h>
-#include <APEX\IO\KeyListener.h>
-#include <APEX\IO\Keyboard.h>
+#include "Apex\enumerations.h"
+#include "Apex\IO\KeyListener.h"
+#include "Apex\IO\Keyboard.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>

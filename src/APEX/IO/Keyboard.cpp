@@ -1,6 +1,6 @@
 
-#include <APEX\IO\Keyboard.h>
-#include <APEX\ApexMain.h>
+#include "Apex\IO\Keyboard.h"
+#include "Apex\ApexMain.h"
 
 #include <fstream>
 #include <sstream>

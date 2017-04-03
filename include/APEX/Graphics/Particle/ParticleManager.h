@@ -1,6 +1,6 @@
 #pragma once
 
-#include <APEX\Graphics\Particle\Particle.h>
+#include "Apex\Graphics\Particle\Particle.h"
 
 #include <SFML\System\Time.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>

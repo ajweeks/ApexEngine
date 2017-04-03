@@ -1,0 +1,32 @@
+{
+  "entity-types": [
+    {
+      "name": "building",
+      "id": 0,
+      "door_position": "0,5",
+      "size": "8,7",
+      "spritesheet": "resources/images/buildings.png",
+      "tileXY" :  "0,0"
+    },
+    {
+      "name": "building",
+      "id": 1,
+      "door_position": "5,5",
+      "size": "8,7",
+      "spritesheet": "resources/images/buildings.png",
+      "tileXY" :  "8,0"
+    },
+    {
+      "name": "bed",
+      "spritesheet": "resources/images/tiles.png",
+      "tileXY" : "8,4",
+      "size": "2,4"
+    },
+    {
+      "name": "coin",
+      "spritesheet": "resources/images/tiles.png",
+      "tileXY" :  "0,5",
+      "size": "1,1"
+    }
+  ]
+}
