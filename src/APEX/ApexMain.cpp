@@ -396,8 +396,9 @@ namespace apex
 				{
 					// TODO: FIXME: XXX: Fix timestep
 					//if (m_StepOneFrame) 
-					accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
-					//else accumulator += elapsed.asSeconds();
+					//accumulator = PhysicsActorManager::TIMESTEP; // Step exactly one frame
+					//else 
+					accumulator += elapsed.asSeconds();
 
 					Tick(accumulator);
 				}
@@ -409,8 +410,10 @@ namespace apex
 
 	void ApexMain::Tick(double& accumulator)
 	{
+		int tickCount = 0;
 		while (accumulator >= PhysicsActorManager::TIMESTEP)
 		{
+			++tickCount;
 			static const sf::Time dt = sf::seconds(PhysicsActorManager::TIMESTEP);
 
 			if (!m_PhysicsPaused)
@@ -424,6 +427,7 @@ namespace apex
 
 			accumulator -= PhysicsActorManager::TIMESTEP;
 		}
+		apex::PrintString("ticks: " + std::to_string(tickCount) + "\n", LogType::LOG_INFO);
 
 		Mouse::SetPosLastFrame();
 	}
