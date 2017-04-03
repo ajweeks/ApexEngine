@@ -14,7 +14,7 @@
       "color": "rgb(247, 251, 236)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "375.26,207.37",
+      "position": "374.08,207.64",
       "radius": 46.8
     },
     {
@@ -122,12 +122,12 @@
       "radius": 18
     },
     {
-      "blur": 0.07,
-      "color": "rgb(238, 234, 224)",
+      "blur": 0.08,
+      "color": "rgb(234, 248, 255)",
       "flickers": false,
       "opacity": 0.8,
-      "position": "204.08,182.05",
-      "radius": 28.17
+      "position": "196.57,170.48",
+      "radius": 39.34
     },
     {
       "blur": 0.09,

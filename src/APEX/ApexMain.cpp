@@ -427,7 +427,6 @@ namespace apex
 
 			accumulator -= PhysicsActorManager::TIMESTEP;
 		}
-		apex::PrintString("ticks: " + std::to_string(tickCount) + "\n", LogType::LOG_INFO);
 
 		Mouse::SetPosLastFrame();
 	}

@@ -1,9 +1,9 @@
 {
     "options": {
-        "fullscreen": true,
+        "fullscreen": false,
         "musicVolume": 1,
         "renderLighting": true,
         "soundVolume": 0.821428596973419,
-        "useVSync": true
+        "useVSync": false
     }
 }
